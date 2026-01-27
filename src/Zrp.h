@@ -16,6 +16,8 @@
 #ifndef ZRP_H_
 #define ZRP_H_
 
+#define IARP_METRIC_COUNT 1
+
 class Zrp: public inet::RoutingProtocolBase {
 protected:
     //parameters
@@ -27,6 +29,9 @@ protected:
     void handleMessageWhenUp(cMessage * msg) override;
     void initialize(int stage) override;
     virtual int numInitStages() const override { return NUM_INIT_STAGES; }
+
+    //IARP Functions
+    void IARP_Deliver(cMessage)
 public:
     Zrp();
     virtual ~Zrp();
