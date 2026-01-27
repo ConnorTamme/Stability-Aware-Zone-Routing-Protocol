@@ -12,3 +12,96 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 //
+
+cplusplus {{
+#include "Zrp.h"
+}}
+
+import inet.common.INETDefs;
+import inet.common.packet.chunk.Chunk;
+import inet.common.packet.Packet;
+import inet.networklayer.common.L3Address;
+
+//The Neighbor Discovery Protocol is not included in the RFC so this may be used to query them
+class NDP_Hello extends FieldsChunk
+{
+	L3Address nodeAddress;
+	uint16_t seqNum;
+}
+
+
+//
+// IARP Link State Update Packet
+// RFC Appendix A - Complete packet format
+//
+// RFC Format:
+//                       1                   2                   3
+//   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+//   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+//   |                       Link Source Address                     |
+//   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+//   |       Link State Seq Num      |  Zone Radius  |      TTL      |
+//   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+//   |          RESERVED             |   RESERVED    | Link Dest Cnt |
+//   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+//   |                    Link Destination 1 Address                 |
+//   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+//   |            Link Destination 1 Subnet Mask  (Optional)         |
+//   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ --+--
+//   |   RESERVED    |  Metric Type  |          Metric Value         |   |
+//   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+  Link
+//   |   RESERVED    |  Metric Type  |          Metric Value         | Metrics
+//   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+   |
+//   |   RESERVED    |  Metric Type  |          Metric Value         |   |
+//   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ --+--
+//                                 |  | 
+//                                 |  | 
+//                                \|  |/
+//                                 \  /                                  
+//                                  \/
+//   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+//   |                    Link Destination n Address                 |
+//   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+//   |            Link Destination n Subnet Mask  (Optional)         |
+//   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ --+--
+//   |   RESERVED    |  Metric Type  |          Metric Value         |   |
+//   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+  Link
+//   |   RESERVED    |  Metric Type  |          Metric Value         | Metrics
+//   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+   |
+//   |   RESERVED    |  Metric Type  |          Metric Value         |   |
+//   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ --+--
+//
+
+
+//All reserved fields are set to 0
+
+struct IARP_MetricData{
+	uint8_t reserved = 0;
+	uint8_t metricType;
+	uint16_t metricValue;
+};
+
+
+struct IARP_LinkDestData
+{
+	@packetData;
+	L3Address addr;
+	IARP_MetricData metrics[IARP_METRIC_COUNT];
+};
+
+
+
+class IARP_LinkStateUpdate extends FieldsChunk
+{
+	L3Adress sourceAddr;
+	uint16_t seqNum;
+	uint8_t radius;
+	uint8_t TTL;
+	uint16_t reserved1 = 0;
+	uint8_t reserved2 = 0;
+	uint8_t linkDestCount; //The number of neighbors the source has
+	IARP_LinkDestData linkDestData[];
+}
+
+
+

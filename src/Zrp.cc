@@ -17,6 +17,8 @@
 
 Zrp::Zrp() {
     // TODO Auto-generated constructor stub
+    //This should allow me to get the neighbors using the MAC meaning no hello messages needed
+    cModule *nic = getParentModule()->getSubmodule("wlan", 0)->getSubmodule("mac");
 
 }
 
