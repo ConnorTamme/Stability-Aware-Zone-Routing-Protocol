@@ -1,0 +1,4 @@
+#!/bin/sh
+cd `dirname $0`
+../src/sa_zrp -n .:../src $*
+# for shared lib, use: opp_run -l ../src/sa_zrp -n .:../src $*
