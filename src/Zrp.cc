@@ -204,6 +204,7 @@ void Zrp::processPacket(Packet *packet)
     }
     else if (auto iarpHello = dynamicPtrCast<const inet::zrp::IARP_LinkStateUpdate>(chunk)) {
         // Handle IARP Link State Update
+        handleIARPHello(CHK(dynamicPtrCast<inet::zrp::IARP_LinkStateUpdate>(chunk->dupShared())), sourceAddr);
     }
     else {
         EV_WARN << "Unknown ZRP packet type received" << endl;
@@ -269,6 +270,11 @@ void Zrp::handleNDPHello(const Ptr<inet::zrp::NDP_Hello>& hello, const L3Address
     
     EV_DETAIL << "Neighbor table now has " << neighborTable.size() << " entries" << endl;
 }
+
+// IARP Functions
+void Zrp::handleIARPHello(const Ptr<inet::zrp::IARP_LinkStateUpdate>& hello, const L3Address& sourceAddr)
+{
+    EV_INFO << "Received IARP Link State Update from " << sourceAddr << endl;
 
 } // namespace zrp
 

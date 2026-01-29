@@ -104,6 +104,7 @@ class INET_API Zrp : public RoutingProtocolBase,  public NetfilterBase::HookBase
 
     //IARP Functions
     void IARP_Deliver(cMessage *msg);
+    void handleIARPHello(const Ptr<inet::zrp::IARP_LinkStateUpdate>& hello, const L3Address& sourceAddr);
 
   public:
     Zrp();
