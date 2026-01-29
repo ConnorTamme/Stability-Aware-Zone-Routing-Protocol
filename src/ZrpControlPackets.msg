@@ -13,6 +13,7 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 //
 
+
 cplusplus {{
 #include "Zrp.h"
 }}
@@ -21,6 +22,8 @@ import inet.common.INETDefs;
 import inet.common.packet.chunk.Chunk;
 import inet.common.packet.Packet;
 import inet.networklayer.common.L3Address;
+
+namespace inet::zrp;
 
 //The Neighbor Discovery Protocol is not included in the RFC so this may be used to query them
 class NDP_Hello extends FieldsChunk
@@ -93,7 +96,7 @@ struct IARP_LinkDestData
 
 class IARP_LinkStateUpdate extends FieldsChunk
 {
-	L3Adress sourceAddr;
+	L3Address sourceAddr;
 	uint16_t seqNum;
 	uint8_t radius;
 	uint8_t TTL;
