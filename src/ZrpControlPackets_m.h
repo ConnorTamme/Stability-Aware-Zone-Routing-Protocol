@@ -47,7 +47,7 @@ namespace zrp {
 /**
  * Class generated from <tt>ZrpControlPackets.msg:30</tt> by opp_msgtool.
  * <pre>
- * //The Neighbor Discovery Protocol is not included in the RFC so this may be used to query them
+ * //The Neighbor Discovery Protocol is not included in the RFC so this is used to obtain neighboring nodes
  * class NDP_Hello extends FieldsChunk
  * {
  *     L3Address nodeAddress;

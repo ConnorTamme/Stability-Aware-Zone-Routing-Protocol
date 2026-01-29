@@ -18,39 +18,49 @@
 
 #include <map>
 
+// Must be defined before including ZrpControlPackets_m.h
+#define IARP_METRIC_COUNT 1
+
 #include "inet/common/ModuleRefByPar.h"
 #include "inet/networklayer/contract/IInterfaceTable.h"
 #include "inet/networklayer/contract/IL3AddressType.h"
 #include "inet/networklayer/contract/INetfilter.h"
 #include "inet/networklayer/contract/IRoutingTable.h"
-#include "inet/routing/aodv/AodvControlPackets_m.h"
-#include "inet/routing/aodv/AodvRouteData.h"
 #include "inet/routing/base/RoutingProtocolBase.h"
+#include "ZrpControlPackets_m.h"
 #include "inet/transportlayer/contract/udp/UdpSocket.h"
 #include "inet/transportlayer/udp/UdpHeader_m.h"
 
-#define IARP_METRIC_COUNT 1
 
-namespace inet{
-namespace zrp{
+
+//As the RFC assumes a 32 bit address only IPv4 is to be supported
+
+using namespace inet;
+
+namespace zrp {
 
 class INET_API Zrp : public RoutingProtocolBase,  public NetfilterBase::HookBase, public UdpSocket::ICallback, public cListener 
 {
   protected:
-    // context
-    const IL3AddressType *addressType = nullptr;
+    //context
 
-    // environment
+    //environment
     cModule *host = nullptr;
     ModuleRefByPar<IRoutingTable> routingTable;
     ModuleRefByPar<IInterfaceTable> interfaceTable;
     ModuleRefByPar<INetfilter> networkProtocol;
     UdpSocket socket;
 
-    // parameters
+    //parameters
     simtime_t linkStateLifetime = 3;
-    simtime_t helloInterval = 3;
+    simtime_t IARP_helloInterval = 3;
     unsigned int zoneRadius = 2;
+    unsigned int zrpUDPPort = 0;
+    simtime_t NDP_helloInterval = 3;
+
+    // state
+    unsigned int NDP_seqNum = 0;  // sequence number for NDP hello messages
+    std::map<L3Address, simtime_t> neighborTable;  // neighbor address -> last heard time
 
     // self messages
     cMessage *NDP_helloTimer = nullptr;
@@ -61,31 +71,38 @@ class INET_API Zrp : public RoutingProtocolBase,  public NetfilterBase::HookBase
     void initialize(int stage) override;
     virtual int numInitStages() const override { return NUM_INIT_STAGES; }
 
-    /* Lifecycle */
+    //Lifecycle
     virtual void handleStartOperation(LifecycleOperation *operation) override;
     virtual void handleStopOperation(LifecycleOperation *operation) override;
     virtual void handleCrashOperation(LifecycleOperation *operation) override;
 
-    /* Netfilter hooks */
+    //Netfilter hooks
     virtual Result datagramPreRoutingHook(Packet *datagram) override;
     virtual Result datagramForwardHook(Packet *datagram) override;
     virtual Result datagramPostRoutingHook(Packet *datagram) override;
     virtual Result datagramLocalInHook(Packet *datagram) override;
     virtual Result datagramLocalOutHook(Packet *datagram) override;
 
-    /* UDP callback interface */
+    //UDP callback interface
     virtual void socketDataArrived(UdpSocket *socket, Packet *packet) override;
     virtual void socketErrorArrived(UdpSocket *socket, Indication *indication) override;
     virtual void socketClosed(UdpSocket *socket) override;
 
-    /* cListener */
+    //cListener
     virtual void receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj, cObject *details) override;
 
-    /* Helper functions */
+    //Helper functions
     L3Address getSelfIPAddress() const;
     void clearState();
+    void processPacket(Packet *packet);
+    void sendZrpPacket(const Ptr<FieldsChunk>& payload, const L3Address& destAddr, unsigned int ttl);
 
-    // IARP Functions
+    // NDP Functions
+    const Ptr<inet::zrp::NDP_Hello> createNDPHello();
+    void sendNDPHello();
+    void handleNDPHello(const Ptr<inet::zrp::NDP_Hello>& hello, const L3Address& sourceAddr);
+
+    //IARP Functions
     void IARP_Deliver(cMessage *msg);
 
   public:
@@ -94,6 +111,7 @@ class INET_API Zrp : public RoutingProtocolBase,  public NetfilterBase::HookBase
 };
 
 } // namespace zrp
-} // namespace inet
 
-#endif /* ZRP_H_ */
+
+
+#endif //ZRP_H_
