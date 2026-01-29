@@ -20,7 +20,18 @@ import inet.applications.contract.IApp;
 simple Zrp like IApp
 {
 	parameters:
-	    @class("sa_zrp:Zrp");
+	    @class("zrp::Zrp");
+	    //All stuff straight from Aodv.ned
+	    string routingTableModule = default("^.ipv4.routingTable");
+	    string interfaceTableModule = default("^.interfaceTable");
+	    string networkProtocolModule = default("^.ipv4.ip");
+	    int udpPort = default(654);
+	    string interface = default("wlan0");
+	
+	    int zoneRadius= default(2);
+	    double NDP_helloInterval @unit(s) = default(1s);
+	    double IARP_helloInterval @unit(s) = default(1s);
+	
 	gates:
 	    input socketIn;
 	    output socketOut;

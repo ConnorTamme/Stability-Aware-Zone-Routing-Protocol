@@ -25,7 +25,7 @@ import inet.networklayer.common.L3Address;
 
 namespace inet::zrp;
 
-//The Neighbor Discovery Protocol is not included in the RFC so this may be used to query them
+//The Neighbor Discovery Protocol is not included in the RFC so this is used to obtain neighboring nodes
 class NDP_Hello extends FieldsChunk
 {
 	L3Address nodeAddress;
