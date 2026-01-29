@@ -16,25 +16,84 @@
 #ifndef ZRP_H_
 #define ZRP_H_
 
+#include <map>
+
+#include "inet/common/ModuleRefByPar.h"
+#include "inet/networklayer/contract/IInterfaceTable.h"
+#include "inet/networklayer/contract/IL3AddressType.h"
+#include "inet/networklayer/contract/INetfilter.h"
+#include "inet/networklayer/contract/IRoutingTable.h"
+#include "inet/routing/aodv/AodvControlPackets_m.h"
+#include "inet/routing/aodv/AodvRouteData.h"
+#include "inet/routing/base/RoutingProtocolBase.h"
+#include "inet/transportlayer/contract/udp/UdpSocket.h"
+#include "inet/transportlayer/udp/UdpHeader_m.h"
+
 #define IARP_METRIC_COUNT 1
 
-class Zrp: public inet::RoutingProtocolBase {
-protected:
-    //parameters
+namespace inet{
+namespace zrp{
+
+class INET_API Zrp : public RoutingProtocolBase,  public NetfilterBase::HookBase, public UdpSocket::ICallback, public cListener 
+{
+  protected:
+    // context
+    const IL3AddressType *addressType = nullptr;
+
+    // environment
+    cModule *host = nullptr;
+    ModuleRefByPar<IRoutingTable> routingTable;
+    ModuleRefByPar<IInterfaceTable> interfaceTable;
+    ModuleRefByPar<INetfilter> networkProtocol;
+    UdpSocket socket;
+
+    // parameters
     simtime_t linkStateLifetime = 3;
     simtime_t helloInterval = 3;
     unsigned int zoneRadius = 2;
 
-protected:
-    void handleMessageWhenUp(cMessage * msg) override;
+    // self messages
+    cMessage *NDP_helloTimer = nullptr;
+    cMessage *IARP_helloTimer = nullptr;
+
+  protected:
+    void handleMessageWhenUp(cMessage *msg) override;
     void initialize(int stage) override;
     virtual int numInitStages() const override { return NUM_INIT_STAGES; }
 
-    //IARP Functions
-    void IARP_Deliver(cMessage)
-public:
+    /* Lifecycle */
+    virtual void handleStartOperation(LifecycleOperation *operation) override;
+    virtual void handleStopOperation(LifecycleOperation *operation) override;
+    virtual void handleCrashOperation(LifecycleOperation *operation) override;
+
+    /* Netfilter hooks */
+    virtual Result datagramPreRoutingHook(Packet *datagram) override;
+    virtual Result datagramForwardHook(Packet *datagram) override;
+    virtual Result datagramPostRoutingHook(Packet *datagram) override;
+    virtual Result datagramLocalInHook(Packet *datagram) override;
+    virtual Result datagramLocalOutHook(Packet *datagram) override;
+
+    /* UDP callback interface */
+    virtual void socketDataArrived(UdpSocket *socket, Packet *packet) override;
+    virtual void socketErrorArrived(UdpSocket *socket, Indication *indication) override;
+    virtual void socketClosed(UdpSocket *socket) override;
+
+    /* cListener */
+    virtual void receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj, cObject *details) override;
+
+    /* Helper functions */
+    L3Address getSelfIPAddress() const;
+    void clearState();
+
+    // IARP Functions
+    void IARP_Deliver(cMessage *msg);
+
+  public:
     Zrp();
     virtual ~Zrp();
 };
+
+} // namespace zrp
+} // namespace inet
 
 #endif /* ZRP_H_ */
