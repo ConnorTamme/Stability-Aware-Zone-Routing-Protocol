@@ -88,7 +88,7 @@ struct IARP_MetricData{
 struct IARP_LinkDestData
 {
 	@packetData;
-	L3Address addr;
+	L3Address addr; //Optional subnet mask not included
 	IARP_MetricData metrics[IARP_METRIC_COUNT];
 };
 
