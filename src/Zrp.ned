@@ -30,7 +30,8 @@ simple Zrp like IApp
 	
 	    int zoneRadius= default(2);
 	    double NDP_helloInterval @unit(s) = default(1s);
-	    double IARP_helloInterval @unit(s) = default(1s);
+	    double IARP_updateInterval @unit(s) = default(1s);
+	    double linkStateLifetime @unit(s) = default(3s);  // How long before link state entries expire
 	
 	gates:
 	    input socketIn;
