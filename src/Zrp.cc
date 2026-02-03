@@ -15,6 +15,9 @@
 
 #include "Zrp.h"
 
+#include <sstream>  // for std::ostringstream in debug output
+#include <iomanip>  // for std::setw, std::setprecision in debug output
+
 #include "inet/common/IProtocolRegistrationListener.h"
 #include "inet/common/ModuleAccess.h"
 #include "inet/common/ProtocolTag_m.h"
@@ -68,13 +71,22 @@ void Zrp::initialize(int stage)
         //Parameters and Setup
         NDP_helloTimer = new cMessage("NDP_helloTimer");
         IARP_updateTimer = new cMessage("IARP_updateTimer");
+        debugTimer = new cMessage("debugTimer");
 
         zrpUDPPort = par("udpPort");
         NDP_helloInterval = par("NDP_helloInterval");
         IARP_updateInterval = par("IARP_updateInterval");
         zoneRadius = par("zoneRadius");
         linkStateLifetime = par("linkStateLifetime");
+        debugInterval = par("debugInterval");
 
+        // WATCH variables for GUI inspection
+        // In Qtenv, double-click on a node's app[0] to see these values
+        WATCH(zoneRadius);
+        WATCH(NDP_seqNum);
+        WATCH(IARP_seqNum);
+        WATCH_MAP(neighborTable);      // Shows all neighbors and last-heard times
+        WATCH_MAP(linkStateTable);     // Shows all link state entries
     }
 }
 
@@ -83,11 +95,17 @@ void Zrp::handleMessageWhenUp(cMessage *msg)
 {
     if (msg->isSelfMessage()) {
         if (msg == NDP_helloTimer) {
+            NDP_refreshNeighborTable();
             sendNDPHello();
         }
         else if (msg == IARP_updateTimer) {
             IARP_refreshLinkStateTable();
             sendIARPUpdate();
+        }
+        else if (msg == debugTimer) {
+            printDebugTables();
+            if (debugInterval > 0)
+                scheduleAfter(debugInterval, debugTimer);
         }
         else {
             throw cRuntimeError("Unknown self message: %s", msg->getName());
@@ -106,8 +124,17 @@ void Zrp::handleStartOperation(LifecycleOperation *operation)
     socket.bind(L3Address(), zrpUDPPort);
     socket.setBroadcast(true);
 
-    scheduleAfter(NDP_helloInterval, NDP_helloTimer);
-    scheduleAfter(IARP_updateInterval, IARP_updateTimer);
+    // Send first NDP hello immediately (with small random jitter to avoid synchronization)
+    // This allows neighbors to be discovered before the first IARP update
+    scheduleAfter(uniform(0, 0.1), NDP_helloTimer);
+    
+    // Delay IARP update until after neighbors have a chance to be discovered
+    // Use 2x hello interval to ensure at least one hello round-trip completes
+    scheduleAfter(NDP_helloInterval * 2 + uniform(0, 0.5), IARP_updateTimer);
+    
+    // Schedule debug output if enabled
+    if (debugInterval > 0)
+        scheduleAfter(debugInterval, debugTimer);
 }
 
 void Zrp::handleStopOperation(LifecycleOperation *operation)
@@ -129,6 +156,8 @@ void Zrp::clearState()
     NDP_helloTimer = nullptr;
     cancelAndDelete(IARP_updateTimer);
     IARP_updateTimer = nullptr;
+    cancelAndDelete(debugTimer);
+    debugTimer = nullptr;
     
     // Clear state tables
     neighborTable.clear();
@@ -137,6 +166,83 @@ void Zrp::clearState()
     // Reset sequence numbers
     NDP_seqNum = 0;
     IARP_seqNum = 0;
+
+    //Clear routing tables
+    IARP_purgeRoutingTable();
+}
+
+void Zrp::printDebugTables()
+{
+    std::ostringstream os;
+    
+    os << "\n";
+    os << "========================================================================\n";
+    os << "  ZRP DEBUG OUTPUT - Node: " << getSelfIPAddress() << " @ t=" << simTime() << "\n";
+    os << "========================================================================\n";
+    
+    // --- Neighbor Table ---
+    os << "\n  NEIGHBOR TABLE (" << neighborTable.size() << " entries):\n";
+    os << "  +-----------------+------------------+--------------+\n";
+    os << "  | Neighbor        | Last Heard       | Age (sec)    |\n";
+    os << "  +-----------------+------------------+--------------+\n";
+    if (neighborTable.empty()) {
+        os << "  |            (empty)                               |\n";
+    } else {
+        for (const auto& entry : neighborTable) {
+            double age = (simTime() - entry.second).dbl();
+            os << "  | " << std::setw(15) << std::left << entry.first.str()
+               << " | " << std::setw(16) << entry.second
+               << " | " << std::setw(12) << std::fixed << std::setprecision(2) << age << " |\n";
+        }
+    }
+    os << "  +-----------------+------------------+--------------+\n";
+    
+    // --- Link State Table ---
+    os << "\n  LINK STATE TABLE (" << linkStateTable.size() << " entries):\n";
+    if (linkStateTable.empty()) {
+        os << "    (empty)\n";
+    } else {
+        for (const auto& entry : linkStateTable) {
+            const LinkStateEntry& ls = entry.second;
+            double age = (simTime() - ls.insertTime).dbl();
+            os << "  +-- Source: " << ls.sourceAddr.str()
+               << " (seq=" << ls.seqNum << ", zone=" << ls.zoneRadius
+               << ", age=" << std::fixed << std::setprecision(1) << age << "s)\n";
+            os << "  |   Neighbors (" << ls.linkDestinations.size() << "):\n";
+            for (const auto& dest : ls.linkDestinations) {
+                os << "  |     -> " << dest.destAddr.str();
+                if (IARP_METRIC_COUNT > 0) {
+                    os << " [metric=" << dest.metrics[0] << "]";
+                }
+                os << "\n";
+            }
+        }
+    }
+    
+    // --- Routing Table (IARP routes only) ---
+    os << "\n  ROUTING TABLE (IARP routes):\n";
+    os << "  +-----------------+-----------------+----------+\n";
+    os << "  | Destination     | Next Hop        | Hops     |\n";
+    os << "  +-----------------+-----------------+----------+\n";
+    int routeCount = 0;
+    for (int i = 0; i < routingTable->getNumRoutes(); i++) {
+        IRoute *route = routingTable->getRoute(i);
+        if (route->getSource() == this) {
+            routeCount++;
+            os << "  | " << std::setw(15) << std::left << route->getDestinationAsGeneric().str()
+               << " | " << std::setw(15) << route->getNextHopAsGeneric().str()
+               << " | " << std::setw(8) << route->getMetric() << " |\n";
+        }
+    }
+    if (routeCount == 0) {
+        os << "  |        (no IARP routes installed)          |\n";
+    }
+    os << "  +-----------------+-----------------+----------+\n";
+    os << "  Total IARP routes: " << routeCount << "\n";
+    
+    os << "========================================================================\n\n";
+    
+    EV_INFO << os.str();
 }
 
 //Netfilter hooks
@@ -195,7 +301,34 @@ void Zrp::receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj, 
     // TODO: Handle link breakage signals
 }
 
+// Visual display update - shows neighbor/zone info on node icon
+void Zrp::refreshDisplay() const
+{
+    RoutingProtocolBase::refreshDisplay();
+
+    // Count IARP routes (nodes in zone)
+    int numRoutes = getNumIarpRoutes();
+    int numNeighbors = neighborTable.size();
+    int numLinkStates = linkStateTable.size();
+
+    // Update display string to show: Neighbors / Zone nodes
+    char buf[80];
+    sprintf(buf, "N:%d Z:%d R:%d", numNeighbors, numLinkStates, numRoutes);
+    getDisplayString().setTagArg("t", 0, buf);  // "t" = text below icon
+}
+
 //Helper functions
+int Zrp::getNumIarpRoutes() const
+{
+    int count = 0;
+    for (int i = 0; i < routingTable->getNumRoutes(); i++) {
+        if (routingTable->getRoute(i)->getSource() == this) {
+            count++;
+        }
+    }
+    return count;
+}
+
 L3Address Zrp::getSelfIPAddress() const
 {
     return routingTable->getRouterIdAsGeneric();
@@ -281,6 +414,29 @@ void Zrp::handleNDPHello(const Ptr<inet::zrp::NDP_Hello>& hello, const L3Address
     EV_DETAIL << "Neighbor table now has " << neighborTable.size() << " entries" << endl;
 }
 
+void Zrp::NDP_refreshNeighborTable()
+{
+    EV_INFO << "Refreshing neighbor table..." << endl;
+    
+    simtime_t now = simTime();
+    std::vector<L3Address> toRemove;
+    
+    // Identify neighbors that have not sent hello within lifetime
+    for (const auto& entry : neighborTable) {
+        if (now - entry.second > linkStateLifetime) {
+            toRemove.push_back(entry.first);
+        }
+    }
+    
+    // Remove stale neighbors
+    for (const auto& addr : toRemove) {
+        neighborTable.erase(addr);
+        EV_DETAIL << "Removed stale neighbor: " << addr << endl;
+    }
+    
+    EV_INFO << "Neighbor table refresh complete, " << neighborTable.size() << " neighbors remain" << endl;
+}
+
 // IARP Functions
 const Ptr<inet::zrp::IARP_LinkStateUpdate> Zrp::createIARPUpdate()
 {
@@ -290,7 +446,7 @@ const Ptr<inet::zrp::IARP_LinkStateUpdate> Zrp::createIARPUpdate()
     update->setSourceAddr(getSelfIPAddress());
     update->setSeqNum(IARP_seqNum++); // TODO: Potentially an issue when seq nums wrap around
     update->setRadius(zoneRadius);
-    update->setTTL(zoneRadius - 1);  // Making TTL equal zoneRadius - 1 really thre me off so I
+    update->setTTL(zoneRadius - 1);  // Making TTL equal zoneRadius - 1 really threw me off so I
         // will explain it in detail. Essentially these packets are meant to tell other nodes
         // in the zone about who this node is connected to. In a network with topology D->A->B->C,
         // with radius 2. A should about both B and C, and it learns it exclusively from B. You
@@ -369,7 +525,7 @@ void Zrp::handleIARPUpdate(const Ptr<inet::zrp::IARP_LinkStateUpdate>& update, c
     // Check if we already have a newer or equal sequence number from this source
     auto it = linkStateTable.find(originatorAddr);
     if (it != linkStateTable.end()) {
-        if (seqNum <= it->second.seqNum) {
+        if (!seqNumIsNewer(seqNum, it->second.seqNum)) {
             EV_DETAIL << "Ignoring stale IARP update (have seq " << it->second.seqNum 
                       << ", received " << seqNum << ")" << endl;
             return;
@@ -399,8 +555,8 @@ void Zrp::handleIARPUpdate(const Ptr<inet::zrp::IARP_LinkStateUpdate>& update, c
     
     EV_DETAIL << "Updated link state table, now has " << linkStateTable.size() << " entries" << endl;
     
-    // TODO: Recompute routing table
-    // IARP_updateRoutingTable();
+    // Recompute routing table with new link state information
+    IARP_updateRoutingTable();
     
     // TODO: Notify IERP of topology change
     
@@ -438,18 +594,157 @@ void Zrp::IARP_refreshLinkStateTable()
         }
     }
     
-    // TODO: Update routing table after removing stale entries
-    // IARP_updateRoutingTable();
+    // Update routing table after removing stale entries
+    IARP_updateRoutingTable();
     
     // TODO: Report topology changes to IERP
 }
 
+IRoute *Zrp::IARP_createRoute(const L3Address& dest, const L3Address& nextHop, unsigned int hops)
+{
+    // Create route
+    IRoute *newRoute = routingTable->createRoute();
+
+    //Add fields
+    newRoute->setDestination(dest);
+    newRoute->setPrefixLength(32);  // Host route
+    newRoute->setNextHop(nextHop);
+    newRoute->setMetric(hops);
+    newRoute->setSourceType(IRoute::MANET);  // Using MANET as ZRP has no source type in OMNeT++
+    newRoute->setSource(this); 
+
+    NetworkInterface *ifEntry = interfaceTable->findInterfaceByName(par("interface"));
+    if (ifEntry){
+        newRoute->setInterface(ifEntry);
+    }
+
+    EV_DETAIL << "Adding IARP route to " << dest << " via " << nextHop << " (hops: " << hops << ")" << endl;
+    routingTable->addRoute(newRoute);
+
+    return newRoute;
+}
+
+void Zrp::IARP_purgeRoutingTable()
+{
+    // Remove all routes that we (ZRP/IARP) created
+    // Iterate backwards to safely delete while iterating
+    for (int i = routingTable->getNumRoutes() - 1; i >= 0; i--) {
+        IRoute *route = routingTable->getRoute(i);
+        if (route->getSource() == this) {
+            EV_DETAIL << "Purging IARP route to " << route->getDestinationAsGeneric() << endl;
+            routingTable->deleteRoute(route);
+        }
+    }
+}
+
+void Zrp::IARP_computeRoutes()
+{
+    // Dijkstra's algorithm to compute shortest paths to all nodes within zone
+    // Routes are created when a node is visited
+    
+    L3Address self = getSelfIPAddress();
+    
+    // Distance from self to each node
+    std::map<L3Address, unsigned int> dist;
+    
+    // Next hop to reach each node (the first hop neighbor)
+    std::map<L3Address, L3Address> nextHop;
+    
+    // Set of nodes whose shortest path has been finalized
+    std::set<L3Address> visited;
+    
+    // Priority queue: (distance, node) - min-heap by distance
+    // std::greater makes it a min-heap (smallest distance first)
+    typedef std::pair<unsigned int, L3Address> PQEntry;
+    std::priority_queue<PQEntry, std::vector<PQEntry>, std::greater<PQEntry>> pq;
+    
+    // Initialize: distance to self is 0
+    dist[self] = 0;
+    pq.push({0, self});
+        
+    while (!pq.empty()) {
+        // Get node with minimum distance
+        auto [d, u] = pq.top();
+        pq.pop();
+        
+        // Skip if already visited (we may have duplicate entries in PQ)
+        if (visited.count(u)) {
+            continue;
+        }
+        visited.insert(u);
+        
+        EV_DETAIL << "Dijkstra: processing node " << u << " at distance " << d << endl;
+        
+        // Create route for this node (except for self)
+        if (u != self) {
+            IARP_createRoute(u, nextHop[u], d);
+        }
+        
+        // Get neighbors of u
+        // For self: use neighborTable (our direct neighbors)
+        // For other nodes: use linkStateTable (their advertised neighbors)
+        std::vector<std::pair<L3Address, unsigned int>> neighbors;
+        
+        if (u == self) {
+            // Our own neighbors from NDP
+            for (const auto& entry : neighborTable) {
+                neighbors.push_back({entry.first, 1});  // hop count = 1 for direct neighbors
+            }
+        }
+        else {
+            // Neighbors of node u from its link state advertisement
+            auto it = linkStateTable.find(u);
+            if (it != linkStateTable.end()) {
+                for (const auto& linkDest : it->second.linkDestinations) {
+                    // Use first metric (hop count)
+                    neighbors.push_back({linkDest.destAddr, linkDest.metrics[0]});
+                }
+            }
+        }
+        
+        // Relax edges to neighbors
+        for (const auto& [v, weight] : neighbors) {
+            // Skip already visited nodes
+            if (visited.count(v)) {
+                continue;
+            }
+            
+            unsigned int newDist = d + weight;
+            
+            // Only consider nodes within zone radius
+            if (newDist > zoneRadius) {
+                continue;
+            }
+            
+            // Check if this is a shorter path
+            if (dist.find(v) == dist.end() || newDist < dist[v]) {
+                dist[v] = newDist;
+                
+                // Set next hop:
+                // - If u is self, next hop is v itself (direct neighbor)
+                // - Otherwise, inherit next hop from u
+                if (u == self) {
+                    nextHop[v] = v;
+                }
+                else {
+                    nextHop[v] = nextHop[u];
+                }
+                
+                pq.push({newDist, v});
+            }
+        }
+    }    
+}
+
 void Zrp::IARP_updateRoutingTable()
 {
-    // TODO: Implement Dijkstra's algorithm or similar to compute
-    // shortest paths to all nodes within the zone based on link state table
-    EV_DETAIL << "IARP_updateRoutingTable() not yet implemented" << endl;
+    EV_INFO << "Updating IARP routing table..." << endl;
+    
+    IARP_purgeRoutingTable();
+    
+    IARP_computeRoutes();
 }
+
 
 } // namespace zrp
 
