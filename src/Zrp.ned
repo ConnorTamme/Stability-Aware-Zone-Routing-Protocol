@@ -32,6 +32,7 @@ simple Zrp like IApp
 	    double NDP_helloInterval @unit(s) = default(1s);
 	    double IARP_updateInterval @unit(s) = default(1s);
 	    double linkStateLifetime @unit(s) = default(3s);  // How long before link state entries expire
+	    double debugInterval @unit(s) = default(0s);      // Debug output interval (0 = disabled)
 	
 	gates:
 	    input socketIn;

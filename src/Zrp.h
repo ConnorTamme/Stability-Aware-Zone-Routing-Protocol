@@ -18,6 +18,8 @@
 
 #include <map>
 #include <vector>
+#include <queue>
+#include <set>
 
 // Must be defined before including ZrpControlPackets_m.h
 #define IARP_METRIC_COUNT 1
@@ -40,6 +42,21 @@ using namespace inet;
 
 namespace zrp {
 
+// Sequence number utilities (RFC 1982 serial number arithmetic for 16-bit)
+// Handles wrap-around correctly: 0 is considered "newer" than 65535
+
+// Returns true if seq1 is strictly newer than seq2 (handles wrap-around)
+inline bool seqNumIsNewer(uint16_t seq1, uint16_t seq2) {
+    // Using signed comparison of the difference handles wrap-around
+    // e.g., if seq1=0, seq2=65535, diff=1 (positive) -> seq1 is newer
+    return (int16_t)(seq1 - seq2) > 0;
+}
+
+// Returns true if seq1 is newer than or equal to seq2
+inline bool seqNumIsNewerOrEqual(uint16_t seq1, uint16_t seq2) {
+    return seq1 == seq2 || seqNumIsNewer(seq1, seq2);
+}
+
 // Link destination info for the link state table
 struct LinkDestInfo {
     L3Address destAddr;
@@ -54,6 +71,16 @@ struct LinkStateEntry {
     simtime_t insertTime;           // When this entry was inserted/updated
     std::vector<LinkDestInfo> linkDestinations;  // List of neighbors and their metrics
 };
+
+// Output operator for LinkStateEntry - required for WATCH_MAP to display entries
+inline std::ostream& operator<<(std::ostream& os, const LinkStateEntry& entry) {
+    os << "src=" << entry.sourceAddr 
+       << " seq=" << entry.seqNum 
+       << " zone=" << entry.zoneRadius
+       << " neighbors=" << entry.linkDestinations.size()
+       << " age=" << (simTime() - entry.insertTime).dbl() << "s";
+    return os;
+}
 
 class INET_API Zrp : public RoutingProtocolBase,  public NetfilterBase::HookBase, public UdpSocket::ICallback, public cListener 
 {
@@ -73,6 +100,7 @@ class INET_API Zrp : public RoutingProtocolBase,  public NetfilterBase::HookBase
     unsigned int zoneRadius = 2;
     unsigned int zrpUDPPort = 0;
     simtime_t NDP_helloInterval = 3;
+    simtime_t debugInterval = 0;  // 0 = disabled
 
     // state
     unsigned int NDP_seqNum = 0;  // sequence number for NDP hello messages
@@ -83,11 +111,13 @@ class INET_API Zrp : public RoutingProtocolBase,  public NetfilterBase::HookBase
     // self messages
     cMessage *NDP_helloTimer = nullptr;
     cMessage *IARP_updateTimer = nullptr;
+    cMessage *debugTimer = nullptr;
 
   protected:
     void handleMessageWhenUp(cMessage *msg) override;
     void initialize(int stage) override;
     virtual int numInitStages() const override { return NUM_INIT_STAGES; }
+    virtual void refreshDisplay() const override;  // Update visual display
 
     //Lifecycle
     virtual void handleStartOperation(LifecycleOperation *operation) override;
@@ -111,7 +141,9 @@ class INET_API Zrp : public RoutingProtocolBase,  public NetfilterBase::HookBase
 
     //Helper functions
     L3Address getSelfIPAddress() const;
+    int getNumIarpRoutes() const;  // Count routes we've installed
     void clearState();
+    void printDebugTables();  // Pretty-print all tables to EV_INFO
     void processPacket(Packet *packet);
     void sendZrpPacket(const Ptr<FieldsChunk>& payload, const L3Address& destAddr, unsigned int ttl);
 
@@ -119,13 +151,18 @@ class INET_API Zrp : public RoutingProtocolBase,  public NetfilterBase::HookBase
     const Ptr<inet::zrp::NDP_Hello> createNDPHello();
     void sendNDPHello();
     void handleNDPHello(const Ptr<inet::zrp::NDP_Hello>& hello, const L3Address& sourceAddr);
+    void NDP_refreshNeighborTable();
 
     //IARP Functions
     const Ptr<inet::zrp::IARP_LinkStateUpdate> createIARPUpdate();
     void sendIARPUpdate();
     void handleIARPUpdate(const Ptr<inet::zrp::IARP_LinkStateUpdate>& update, const L3Address& sourceAddr);
     void IARP_refreshLinkStateTable();
-    void IARP_updateRoutingTable();  // TODO: Implement route computation
+    void IARP_updateRoutingTable();
+    void IARP_purgeRoutingTable();
+    void IARP_computeRoutes();
+    IRoute *IARP_createRoute(const L3Address& dest, const L3Address& nextHop, unsigned int hops);
+
 
   public:
     Zrp();

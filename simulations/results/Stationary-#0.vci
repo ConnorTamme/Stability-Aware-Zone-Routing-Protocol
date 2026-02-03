@@ -1,0 +1,3455 @@
+file 459329 1770158922                                          
+version 3
+run Stationary-0-20260203-16:46:18-124571
+attr configname Stationary
+attr datetime 20260203-16:46:18
+attr datetimef 20260203-164618
+attr experiment Stationary
+attr inifile omnetpp.ini
+attr iterationvars ""
+attr iterationvarsd ""
+attr iterationvarsf ""
+attr measurement ""
+attr network ZrpTestNetwork
+attr processid 124571
+attr repetition 0
+attr replication #0
+attr resultdir results
+attr runnumber 0
+attr seedset 0
+config image-path ../../inet-4.5.4/images
+config description "Static nodes - basic ZRP functionality test"
+config network ZrpTestNetwork
+config sim-time-limit 100s
+config *.configurator.addStaticRoutes false
+config **.netmaskRoutes "\"\""
+config **.arp.typename GlobalArp
+config **.wlan[*].bitrate 24Mbps
+config **.transmitter.power 1mW
+config **.displayCommunicationRanges true
+config **.constraintAreaMaxX 400m
+config **.constraintAreaMaxY 400m
+config **.constraintAreaMinX 0m
+config **.constraintAreaMinY 0m
+config *.*.numApps 1
+config *.*.app[0].typename sa_zrp.Zrp
+config *.*.app[0].zoneRadius 2
+config *.*.app[0].NDP_helloInterval 1s
+config *.*.app[0].IARP_updateInterval 2s
+config *.*.app[0].linkStateLifetime 5s
+config *.*.app[0].interface "\"wlan0\""
+config *.*.app[0].debugInterval 5s
+config *.source.numApps 2
+config *.source.app[1].typename PingApp
+config *.source.app[1].destAddr "\"destination\""
+config *.source.app[1].startTime 10s
+config *.source.app[1].sendInterval 1s
+config *.source.app[1].printPing true
+config *.visualizer.*.numDataLinkVisualizers 3
+config *.visualizer.*.dataLinkVisualizer[*].activityLevel "\"peer\""
+config *.visualizer.*.dataLinkVisualizer[*].displayLinks true
+config *.visualizer.*.dataLinkVisualizer[0].packetFilter "\"NDP_Hello\""
+config *.visualizer.*.dataLinkVisualizer[0].*Color "\"green\""
+config *.visualizer.*.dataLinkVisualizer[1].packetFilter "\"IARP_LinkStateUpdate\""
+config *.visualizer.*.dataLinkVisualizer[1].*Color "\"orange\""
+config *.visualizer.*.dataLinkVisualizer[2].packetFilter "\"ping*\""
+config *.visualizer.*.dataLinkVisualizer[2].*Color "\"blue\""
+config *.visualizer.*.networkRouteVisualizer[0].displayRoutes true
+config *.visualizer.*.networkRouteVisualizer[0].packetFilter "\"*ping*\""
+config *.visualizer.*.routingTableVisualizer[0].displayRoutingTables true
+config *.visualizer.*.routingTableVisualizer[0].displayLabels false
+config *.visualizer.*.routingTableVisualizer[0].displayRoutesIndividually false
+config *.visualizer.*.routingTableVisualizer[0].lineShift 0
+config *.visualizer.*.interfaceTableVisualizer[0].displayInterfaceTables true
+config *.visualizer.*.interfaceTableVisualizer[0].format "\"%a/%l\""
+config *.visualizer.*.mediumVisualizer[0].displaySignals true
+config *.visualizer.*.mediumVisualizer[0].signalPropagationAnimationSpeed 500
+config *.visualizer.*.infoVisualizer[0].displayInfos true
+config *.visualizer.*.infoVisualizer[0].modules "\"*.*.app[0]\""
+config *.visualizer.*.infoVisualizer[0].format "\"N:%p, Z:%t\""
+
+vector 0 ZrpTestNetwork.source.lo[0].lo rcvdPkFromHl:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceivedFromUpper
+attr title "packets received from higher layer, packetBytes"
+vector 1 ZrpTestNetwork.source.lo[0].lo passedUpPk:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSentToUpper
+attr title "packets passed to higher layer, packetBytes"
+vector 2 ZrpTestNetwork.source.lo[0] packetDropInterfaceDown:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsInterfaceDown(packetDropped)
+attr title "packet drops: interface down, packetBytes"
+vector 3 ZrpTestNetwork.source.lo[0] packetDropNoCarrier:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoCarrier(packetDropped)
+attr title "packet drops: no carrier, packetBytes"
+vector 4 ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.pendingQueue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 5 ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.pendingQueue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 6 ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.pendingQueue queueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(packetPulled)
+attr title "queueing times"
+attr unit s
+vector 7 ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPushStarted)
+attr title "incoming packet lengths"
+attr unit b
+vector 8 ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.pendingQueue incomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPushStarted)
+attr title "incoming datarate"
+attr unit bps
+vector 9 ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPulled)
+attr title "outgoing packet lengths"
+attr unit b
+vector 10 ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPulled)
+attr title "outgoing datarate"
+attr unit bps
+vector 11 ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.pendingQueue droppedPacketLengthsQueueOverflow:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetDropReasonIsQueueOverflow(packetDropped))
+attr title "dropped packet lengths: queue overflow"
+attr unit b
+vector 12 ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.pendingQueue flowQueueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(demuxFlow(packetPulled))
+attr title "flow queueing times"
+attr unit s
+vector 13 ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.pendingQueue flowIncomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(flowPacketLength(demuxFlow(packetPushStarted)))
+attr title "flow specific incoming data rate"
+attr unit bps
+vector 14 ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.pendingQueue flowOutgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(flowPacketLength(demuxFlow(packetPulled)))
+attr title "flow specific outgoing data rate"
+attr unit bps
+vector 15 ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.inProgressFrames queueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(packetDequeued)
+attr title "queueing times"
+vector 16 ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.inProgressFrames queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(count(packetEnqueued) - count(packetDequeued))"
+attr title "queue length"
+vector 17 ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.contention backoffPeriodGenerated:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr title "backoff periods"
+vector 18 ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.contention backoffActive:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source warmup(count(backoffStarted)-count(backoffStopped))
+attr title "backoff active"
+vector 19 ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.contention stateChanged:vector ETV
+attr enum IDLE,DEFER,IFS_AND_BACKOFF
+attr interpolationmode none
+attr recordingmode vector
+attr title "contention state changed"
+attr type enum
+vector 20 ZrpTestNetwork.source.wlan[0].mac.dcf.recipientMacDataService packetDropDuplicateDetected:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsDuplicateDetected(packetDropped)
+attr title "packet drops: duplicate detected, packetBytes"
+vector 21 ZrpTestNetwork.source.wlan[0].mac.dcf.recoveryProcedure contentionWindowChanged:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr title "contention window"
+vector 22 ZrpTestNetwork.source.wlan[0].mac.dcf packetSentToPeer:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets sent, packetBytes"
+vector 23 ZrpTestNetwork.source.wlan[0].mac.dcf packetSentToPeerUnicast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Unicast(packetSentToPeer)
+attr title "packets sent: unicast, packetBytes"
+vector 24 ZrpTestNetwork.source.wlan[0].mac.dcf packetSentToPeerMulticast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Multicast(packetSentToPeer)
+attr title "packets sent: multicast, packetBytes"
+vector 25 ZrpTestNetwork.source.wlan[0].mac.dcf packetSentToPeerBroadcast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Broadcast(packetSentToPeer)
+attr title "packets sent: broadcast , packetBytes"
+vector 26 ZrpTestNetwork.source.wlan[0].mac.dcf packetSentToPeerWithRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Retry(packetSentToPeer)
+attr title "packets sent: with retry, packetBytes"
+vector 27 ZrpTestNetwork.source.wlan[0].mac.dcf packetSentToPeerWithoutRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211NotRetry(packetSentToPeer)
+attr title "packets sent: without retry, packetBytes"
+vector 28 ZrpTestNetwork.source.wlan[0].mac.dcf packetReceivedFromPeer:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets received, packetBytes"
+vector 29 ZrpTestNetwork.source.wlan[0].mac.dcf packetReceivedFromPeerUnicast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Unicast(packetReceivedFromPeer)
+attr title "packets received: unicast, packetBytes"
+vector 30 ZrpTestNetwork.source.wlan[0].mac.dcf packetReceivedFromPeerMulticast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Multicast(packetReceivedFromPeer)
+attr title "packets received: multicast, packetBytes"
+vector 31 ZrpTestNetwork.source.wlan[0].mac.dcf packetReceivedFromPeerBroadcast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Broadcast(packetReceivedFromPeer)
+attr title "packets received: broadcast, packetBytes"
+vector 32 ZrpTestNetwork.source.wlan[0].mac.dcf packetReceivedFromPeerWithRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Retry(packetReceivedFromPeer)
+attr title "packets received: with retry, packetBytes"
+vector 33 ZrpTestNetwork.source.wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211NotRetry(packetReceivedFromPeer)
+attr title "packets received: without retry, packetBytes"
+vector 34 ZrpTestNetwork.source.wlan[0].mac.dcf packetDrop:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropped
+attr title "packet drops, packetBytes"
+vector 35 ZrpTestNetwork.source.wlan[0].mac.dcf packetDropNotAddressedToUs:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNotAddressedToUs(packetDropped)
+attr title "packet drops: not addressed to us, packetBytes"
+vector 36 ZrpTestNetwork.source.wlan[0].mac.dcf packetDropQueueOverflow:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsQueueOverflow(packetDropped)
+attr title "packet drops: queue overflow, packetBytes"
+vector 37 ZrpTestNetwork.source.wlan[0].mac.dcf packetDropRetryLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsRetryLimitReached(packetDropped)
+attr title "packet drops: retry limit reached, packetBytes"
+vector 38 ZrpTestNetwork.source.wlan[0].mac.dcf frameSequenceActive:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source warmup(count(frameSequenceStarted)-count(frameSequenceFinished))
+attr title "frame sequence active"
+vector 39 ZrpTestNetwork.source.wlan[0].mac.dcf datarateSelected:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr title "datarates selected"
+vector 40 ZrpTestNetwork.source.wlan[0].mac.rx nav:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source navChanged
+attr title "network allocation vector"
+vector 41 ZrpTestNetwork.source.wlan[0].mac packetSentToUpper:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets sent to upper layer, packetBytes"
+vector 42 ZrpTestNetwork.source.wlan[0].mac packetSentToLower:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets sent to lower layer, packetBytes"
+vector 43 ZrpTestNetwork.source.wlan[0].mac packetReceivedFromUpper:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets received from upper layer, packetBytes"
+vector 44 ZrpTestNetwork.source.wlan[0].mac packetReceivedFromLower:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets received from lower layer, packetBytes"
+vector 45 ZrpTestNetwork.source.wlan[0].mac packetDrop:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropped
+attr title "packet drops, packetBytes"
+vector 46 ZrpTestNetwork.source.wlan[0].mac packetDropIncorrectlyReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packet drops: incorrectly received, packetBytes"
+vector 47 ZrpTestNetwork.source.wlan[0].mac packetDropNotAddressedToUs:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNotAddressedToUs(packetDropped)
+attr title "packet drops: not addressed to us, packetBytes"
+vector 48 ZrpTestNetwork.source.wlan[0].mac packetDropQueueOverflow:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsQueueOverflow(packetDropped)
+attr title "packet drops: queue overflow, packetBytes"
+vector 49 ZrpTestNetwork.source.wlan[0].mac packetDropRetryLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsRetryLimitReached(packetDropped)
+attr title "packet drops: retry limit reached, packetBytes"
+vector 50 ZrpTestNetwork.source.wlan[0].mac packetDropDuplicateDetected:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsDuplicateDetected(packetDropped)
+attr title "packet drops: duplicate detected, packetBytes"
+vector 51 ZrpTestNetwork.source.wlan[0].mac packetDropOther:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsOther(packetDropped)
+attr title "packet drops: other, packetBytes"
+vector 52 ZrpTestNetwork.source.wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 53 ZrpTestNetwork.source.wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 54 ZrpTestNetwork.source.wlan[0].radio transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "Radio transmission state"
+vector 55 ZrpTestNetwork.source.wlan[0].radio radioChannel:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioChannelChanged
+attr title "Radio channel"
+vector 56 ZrpTestNetwork.source.wlan[0] packetDropInterfaceDown:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsInterfaceDown(packetDropped)
+attr title "packet drops: interface down, packetBytes"
+vector 57 ZrpTestNetwork.source.wlan[0] packetDropNoCarrier:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoCarrier(packetDropped)
+attr title "packet drops: no carrier, packetBytes"
+vector 58 ZrpTestNetwork.source.ipv4.ip packetDropAddressResolutionFailed:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsAddressResolutionFailed(packetDropped)
+attr title "packet drop: address resolution failed, packetBytes"
+vector 59 ZrpTestNetwork.source.ipv4.ip packetDropHopLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsHopLimitReached(packetDropped)
+attr title "packet drop: hop limit reached, packetBytes"
+vector 60 ZrpTestNetwork.source.ipv4.ip packetDropForwardingDisabled:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsForwardingDisabled(packetDropped)
+attr title "packet drop: forwarding disabled, packetBytes"
+vector 61 ZrpTestNetwork.source.ipv4.ip packetDropNoInterfaceFound:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoInterfaceFound(packetDropped)
+attr title "packet drop: no interface found, packetBytes"
+vector 62 ZrpTestNetwork.source.ipv4.ip packetDropNoRouteFound:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoRouteFound(packetDropped)
+attr title "packet drop: no route found, packetBytes"
+vector 63 ZrpTestNetwork.source.ipv4.ip packetDropUndefined:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsUndefined(packetDropped)
+attr title "packet drop: undefined, packetBytes"
+vector 64 ZrpTestNetwork.source.udp packetSent:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSent
+attr title "packets sent, packetBytes"
+vector 65 ZrpTestNetwork.source.udp packetReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceived
+attr title "packets received, packetBytes"
+vector 66 ZrpTestNetwork.source.udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 67 ZrpTestNetwork.source.udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 68 ZrpTestNetwork.source.udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 69 ZrpTestNetwork.destination.lo[0].lo rcvdPkFromHl:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceivedFromUpper
+attr title "packets received from higher layer, packetBytes"
+vector 70 ZrpTestNetwork.destination.lo[0].lo passedUpPk:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSentToUpper
+attr title "packets passed to higher layer, packetBytes"
+vector 71 ZrpTestNetwork.destination.lo[0] packetDropInterfaceDown:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsInterfaceDown(packetDropped)
+attr title "packet drops: interface down, packetBytes"
+vector 72 ZrpTestNetwork.destination.lo[0] packetDropNoCarrier:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoCarrier(packetDropped)
+attr title "packet drops: no carrier, packetBytes"
+vector 73 ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.pendingQueue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 74 ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.pendingQueue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 75 ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.pendingQueue queueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(packetPulled)
+attr title "queueing times"
+attr unit s
+vector 76 ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPushStarted)
+attr title "incoming packet lengths"
+attr unit b
+vector 77 ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.pendingQueue incomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPushStarted)
+attr title "incoming datarate"
+attr unit bps
+vector 78 ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPulled)
+attr title "outgoing packet lengths"
+attr unit b
+vector 79 ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPulled)
+attr title "outgoing datarate"
+attr unit bps
+vector 80 ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.pendingQueue droppedPacketLengthsQueueOverflow:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetDropReasonIsQueueOverflow(packetDropped))
+attr title "dropped packet lengths: queue overflow"
+attr unit b
+vector 81 ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.pendingQueue flowQueueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(demuxFlow(packetPulled))
+attr title "flow queueing times"
+attr unit s
+vector 82 ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.pendingQueue flowIncomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(flowPacketLength(demuxFlow(packetPushStarted)))
+attr title "flow specific incoming data rate"
+attr unit bps
+vector 83 ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.pendingQueue flowOutgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(flowPacketLength(demuxFlow(packetPulled)))
+attr title "flow specific outgoing data rate"
+attr unit bps
+vector 84 ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.inProgressFrames queueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(packetDequeued)
+attr title "queueing times"
+vector 85 ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.inProgressFrames queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(count(packetEnqueued) - count(packetDequeued))"
+attr title "queue length"
+vector 86 ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.contention backoffPeriodGenerated:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr title "backoff periods"
+vector 87 ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.contention backoffActive:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source warmup(count(backoffStarted)-count(backoffStopped))
+attr title "backoff active"
+vector 88 ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.contention stateChanged:vector ETV
+attr enum IDLE,DEFER,IFS_AND_BACKOFF
+attr interpolationmode none
+attr recordingmode vector
+attr title "contention state changed"
+attr type enum
+vector 89 ZrpTestNetwork.destination.wlan[0].mac.dcf.recipientMacDataService packetDropDuplicateDetected:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsDuplicateDetected(packetDropped)
+attr title "packet drops: duplicate detected, packetBytes"
+vector 90 ZrpTestNetwork.destination.wlan[0].mac.dcf.recoveryProcedure contentionWindowChanged:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr title "contention window"
+vector 91 ZrpTestNetwork.destination.wlan[0].mac.dcf packetSentToPeer:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets sent, packetBytes"
+vector 92 ZrpTestNetwork.destination.wlan[0].mac.dcf packetSentToPeerUnicast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Unicast(packetSentToPeer)
+attr title "packets sent: unicast, packetBytes"
+vector 93 ZrpTestNetwork.destination.wlan[0].mac.dcf packetSentToPeerMulticast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Multicast(packetSentToPeer)
+attr title "packets sent: multicast, packetBytes"
+vector 94 ZrpTestNetwork.destination.wlan[0].mac.dcf packetSentToPeerBroadcast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Broadcast(packetSentToPeer)
+attr title "packets sent: broadcast , packetBytes"
+vector 95 ZrpTestNetwork.destination.wlan[0].mac.dcf packetSentToPeerWithRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Retry(packetSentToPeer)
+attr title "packets sent: with retry, packetBytes"
+vector 96 ZrpTestNetwork.destination.wlan[0].mac.dcf packetSentToPeerWithoutRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211NotRetry(packetSentToPeer)
+attr title "packets sent: without retry, packetBytes"
+vector 97 ZrpTestNetwork.destination.wlan[0].mac.dcf packetReceivedFromPeer:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets received, packetBytes"
+vector 98 ZrpTestNetwork.destination.wlan[0].mac.dcf packetReceivedFromPeerUnicast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Unicast(packetReceivedFromPeer)
+attr title "packets received: unicast, packetBytes"
+vector 99 ZrpTestNetwork.destination.wlan[0].mac.dcf packetReceivedFromPeerMulticast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Multicast(packetReceivedFromPeer)
+attr title "packets received: multicast, packetBytes"
+vector 100 ZrpTestNetwork.destination.wlan[0].mac.dcf packetReceivedFromPeerBroadcast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Broadcast(packetReceivedFromPeer)
+attr title "packets received: broadcast, packetBytes"
+vector 101 ZrpTestNetwork.destination.wlan[0].mac.dcf packetReceivedFromPeerWithRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Retry(packetReceivedFromPeer)
+attr title "packets received: with retry, packetBytes"
+vector 102 ZrpTestNetwork.destination.wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211NotRetry(packetReceivedFromPeer)
+attr title "packets received: without retry, packetBytes"
+vector 103 ZrpTestNetwork.destination.wlan[0].mac.dcf packetDrop:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropped
+attr title "packet drops, packetBytes"
+vector 104 ZrpTestNetwork.destination.wlan[0].mac.dcf packetDropNotAddressedToUs:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNotAddressedToUs(packetDropped)
+attr title "packet drops: not addressed to us, packetBytes"
+vector 105 ZrpTestNetwork.destination.wlan[0].mac.dcf packetDropQueueOverflow:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsQueueOverflow(packetDropped)
+attr title "packet drops: queue overflow, packetBytes"
+vector 106 ZrpTestNetwork.destination.wlan[0].mac.dcf packetDropRetryLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsRetryLimitReached(packetDropped)
+attr title "packet drops: retry limit reached, packetBytes"
+vector 107 ZrpTestNetwork.destination.wlan[0].mac.dcf frameSequenceActive:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source warmup(count(frameSequenceStarted)-count(frameSequenceFinished))
+attr title "frame sequence active"
+vector 108 ZrpTestNetwork.destination.wlan[0].mac.dcf datarateSelected:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr title "datarates selected"
+vector 109 ZrpTestNetwork.destination.wlan[0].mac.rx nav:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source navChanged
+attr title "network allocation vector"
+vector 110 ZrpTestNetwork.destination.wlan[0].mac packetSentToUpper:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets sent to upper layer, packetBytes"
+vector 111 ZrpTestNetwork.destination.wlan[0].mac packetSentToLower:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets sent to lower layer, packetBytes"
+vector 112 ZrpTestNetwork.destination.wlan[0].mac packetReceivedFromUpper:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets received from upper layer, packetBytes"
+vector 113 ZrpTestNetwork.destination.wlan[0].mac packetReceivedFromLower:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets received from lower layer, packetBytes"
+vector 114 ZrpTestNetwork.destination.wlan[0].mac packetDrop:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropped
+attr title "packet drops, packetBytes"
+vector 115 ZrpTestNetwork.destination.wlan[0].mac packetDropIncorrectlyReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packet drops: incorrectly received, packetBytes"
+vector 116 ZrpTestNetwork.destination.wlan[0].mac packetDropNotAddressedToUs:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNotAddressedToUs(packetDropped)
+attr title "packet drops: not addressed to us, packetBytes"
+vector 117 ZrpTestNetwork.destination.wlan[0].mac packetDropQueueOverflow:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsQueueOverflow(packetDropped)
+attr title "packet drops: queue overflow, packetBytes"
+vector 118 ZrpTestNetwork.destination.wlan[0].mac packetDropRetryLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsRetryLimitReached(packetDropped)
+attr title "packet drops: retry limit reached, packetBytes"
+vector 119 ZrpTestNetwork.destination.wlan[0].mac packetDropDuplicateDetected:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsDuplicateDetected(packetDropped)
+attr title "packet drops: duplicate detected, packetBytes"
+vector 120 ZrpTestNetwork.destination.wlan[0].mac packetDropOther:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsOther(packetDropped)
+attr title "packet drops: other, packetBytes"
+vector 121 ZrpTestNetwork.destination.wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 122 ZrpTestNetwork.destination.wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 123 ZrpTestNetwork.destination.wlan[0].radio transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "Radio transmission state"
+vector 124 ZrpTestNetwork.destination.wlan[0].radio radioChannel:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioChannelChanged
+attr title "Radio channel"
+vector 125 ZrpTestNetwork.destination.wlan[0] packetDropInterfaceDown:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsInterfaceDown(packetDropped)
+attr title "packet drops: interface down, packetBytes"
+vector 126 ZrpTestNetwork.destination.wlan[0] packetDropNoCarrier:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoCarrier(packetDropped)
+attr title "packet drops: no carrier, packetBytes"
+vector 127 ZrpTestNetwork.destination.ipv4.ip packetDropAddressResolutionFailed:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsAddressResolutionFailed(packetDropped)
+attr title "packet drop: address resolution failed, packetBytes"
+vector 128 ZrpTestNetwork.destination.ipv4.ip packetDropHopLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsHopLimitReached(packetDropped)
+attr title "packet drop: hop limit reached, packetBytes"
+vector 129 ZrpTestNetwork.destination.ipv4.ip packetDropForwardingDisabled:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsForwardingDisabled(packetDropped)
+attr title "packet drop: forwarding disabled, packetBytes"
+vector 130 ZrpTestNetwork.destination.ipv4.ip packetDropNoInterfaceFound:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoInterfaceFound(packetDropped)
+attr title "packet drop: no interface found, packetBytes"
+vector 131 ZrpTestNetwork.destination.ipv4.ip packetDropNoRouteFound:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoRouteFound(packetDropped)
+attr title "packet drop: no route found, packetBytes"
+vector 132 ZrpTestNetwork.destination.ipv4.ip packetDropUndefined:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsUndefined(packetDropped)
+attr title "packet drop: undefined, packetBytes"
+vector 133 ZrpTestNetwork.destination.udp packetSent:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSent
+attr title "packets sent, packetBytes"
+vector 134 ZrpTestNetwork.destination.udp packetReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceived
+attr title "packets received, packetBytes"
+vector 135 ZrpTestNetwork.destination.udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 136 ZrpTestNetwork.destination.udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 137 ZrpTestNetwork.destination.udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 138 ZrpTestNetwork.node1.lo[0].lo rcvdPkFromHl:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceivedFromUpper
+attr title "packets received from higher layer, packetBytes"
+vector 139 ZrpTestNetwork.node1.lo[0].lo passedUpPk:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSentToUpper
+attr title "packets passed to higher layer, packetBytes"
+vector 140 ZrpTestNetwork.node1.lo[0] packetDropInterfaceDown:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsInterfaceDown(packetDropped)
+attr title "packet drops: interface down, packetBytes"
+vector 141 ZrpTestNetwork.node1.lo[0] packetDropNoCarrier:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoCarrier(packetDropped)
+attr title "packet drops: no carrier, packetBytes"
+vector 142 ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.pendingQueue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 143 ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.pendingQueue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 144 ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.pendingQueue queueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(packetPulled)
+attr title "queueing times"
+attr unit s
+vector 145 ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPushStarted)
+attr title "incoming packet lengths"
+attr unit b
+vector 146 ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.pendingQueue incomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPushStarted)
+attr title "incoming datarate"
+attr unit bps
+vector 147 ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPulled)
+attr title "outgoing packet lengths"
+attr unit b
+vector 148 ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPulled)
+attr title "outgoing datarate"
+attr unit bps
+vector 149 ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.pendingQueue droppedPacketLengthsQueueOverflow:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetDropReasonIsQueueOverflow(packetDropped))
+attr title "dropped packet lengths: queue overflow"
+attr unit b
+vector 150 ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.pendingQueue flowQueueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(demuxFlow(packetPulled))
+attr title "flow queueing times"
+attr unit s
+vector 151 ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.pendingQueue flowIncomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(flowPacketLength(demuxFlow(packetPushStarted)))
+attr title "flow specific incoming data rate"
+attr unit bps
+vector 152 ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.pendingQueue flowOutgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(flowPacketLength(demuxFlow(packetPulled)))
+attr title "flow specific outgoing data rate"
+attr unit bps
+vector 153 ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.inProgressFrames queueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(packetDequeued)
+attr title "queueing times"
+vector 154 ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.inProgressFrames queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(count(packetEnqueued) - count(packetDequeued))"
+attr title "queue length"
+vector 155 ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.contention backoffPeriodGenerated:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr title "backoff periods"
+vector 156 ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.contention backoffActive:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source warmup(count(backoffStarted)-count(backoffStopped))
+attr title "backoff active"
+vector 157 ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.contention stateChanged:vector ETV
+attr enum IDLE,DEFER,IFS_AND_BACKOFF
+attr interpolationmode none
+attr recordingmode vector
+attr title "contention state changed"
+attr type enum
+vector 158 ZrpTestNetwork.node1.wlan[0].mac.dcf.recipientMacDataService packetDropDuplicateDetected:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsDuplicateDetected(packetDropped)
+attr title "packet drops: duplicate detected, packetBytes"
+vector 159 ZrpTestNetwork.node1.wlan[0].mac.dcf.recoveryProcedure contentionWindowChanged:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr title "contention window"
+vector 160 ZrpTestNetwork.node1.wlan[0].mac.dcf packetSentToPeer:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets sent, packetBytes"
+vector 161 ZrpTestNetwork.node1.wlan[0].mac.dcf packetSentToPeerUnicast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Unicast(packetSentToPeer)
+attr title "packets sent: unicast, packetBytes"
+vector 162 ZrpTestNetwork.node1.wlan[0].mac.dcf packetSentToPeerMulticast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Multicast(packetSentToPeer)
+attr title "packets sent: multicast, packetBytes"
+vector 163 ZrpTestNetwork.node1.wlan[0].mac.dcf packetSentToPeerBroadcast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Broadcast(packetSentToPeer)
+attr title "packets sent: broadcast , packetBytes"
+vector 164 ZrpTestNetwork.node1.wlan[0].mac.dcf packetSentToPeerWithRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Retry(packetSentToPeer)
+attr title "packets sent: with retry, packetBytes"
+vector 165 ZrpTestNetwork.node1.wlan[0].mac.dcf packetSentToPeerWithoutRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211NotRetry(packetSentToPeer)
+attr title "packets sent: without retry, packetBytes"
+vector 166 ZrpTestNetwork.node1.wlan[0].mac.dcf packetReceivedFromPeer:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets received, packetBytes"
+vector 167 ZrpTestNetwork.node1.wlan[0].mac.dcf packetReceivedFromPeerUnicast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Unicast(packetReceivedFromPeer)
+attr title "packets received: unicast, packetBytes"
+vector 168 ZrpTestNetwork.node1.wlan[0].mac.dcf packetReceivedFromPeerMulticast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Multicast(packetReceivedFromPeer)
+attr title "packets received: multicast, packetBytes"
+vector 169 ZrpTestNetwork.node1.wlan[0].mac.dcf packetReceivedFromPeerBroadcast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Broadcast(packetReceivedFromPeer)
+attr title "packets received: broadcast, packetBytes"
+vector 170 ZrpTestNetwork.node1.wlan[0].mac.dcf packetReceivedFromPeerWithRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Retry(packetReceivedFromPeer)
+attr title "packets received: with retry, packetBytes"
+vector 171 ZrpTestNetwork.node1.wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211NotRetry(packetReceivedFromPeer)
+attr title "packets received: without retry, packetBytes"
+vector 172 ZrpTestNetwork.node1.wlan[0].mac.dcf packetDrop:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropped
+attr title "packet drops, packetBytes"
+vector 173 ZrpTestNetwork.node1.wlan[0].mac.dcf packetDropNotAddressedToUs:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNotAddressedToUs(packetDropped)
+attr title "packet drops: not addressed to us, packetBytes"
+vector 174 ZrpTestNetwork.node1.wlan[0].mac.dcf packetDropQueueOverflow:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsQueueOverflow(packetDropped)
+attr title "packet drops: queue overflow, packetBytes"
+vector 175 ZrpTestNetwork.node1.wlan[0].mac.dcf packetDropRetryLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsRetryLimitReached(packetDropped)
+attr title "packet drops: retry limit reached, packetBytes"
+vector 176 ZrpTestNetwork.node1.wlan[0].mac.dcf frameSequenceActive:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source warmup(count(frameSequenceStarted)-count(frameSequenceFinished))
+attr title "frame sequence active"
+vector 177 ZrpTestNetwork.node1.wlan[0].mac.dcf datarateSelected:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr title "datarates selected"
+vector 178 ZrpTestNetwork.node1.wlan[0].mac.rx nav:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source navChanged
+attr title "network allocation vector"
+vector 179 ZrpTestNetwork.node1.wlan[0].mac packetSentToUpper:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets sent to upper layer, packetBytes"
+vector 180 ZrpTestNetwork.node1.wlan[0].mac packetSentToLower:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets sent to lower layer, packetBytes"
+vector 181 ZrpTestNetwork.node1.wlan[0].mac packetReceivedFromUpper:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets received from upper layer, packetBytes"
+vector 182 ZrpTestNetwork.node1.wlan[0].mac packetReceivedFromLower:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets received from lower layer, packetBytes"
+vector 183 ZrpTestNetwork.node1.wlan[0].mac packetDrop:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropped
+attr title "packet drops, packetBytes"
+vector 184 ZrpTestNetwork.node1.wlan[0].mac packetDropIncorrectlyReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packet drops: incorrectly received, packetBytes"
+vector 185 ZrpTestNetwork.node1.wlan[0].mac packetDropNotAddressedToUs:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNotAddressedToUs(packetDropped)
+attr title "packet drops: not addressed to us, packetBytes"
+vector 186 ZrpTestNetwork.node1.wlan[0].mac packetDropQueueOverflow:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsQueueOverflow(packetDropped)
+attr title "packet drops: queue overflow, packetBytes"
+vector 187 ZrpTestNetwork.node1.wlan[0].mac packetDropRetryLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsRetryLimitReached(packetDropped)
+attr title "packet drops: retry limit reached, packetBytes"
+vector 188 ZrpTestNetwork.node1.wlan[0].mac packetDropDuplicateDetected:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsDuplicateDetected(packetDropped)
+attr title "packet drops: duplicate detected, packetBytes"
+vector 189 ZrpTestNetwork.node1.wlan[0].mac packetDropOther:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsOther(packetDropped)
+attr title "packet drops: other, packetBytes"
+vector 190 ZrpTestNetwork.node1.wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 191 ZrpTestNetwork.node1.wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 192 ZrpTestNetwork.node1.wlan[0].radio transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "Radio transmission state"
+vector 193 ZrpTestNetwork.node1.wlan[0].radio radioChannel:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioChannelChanged
+attr title "Radio channel"
+vector 194 ZrpTestNetwork.node1.wlan[0] packetDropInterfaceDown:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsInterfaceDown(packetDropped)
+attr title "packet drops: interface down, packetBytes"
+vector 195 ZrpTestNetwork.node1.wlan[0] packetDropNoCarrier:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoCarrier(packetDropped)
+attr title "packet drops: no carrier, packetBytes"
+vector 196 ZrpTestNetwork.node1.ipv4.ip packetDropAddressResolutionFailed:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsAddressResolutionFailed(packetDropped)
+attr title "packet drop: address resolution failed, packetBytes"
+vector 197 ZrpTestNetwork.node1.ipv4.ip packetDropHopLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsHopLimitReached(packetDropped)
+attr title "packet drop: hop limit reached, packetBytes"
+vector 198 ZrpTestNetwork.node1.ipv4.ip packetDropForwardingDisabled:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsForwardingDisabled(packetDropped)
+attr title "packet drop: forwarding disabled, packetBytes"
+vector 199 ZrpTestNetwork.node1.ipv4.ip packetDropNoInterfaceFound:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoInterfaceFound(packetDropped)
+attr title "packet drop: no interface found, packetBytes"
+vector 200 ZrpTestNetwork.node1.ipv4.ip packetDropNoRouteFound:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoRouteFound(packetDropped)
+attr title "packet drop: no route found, packetBytes"
+vector 201 ZrpTestNetwork.node1.ipv4.ip packetDropUndefined:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsUndefined(packetDropped)
+attr title "packet drop: undefined, packetBytes"
+vector 202 ZrpTestNetwork.node1.udp packetSent:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSent
+attr title "packets sent, packetBytes"
+vector 203 ZrpTestNetwork.node1.udp packetReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceived
+attr title "packets received, packetBytes"
+vector 204 ZrpTestNetwork.node1.udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 205 ZrpTestNetwork.node1.udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 206 ZrpTestNetwork.node1.udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 207 ZrpTestNetwork.node2.lo[0].lo rcvdPkFromHl:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceivedFromUpper
+attr title "packets received from higher layer, packetBytes"
+vector 208 ZrpTestNetwork.node2.lo[0].lo passedUpPk:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSentToUpper
+attr title "packets passed to higher layer, packetBytes"
+vector 209 ZrpTestNetwork.node2.lo[0] packetDropInterfaceDown:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsInterfaceDown(packetDropped)
+attr title "packet drops: interface down, packetBytes"
+vector 210 ZrpTestNetwork.node2.lo[0] packetDropNoCarrier:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoCarrier(packetDropped)
+attr title "packet drops: no carrier, packetBytes"
+vector 211 ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.pendingQueue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 212 ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.pendingQueue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 213 ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.pendingQueue queueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(packetPulled)
+attr title "queueing times"
+attr unit s
+vector 214 ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPushStarted)
+attr title "incoming packet lengths"
+attr unit b
+vector 215 ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.pendingQueue incomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPushStarted)
+attr title "incoming datarate"
+attr unit bps
+vector 216 ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPulled)
+attr title "outgoing packet lengths"
+attr unit b
+vector 217 ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPulled)
+attr title "outgoing datarate"
+attr unit bps
+vector 218 ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.pendingQueue droppedPacketLengthsQueueOverflow:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetDropReasonIsQueueOverflow(packetDropped))
+attr title "dropped packet lengths: queue overflow"
+attr unit b
+vector 219 ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.pendingQueue flowQueueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(demuxFlow(packetPulled))
+attr title "flow queueing times"
+attr unit s
+vector 220 ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.pendingQueue flowIncomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(flowPacketLength(demuxFlow(packetPushStarted)))
+attr title "flow specific incoming data rate"
+attr unit bps
+vector 221 ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.pendingQueue flowOutgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(flowPacketLength(demuxFlow(packetPulled)))
+attr title "flow specific outgoing data rate"
+attr unit bps
+vector 222 ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.inProgressFrames queueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(packetDequeued)
+attr title "queueing times"
+vector 223 ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.inProgressFrames queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(count(packetEnqueued) - count(packetDequeued))"
+attr title "queue length"
+vector 224 ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.contention backoffPeriodGenerated:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr title "backoff periods"
+vector 225 ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.contention backoffActive:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source warmup(count(backoffStarted)-count(backoffStopped))
+attr title "backoff active"
+vector 226 ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.contention stateChanged:vector ETV
+attr enum IDLE,DEFER,IFS_AND_BACKOFF
+attr interpolationmode none
+attr recordingmode vector
+attr title "contention state changed"
+attr type enum
+vector 227 ZrpTestNetwork.node2.wlan[0].mac.dcf.recipientMacDataService packetDropDuplicateDetected:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsDuplicateDetected(packetDropped)
+attr title "packet drops: duplicate detected, packetBytes"
+vector 228 ZrpTestNetwork.node2.wlan[0].mac.dcf.recoveryProcedure contentionWindowChanged:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr title "contention window"
+vector 229 ZrpTestNetwork.node2.wlan[0].mac.dcf packetSentToPeer:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets sent, packetBytes"
+vector 230 ZrpTestNetwork.node2.wlan[0].mac.dcf packetSentToPeerUnicast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Unicast(packetSentToPeer)
+attr title "packets sent: unicast, packetBytes"
+vector 231 ZrpTestNetwork.node2.wlan[0].mac.dcf packetSentToPeerMulticast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Multicast(packetSentToPeer)
+attr title "packets sent: multicast, packetBytes"
+vector 232 ZrpTestNetwork.node2.wlan[0].mac.dcf packetSentToPeerBroadcast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Broadcast(packetSentToPeer)
+attr title "packets sent: broadcast , packetBytes"
+vector 233 ZrpTestNetwork.node2.wlan[0].mac.dcf packetSentToPeerWithRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Retry(packetSentToPeer)
+attr title "packets sent: with retry, packetBytes"
+vector 234 ZrpTestNetwork.node2.wlan[0].mac.dcf packetSentToPeerWithoutRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211NotRetry(packetSentToPeer)
+attr title "packets sent: without retry, packetBytes"
+vector 235 ZrpTestNetwork.node2.wlan[0].mac.dcf packetReceivedFromPeer:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets received, packetBytes"
+vector 236 ZrpTestNetwork.node2.wlan[0].mac.dcf packetReceivedFromPeerUnicast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Unicast(packetReceivedFromPeer)
+attr title "packets received: unicast, packetBytes"
+vector 237 ZrpTestNetwork.node2.wlan[0].mac.dcf packetReceivedFromPeerMulticast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Multicast(packetReceivedFromPeer)
+attr title "packets received: multicast, packetBytes"
+vector 238 ZrpTestNetwork.node2.wlan[0].mac.dcf packetReceivedFromPeerBroadcast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Broadcast(packetReceivedFromPeer)
+attr title "packets received: broadcast, packetBytes"
+vector 239 ZrpTestNetwork.node2.wlan[0].mac.dcf packetReceivedFromPeerWithRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Retry(packetReceivedFromPeer)
+attr title "packets received: with retry, packetBytes"
+vector 240 ZrpTestNetwork.node2.wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211NotRetry(packetReceivedFromPeer)
+attr title "packets received: without retry, packetBytes"
+vector 241 ZrpTestNetwork.node2.wlan[0].mac.dcf packetDrop:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropped
+attr title "packet drops, packetBytes"
+vector 242 ZrpTestNetwork.node2.wlan[0].mac.dcf packetDropNotAddressedToUs:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNotAddressedToUs(packetDropped)
+attr title "packet drops: not addressed to us, packetBytes"
+vector 243 ZrpTestNetwork.node2.wlan[0].mac.dcf packetDropQueueOverflow:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsQueueOverflow(packetDropped)
+attr title "packet drops: queue overflow, packetBytes"
+vector 244 ZrpTestNetwork.node2.wlan[0].mac.dcf packetDropRetryLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsRetryLimitReached(packetDropped)
+attr title "packet drops: retry limit reached, packetBytes"
+vector 245 ZrpTestNetwork.node2.wlan[0].mac.dcf frameSequenceActive:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source warmup(count(frameSequenceStarted)-count(frameSequenceFinished))
+attr title "frame sequence active"
+vector 246 ZrpTestNetwork.node2.wlan[0].mac.dcf datarateSelected:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr title "datarates selected"
+vector 247 ZrpTestNetwork.node2.wlan[0].mac.rx nav:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source navChanged
+attr title "network allocation vector"
+vector 248 ZrpTestNetwork.node2.wlan[0].mac packetSentToUpper:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets sent to upper layer, packetBytes"
+vector 249 ZrpTestNetwork.node2.wlan[0].mac packetSentToLower:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets sent to lower layer, packetBytes"
+vector 250 ZrpTestNetwork.node2.wlan[0].mac packetReceivedFromUpper:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets received from upper layer, packetBytes"
+vector 251 ZrpTestNetwork.node2.wlan[0].mac packetReceivedFromLower:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets received from lower layer, packetBytes"
+vector 252 ZrpTestNetwork.node2.wlan[0].mac packetDrop:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropped
+attr title "packet drops, packetBytes"
+vector 253 ZrpTestNetwork.node2.wlan[0].mac packetDropIncorrectlyReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packet drops: incorrectly received, packetBytes"
+vector 254 ZrpTestNetwork.node2.wlan[0].mac packetDropNotAddressedToUs:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNotAddressedToUs(packetDropped)
+attr title "packet drops: not addressed to us, packetBytes"
+vector 255 ZrpTestNetwork.node2.wlan[0].mac packetDropQueueOverflow:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsQueueOverflow(packetDropped)
+attr title "packet drops: queue overflow, packetBytes"
+vector 256 ZrpTestNetwork.node2.wlan[0].mac packetDropRetryLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsRetryLimitReached(packetDropped)
+attr title "packet drops: retry limit reached, packetBytes"
+vector 257 ZrpTestNetwork.node2.wlan[0].mac packetDropDuplicateDetected:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsDuplicateDetected(packetDropped)
+attr title "packet drops: duplicate detected, packetBytes"
+vector 258 ZrpTestNetwork.node2.wlan[0].mac packetDropOther:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsOther(packetDropped)
+attr title "packet drops: other, packetBytes"
+vector 259 ZrpTestNetwork.node2.wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 260 ZrpTestNetwork.node2.wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 261 ZrpTestNetwork.node2.wlan[0].radio transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "Radio transmission state"
+vector 262 ZrpTestNetwork.node2.wlan[0].radio radioChannel:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioChannelChanged
+attr title "Radio channel"
+vector 263 ZrpTestNetwork.node2.wlan[0] packetDropInterfaceDown:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsInterfaceDown(packetDropped)
+attr title "packet drops: interface down, packetBytes"
+vector 264 ZrpTestNetwork.node2.wlan[0] packetDropNoCarrier:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoCarrier(packetDropped)
+attr title "packet drops: no carrier, packetBytes"
+vector 265 ZrpTestNetwork.node2.ipv4.ip packetDropAddressResolutionFailed:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsAddressResolutionFailed(packetDropped)
+attr title "packet drop: address resolution failed, packetBytes"
+vector 266 ZrpTestNetwork.node2.ipv4.ip packetDropHopLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsHopLimitReached(packetDropped)
+attr title "packet drop: hop limit reached, packetBytes"
+vector 267 ZrpTestNetwork.node2.ipv4.ip packetDropForwardingDisabled:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsForwardingDisabled(packetDropped)
+attr title "packet drop: forwarding disabled, packetBytes"
+vector 268 ZrpTestNetwork.node2.ipv4.ip packetDropNoInterfaceFound:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoInterfaceFound(packetDropped)
+attr title "packet drop: no interface found, packetBytes"
+vector 269 ZrpTestNetwork.node2.ipv4.ip packetDropNoRouteFound:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoRouteFound(packetDropped)
+attr title "packet drop: no route found, packetBytes"
+vector 270 ZrpTestNetwork.node2.ipv4.ip packetDropUndefined:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsUndefined(packetDropped)
+attr title "packet drop: undefined, packetBytes"
+vector 271 ZrpTestNetwork.node2.udp packetSent:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSent
+attr title "packets sent, packetBytes"
+vector 272 ZrpTestNetwork.node2.udp packetReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceived
+attr title "packets received, packetBytes"
+vector 273 ZrpTestNetwork.node2.udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 274 ZrpTestNetwork.node2.udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 275 ZrpTestNetwork.node2.udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 276 ZrpTestNetwork.node3.lo[0].lo rcvdPkFromHl:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceivedFromUpper
+attr title "packets received from higher layer, packetBytes"
+vector 277 ZrpTestNetwork.node3.lo[0].lo passedUpPk:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSentToUpper
+attr title "packets passed to higher layer, packetBytes"
+vector 278 ZrpTestNetwork.node3.lo[0] packetDropInterfaceDown:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsInterfaceDown(packetDropped)
+attr title "packet drops: interface down, packetBytes"
+vector 279 ZrpTestNetwork.node3.lo[0] packetDropNoCarrier:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoCarrier(packetDropped)
+attr title "packet drops: no carrier, packetBytes"
+vector 280 ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.pendingQueue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 281 ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.pendingQueue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 282 ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.pendingQueue queueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(packetPulled)
+attr title "queueing times"
+attr unit s
+vector 283 ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPushStarted)
+attr title "incoming packet lengths"
+attr unit b
+vector 284 ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.pendingQueue incomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPushStarted)
+attr title "incoming datarate"
+attr unit bps
+vector 285 ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPulled)
+attr title "outgoing packet lengths"
+attr unit b
+vector 286 ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPulled)
+attr title "outgoing datarate"
+attr unit bps
+vector 287 ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.pendingQueue droppedPacketLengthsQueueOverflow:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetDropReasonIsQueueOverflow(packetDropped))
+attr title "dropped packet lengths: queue overflow"
+attr unit b
+vector 288 ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.pendingQueue flowQueueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(demuxFlow(packetPulled))
+attr title "flow queueing times"
+attr unit s
+vector 289 ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.pendingQueue flowIncomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(flowPacketLength(demuxFlow(packetPushStarted)))
+attr title "flow specific incoming data rate"
+attr unit bps
+vector 290 ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.pendingQueue flowOutgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(flowPacketLength(demuxFlow(packetPulled)))
+attr title "flow specific outgoing data rate"
+attr unit bps
+vector 291 ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.inProgressFrames queueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(packetDequeued)
+attr title "queueing times"
+vector 292 ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.inProgressFrames queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(count(packetEnqueued) - count(packetDequeued))"
+attr title "queue length"
+vector 293 ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.contention backoffPeriodGenerated:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr title "backoff periods"
+vector 294 ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.contention backoffActive:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source warmup(count(backoffStarted)-count(backoffStopped))
+attr title "backoff active"
+vector 295 ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.contention stateChanged:vector ETV
+attr enum IDLE,DEFER,IFS_AND_BACKOFF
+attr interpolationmode none
+attr recordingmode vector
+attr title "contention state changed"
+attr type enum
+vector 296 ZrpTestNetwork.node3.wlan[0].mac.dcf.recipientMacDataService packetDropDuplicateDetected:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsDuplicateDetected(packetDropped)
+attr title "packet drops: duplicate detected, packetBytes"
+vector 297 ZrpTestNetwork.node3.wlan[0].mac.dcf.recoveryProcedure contentionWindowChanged:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr title "contention window"
+vector 298 ZrpTestNetwork.node3.wlan[0].mac.dcf packetSentToPeer:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets sent, packetBytes"
+vector 299 ZrpTestNetwork.node3.wlan[0].mac.dcf packetSentToPeerUnicast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Unicast(packetSentToPeer)
+attr title "packets sent: unicast, packetBytes"
+vector 300 ZrpTestNetwork.node3.wlan[0].mac.dcf packetSentToPeerMulticast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Multicast(packetSentToPeer)
+attr title "packets sent: multicast, packetBytes"
+vector 301 ZrpTestNetwork.node3.wlan[0].mac.dcf packetSentToPeerBroadcast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Broadcast(packetSentToPeer)
+attr title "packets sent: broadcast , packetBytes"
+vector 302 ZrpTestNetwork.node3.wlan[0].mac.dcf packetSentToPeerWithRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Retry(packetSentToPeer)
+attr title "packets sent: with retry, packetBytes"
+vector 303 ZrpTestNetwork.node3.wlan[0].mac.dcf packetSentToPeerWithoutRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211NotRetry(packetSentToPeer)
+attr title "packets sent: without retry, packetBytes"
+vector 304 ZrpTestNetwork.node3.wlan[0].mac.dcf packetReceivedFromPeer:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets received, packetBytes"
+vector 305 ZrpTestNetwork.node3.wlan[0].mac.dcf packetReceivedFromPeerUnicast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Unicast(packetReceivedFromPeer)
+attr title "packets received: unicast, packetBytes"
+vector 306 ZrpTestNetwork.node3.wlan[0].mac.dcf packetReceivedFromPeerMulticast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Multicast(packetReceivedFromPeer)
+attr title "packets received: multicast, packetBytes"
+vector 307 ZrpTestNetwork.node3.wlan[0].mac.dcf packetReceivedFromPeerBroadcast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Broadcast(packetReceivedFromPeer)
+attr title "packets received: broadcast, packetBytes"
+vector 308 ZrpTestNetwork.node3.wlan[0].mac.dcf packetReceivedFromPeerWithRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Retry(packetReceivedFromPeer)
+attr title "packets received: with retry, packetBytes"
+vector 309 ZrpTestNetwork.node3.wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211NotRetry(packetReceivedFromPeer)
+attr title "packets received: without retry, packetBytes"
+vector 310 ZrpTestNetwork.node3.wlan[0].mac.dcf packetDrop:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropped
+attr title "packet drops, packetBytes"
+vector 311 ZrpTestNetwork.node3.wlan[0].mac.dcf packetDropNotAddressedToUs:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNotAddressedToUs(packetDropped)
+attr title "packet drops: not addressed to us, packetBytes"
+vector 312 ZrpTestNetwork.node3.wlan[0].mac.dcf packetDropQueueOverflow:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsQueueOverflow(packetDropped)
+attr title "packet drops: queue overflow, packetBytes"
+vector 313 ZrpTestNetwork.node3.wlan[0].mac.dcf packetDropRetryLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsRetryLimitReached(packetDropped)
+attr title "packet drops: retry limit reached, packetBytes"
+vector 314 ZrpTestNetwork.node3.wlan[0].mac.dcf frameSequenceActive:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source warmup(count(frameSequenceStarted)-count(frameSequenceFinished))
+attr title "frame sequence active"
+vector 315 ZrpTestNetwork.node3.wlan[0].mac.dcf datarateSelected:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr title "datarates selected"
+vector 316 ZrpTestNetwork.node3.wlan[0].mac.rx nav:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source navChanged
+attr title "network allocation vector"
+vector 317 ZrpTestNetwork.node3.wlan[0].mac packetSentToUpper:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets sent to upper layer, packetBytes"
+vector 318 ZrpTestNetwork.node3.wlan[0].mac packetSentToLower:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets sent to lower layer, packetBytes"
+vector 319 ZrpTestNetwork.node3.wlan[0].mac packetReceivedFromUpper:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets received from upper layer, packetBytes"
+vector 320 ZrpTestNetwork.node3.wlan[0].mac packetReceivedFromLower:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets received from lower layer, packetBytes"
+vector 321 ZrpTestNetwork.node3.wlan[0].mac packetDrop:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropped
+attr title "packet drops, packetBytes"
+vector 322 ZrpTestNetwork.node3.wlan[0].mac packetDropIncorrectlyReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packet drops: incorrectly received, packetBytes"
+vector 323 ZrpTestNetwork.node3.wlan[0].mac packetDropNotAddressedToUs:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNotAddressedToUs(packetDropped)
+attr title "packet drops: not addressed to us, packetBytes"
+vector 324 ZrpTestNetwork.node3.wlan[0].mac packetDropQueueOverflow:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsQueueOverflow(packetDropped)
+attr title "packet drops: queue overflow, packetBytes"
+vector 325 ZrpTestNetwork.node3.wlan[0].mac packetDropRetryLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsRetryLimitReached(packetDropped)
+attr title "packet drops: retry limit reached, packetBytes"
+vector 326 ZrpTestNetwork.node3.wlan[0].mac packetDropDuplicateDetected:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsDuplicateDetected(packetDropped)
+attr title "packet drops: duplicate detected, packetBytes"
+vector 327 ZrpTestNetwork.node3.wlan[0].mac packetDropOther:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsOther(packetDropped)
+attr title "packet drops: other, packetBytes"
+vector 328 ZrpTestNetwork.node3.wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 329 ZrpTestNetwork.node3.wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 330 ZrpTestNetwork.node3.wlan[0].radio transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "Radio transmission state"
+vector 331 ZrpTestNetwork.node3.wlan[0].radio radioChannel:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioChannelChanged
+attr title "Radio channel"
+vector 332 ZrpTestNetwork.node3.wlan[0] packetDropInterfaceDown:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsInterfaceDown(packetDropped)
+attr title "packet drops: interface down, packetBytes"
+vector 333 ZrpTestNetwork.node3.wlan[0] packetDropNoCarrier:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoCarrier(packetDropped)
+attr title "packet drops: no carrier, packetBytes"
+vector 334 ZrpTestNetwork.node3.ipv4.ip packetDropAddressResolutionFailed:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsAddressResolutionFailed(packetDropped)
+attr title "packet drop: address resolution failed, packetBytes"
+vector 335 ZrpTestNetwork.node3.ipv4.ip packetDropHopLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsHopLimitReached(packetDropped)
+attr title "packet drop: hop limit reached, packetBytes"
+vector 336 ZrpTestNetwork.node3.ipv4.ip packetDropForwardingDisabled:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsForwardingDisabled(packetDropped)
+attr title "packet drop: forwarding disabled, packetBytes"
+vector 337 ZrpTestNetwork.node3.ipv4.ip packetDropNoInterfaceFound:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoInterfaceFound(packetDropped)
+attr title "packet drop: no interface found, packetBytes"
+vector 338 ZrpTestNetwork.node3.ipv4.ip packetDropNoRouteFound:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoRouteFound(packetDropped)
+attr title "packet drop: no route found, packetBytes"
+vector 339 ZrpTestNetwork.node3.ipv4.ip packetDropUndefined:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsUndefined(packetDropped)
+attr title "packet drop: undefined, packetBytes"
+vector 340 ZrpTestNetwork.node3.udp packetSent:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSent
+attr title "packets sent, packetBytes"
+vector 341 ZrpTestNetwork.node3.udp packetReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceived
+attr title "packets received, packetBytes"
+vector 342 ZrpTestNetwork.node3.udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 343 ZrpTestNetwork.node3.udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 344 ZrpTestNetwork.node3.udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 345 ZrpTestNetwork.node4.lo[0].lo rcvdPkFromHl:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceivedFromUpper
+attr title "packets received from higher layer, packetBytes"
+vector 346 ZrpTestNetwork.node4.lo[0].lo passedUpPk:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSentToUpper
+attr title "packets passed to higher layer, packetBytes"
+vector 347 ZrpTestNetwork.node4.lo[0] packetDropInterfaceDown:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsInterfaceDown(packetDropped)
+attr title "packet drops: interface down, packetBytes"
+vector 348 ZrpTestNetwork.node4.lo[0] packetDropNoCarrier:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoCarrier(packetDropped)
+attr title "packet drops: no carrier, packetBytes"
+vector 349 ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.pendingQueue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 350 ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.pendingQueue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 351 ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.pendingQueue queueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(packetPulled)
+attr title "queueing times"
+attr unit s
+vector 352 ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPushStarted)
+attr title "incoming packet lengths"
+attr unit b
+vector 353 ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.pendingQueue incomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPushStarted)
+attr title "incoming datarate"
+attr unit bps
+vector 354 ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPulled)
+attr title "outgoing packet lengths"
+attr unit b
+vector 355 ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPulled)
+attr title "outgoing datarate"
+attr unit bps
+vector 356 ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.pendingQueue droppedPacketLengthsQueueOverflow:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetDropReasonIsQueueOverflow(packetDropped))
+attr title "dropped packet lengths: queue overflow"
+attr unit b
+vector 357 ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.pendingQueue flowQueueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(demuxFlow(packetPulled))
+attr title "flow queueing times"
+attr unit s
+vector 358 ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.pendingQueue flowIncomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(flowPacketLength(demuxFlow(packetPushStarted)))
+attr title "flow specific incoming data rate"
+attr unit bps
+vector 359 ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.pendingQueue flowOutgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(flowPacketLength(demuxFlow(packetPulled)))
+attr title "flow specific outgoing data rate"
+attr unit bps
+vector 360 ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.inProgressFrames queueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(packetDequeued)
+attr title "queueing times"
+vector 361 ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.inProgressFrames queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(count(packetEnqueued) - count(packetDequeued))"
+attr title "queue length"
+vector 362 ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.contention backoffPeriodGenerated:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr title "backoff periods"
+vector 363 ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.contention backoffActive:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source warmup(count(backoffStarted)-count(backoffStopped))
+attr title "backoff active"
+vector 364 ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.contention stateChanged:vector ETV
+attr enum IDLE,DEFER,IFS_AND_BACKOFF
+attr interpolationmode none
+attr recordingmode vector
+attr title "contention state changed"
+attr type enum
+vector 365 ZrpTestNetwork.node4.wlan[0].mac.dcf.recipientMacDataService packetDropDuplicateDetected:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsDuplicateDetected(packetDropped)
+attr title "packet drops: duplicate detected, packetBytes"
+vector 366 ZrpTestNetwork.node4.wlan[0].mac.dcf.recoveryProcedure contentionWindowChanged:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr title "contention window"
+vector 367 ZrpTestNetwork.node4.wlan[0].mac.dcf packetSentToPeer:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets sent, packetBytes"
+vector 368 ZrpTestNetwork.node4.wlan[0].mac.dcf packetSentToPeerUnicast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Unicast(packetSentToPeer)
+attr title "packets sent: unicast, packetBytes"
+vector 369 ZrpTestNetwork.node4.wlan[0].mac.dcf packetSentToPeerMulticast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Multicast(packetSentToPeer)
+attr title "packets sent: multicast, packetBytes"
+vector 370 ZrpTestNetwork.node4.wlan[0].mac.dcf packetSentToPeerBroadcast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Broadcast(packetSentToPeer)
+attr title "packets sent: broadcast , packetBytes"
+vector 371 ZrpTestNetwork.node4.wlan[0].mac.dcf packetSentToPeerWithRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Retry(packetSentToPeer)
+attr title "packets sent: with retry, packetBytes"
+vector 372 ZrpTestNetwork.node4.wlan[0].mac.dcf packetSentToPeerWithoutRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211NotRetry(packetSentToPeer)
+attr title "packets sent: without retry, packetBytes"
+vector 373 ZrpTestNetwork.node4.wlan[0].mac.dcf packetReceivedFromPeer:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets received, packetBytes"
+vector 374 ZrpTestNetwork.node4.wlan[0].mac.dcf packetReceivedFromPeerUnicast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Unicast(packetReceivedFromPeer)
+attr title "packets received: unicast, packetBytes"
+vector 375 ZrpTestNetwork.node4.wlan[0].mac.dcf packetReceivedFromPeerMulticast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Multicast(packetReceivedFromPeer)
+attr title "packets received: multicast, packetBytes"
+vector 376 ZrpTestNetwork.node4.wlan[0].mac.dcf packetReceivedFromPeerBroadcast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Broadcast(packetReceivedFromPeer)
+attr title "packets received: broadcast, packetBytes"
+vector 377 ZrpTestNetwork.node4.wlan[0].mac.dcf packetReceivedFromPeerWithRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Retry(packetReceivedFromPeer)
+attr title "packets received: with retry, packetBytes"
+vector 378 ZrpTestNetwork.node4.wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211NotRetry(packetReceivedFromPeer)
+attr title "packets received: without retry, packetBytes"
+vector 379 ZrpTestNetwork.node4.wlan[0].mac.dcf packetDrop:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropped
+attr title "packet drops, packetBytes"
+vector 380 ZrpTestNetwork.node4.wlan[0].mac.dcf packetDropNotAddressedToUs:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNotAddressedToUs(packetDropped)
+attr title "packet drops: not addressed to us, packetBytes"
+vector 381 ZrpTestNetwork.node4.wlan[0].mac.dcf packetDropQueueOverflow:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsQueueOverflow(packetDropped)
+attr title "packet drops: queue overflow, packetBytes"
+vector 382 ZrpTestNetwork.node4.wlan[0].mac.dcf packetDropRetryLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsRetryLimitReached(packetDropped)
+attr title "packet drops: retry limit reached, packetBytes"
+vector 383 ZrpTestNetwork.node4.wlan[0].mac.dcf frameSequenceActive:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source warmup(count(frameSequenceStarted)-count(frameSequenceFinished))
+attr title "frame sequence active"
+vector 384 ZrpTestNetwork.node4.wlan[0].mac.dcf datarateSelected:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr title "datarates selected"
+vector 385 ZrpTestNetwork.node4.wlan[0].mac.rx nav:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source navChanged
+attr title "network allocation vector"
+vector 386 ZrpTestNetwork.node4.wlan[0].mac packetSentToUpper:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets sent to upper layer, packetBytes"
+vector 387 ZrpTestNetwork.node4.wlan[0].mac packetSentToLower:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets sent to lower layer, packetBytes"
+vector 388 ZrpTestNetwork.node4.wlan[0].mac packetReceivedFromUpper:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets received from upper layer, packetBytes"
+vector 389 ZrpTestNetwork.node4.wlan[0].mac packetReceivedFromLower:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets received from lower layer, packetBytes"
+vector 390 ZrpTestNetwork.node4.wlan[0].mac packetDrop:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropped
+attr title "packet drops, packetBytes"
+vector 391 ZrpTestNetwork.node4.wlan[0].mac packetDropIncorrectlyReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packet drops: incorrectly received, packetBytes"
+vector 392 ZrpTestNetwork.node4.wlan[0].mac packetDropNotAddressedToUs:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNotAddressedToUs(packetDropped)
+attr title "packet drops: not addressed to us, packetBytes"
+vector 393 ZrpTestNetwork.node4.wlan[0].mac packetDropQueueOverflow:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsQueueOverflow(packetDropped)
+attr title "packet drops: queue overflow, packetBytes"
+vector 394 ZrpTestNetwork.node4.wlan[0].mac packetDropRetryLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsRetryLimitReached(packetDropped)
+attr title "packet drops: retry limit reached, packetBytes"
+vector 395 ZrpTestNetwork.node4.wlan[0].mac packetDropDuplicateDetected:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsDuplicateDetected(packetDropped)
+attr title "packet drops: duplicate detected, packetBytes"
+vector 396 ZrpTestNetwork.node4.wlan[0].mac packetDropOther:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsOther(packetDropped)
+attr title "packet drops: other, packetBytes"
+vector 397 ZrpTestNetwork.node4.wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 398 ZrpTestNetwork.node4.wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 399 ZrpTestNetwork.node4.wlan[0].radio transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "Radio transmission state"
+vector 400 ZrpTestNetwork.node4.wlan[0].radio radioChannel:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioChannelChanged
+attr title "Radio channel"
+vector 401 ZrpTestNetwork.node4.wlan[0] packetDropInterfaceDown:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsInterfaceDown(packetDropped)
+attr title "packet drops: interface down, packetBytes"
+vector 402 ZrpTestNetwork.node4.wlan[0] packetDropNoCarrier:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoCarrier(packetDropped)
+attr title "packet drops: no carrier, packetBytes"
+vector 403 ZrpTestNetwork.node4.ipv4.ip packetDropAddressResolutionFailed:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsAddressResolutionFailed(packetDropped)
+attr title "packet drop: address resolution failed, packetBytes"
+vector 404 ZrpTestNetwork.node4.ipv4.ip packetDropHopLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsHopLimitReached(packetDropped)
+attr title "packet drop: hop limit reached, packetBytes"
+vector 405 ZrpTestNetwork.node4.ipv4.ip packetDropForwardingDisabled:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsForwardingDisabled(packetDropped)
+attr title "packet drop: forwarding disabled, packetBytes"
+vector 406 ZrpTestNetwork.node4.ipv4.ip packetDropNoInterfaceFound:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoInterfaceFound(packetDropped)
+attr title "packet drop: no interface found, packetBytes"
+vector 407 ZrpTestNetwork.node4.ipv4.ip packetDropNoRouteFound:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoRouteFound(packetDropped)
+attr title "packet drop: no route found, packetBytes"
+vector 408 ZrpTestNetwork.node4.ipv4.ip packetDropUndefined:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsUndefined(packetDropped)
+attr title "packet drop: undefined, packetBytes"
+vector 409 ZrpTestNetwork.node4.udp packetSent:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSent
+attr title "packets sent, packetBytes"
+vector 410 ZrpTestNetwork.node4.udp packetReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceived
+attr title "packets received, packetBytes"
+vector 411 ZrpTestNetwork.node4.udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 412 ZrpTestNetwork.node4.udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 413 ZrpTestNetwork.node4.udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 414 ZrpTestNetwork.node5.lo[0].lo rcvdPkFromHl:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceivedFromUpper
+attr title "packets received from higher layer, packetBytes"
+vector 415 ZrpTestNetwork.node5.lo[0].lo passedUpPk:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSentToUpper
+attr title "packets passed to higher layer, packetBytes"
+vector 416 ZrpTestNetwork.node5.lo[0] packetDropInterfaceDown:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsInterfaceDown(packetDropped)
+attr title "packet drops: interface down, packetBytes"
+vector 417 ZrpTestNetwork.node5.lo[0] packetDropNoCarrier:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoCarrier(packetDropped)
+attr title "packet drops: no carrier, packetBytes"
+vector 418 ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.pendingQueue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 419 ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.pendingQueue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 420 ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.pendingQueue queueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(packetPulled)
+attr title "queueing times"
+attr unit s
+vector 421 ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPushStarted)
+attr title "incoming packet lengths"
+attr unit b
+vector 422 ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.pendingQueue incomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPushStarted)
+attr title "incoming datarate"
+attr unit bps
+vector 423 ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPulled)
+attr title "outgoing packet lengths"
+attr unit b
+vector 424 ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPulled)
+attr title "outgoing datarate"
+attr unit bps
+vector 425 ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.pendingQueue droppedPacketLengthsQueueOverflow:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetDropReasonIsQueueOverflow(packetDropped))
+attr title "dropped packet lengths: queue overflow"
+attr unit b
+vector 426 ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.pendingQueue flowQueueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(demuxFlow(packetPulled))
+attr title "flow queueing times"
+attr unit s
+vector 427 ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.pendingQueue flowIncomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(flowPacketLength(demuxFlow(packetPushStarted)))
+attr title "flow specific incoming data rate"
+attr unit bps
+vector 428 ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.pendingQueue flowOutgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(flowPacketLength(demuxFlow(packetPulled)))
+attr title "flow specific outgoing data rate"
+attr unit bps
+vector 429 ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.inProgressFrames queueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(packetDequeued)
+attr title "queueing times"
+vector 430 ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.inProgressFrames queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(count(packetEnqueued) - count(packetDequeued))"
+attr title "queue length"
+vector 431 ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.contention backoffPeriodGenerated:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr title "backoff periods"
+vector 432 ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.contention backoffActive:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source warmup(count(backoffStarted)-count(backoffStopped))
+attr title "backoff active"
+vector 433 ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.contention stateChanged:vector ETV
+attr enum IDLE,DEFER,IFS_AND_BACKOFF
+attr interpolationmode none
+attr recordingmode vector
+attr title "contention state changed"
+attr type enum
+vector 434 ZrpTestNetwork.node5.wlan[0].mac.dcf.recipientMacDataService packetDropDuplicateDetected:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsDuplicateDetected(packetDropped)
+attr title "packet drops: duplicate detected, packetBytes"
+vector 435 ZrpTestNetwork.node5.wlan[0].mac.dcf.recoveryProcedure contentionWindowChanged:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr title "contention window"
+vector 436 ZrpTestNetwork.node5.wlan[0].mac.dcf packetSentToPeer:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets sent, packetBytes"
+vector 437 ZrpTestNetwork.node5.wlan[0].mac.dcf packetSentToPeerUnicast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Unicast(packetSentToPeer)
+attr title "packets sent: unicast, packetBytes"
+vector 438 ZrpTestNetwork.node5.wlan[0].mac.dcf packetSentToPeerMulticast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Multicast(packetSentToPeer)
+attr title "packets sent: multicast, packetBytes"
+vector 439 ZrpTestNetwork.node5.wlan[0].mac.dcf packetSentToPeerBroadcast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Broadcast(packetSentToPeer)
+attr title "packets sent: broadcast , packetBytes"
+vector 440 ZrpTestNetwork.node5.wlan[0].mac.dcf packetSentToPeerWithRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Retry(packetSentToPeer)
+attr title "packets sent: with retry, packetBytes"
+vector 441 ZrpTestNetwork.node5.wlan[0].mac.dcf packetSentToPeerWithoutRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211NotRetry(packetSentToPeer)
+attr title "packets sent: without retry, packetBytes"
+vector 442 ZrpTestNetwork.node5.wlan[0].mac.dcf packetReceivedFromPeer:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets received, packetBytes"
+vector 443 ZrpTestNetwork.node5.wlan[0].mac.dcf packetReceivedFromPeerUnicast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Unicast(packetReceivedFromPeer)
+attr title "packets received: unicast, packetBytes"
+vector 444 ZrpTestNetwork.node5.wlan[0].mac.dcf packetReceivedFromPeerMulticast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Multicast(packetReceivedFromPeer)
+attr title "packets received: multicast, packetBytes"
+vector 445 ZrpTestNetwork.node5.wlan[0].mac.dcf packetReceivedFromPeerBroadcast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Broadcast(packetReceivedFromPeer)
+attr title "packets received: broadcast, packetBytes"
+vector 446 ZrpTestNetwork.node5.wlan[0].mac.dcf packetReceivedFromPeerWithRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Retry(packetReceivedFromPeer)
+attr title "packets received: with retry, packetBytes"
+vector 447 ZrpTestNetwork.node5.wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211NotRetry(packetReceivedFromPeer)
+attr title "packets received: without retry, packetBytes"
+vector 448 ZrpTestNetwork.node5.wlan[0].mac.dcf packetDrop:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropped
+attr title "packet drops, packetBytes"
+vector 449 ZrpTestNetwork.node5.wlan[0].mac.dcf packetDropNotAddressedToUs:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNotAddressedToUs(packetDropped)
+attr title "packet drops: not addressed to us, packetBytes"
+vector 450 ZrpTestNetwork.node5.wlan[0].mac.dcf packetDropQueueOverflow:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsQueueOverflow(packetDropped)
+attr title "packet drops: queue overflow, packetBytes"
+vector 451 ZrpTestNetwork.node5.wlan[0].mac.dcf packetDropRetryLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsRetryLimitReached(packetDropped)
+attr title "packet drops: retry limit reached, packetBytes"
+vector 452 ZrpTestNetwork.node5.wlan[0].mac.dcf frameSequenceActive:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source warmup(count(frameSequenceStarted)-count(frameSequenceFinished))
+attr title "frame sequence active"
+vector 453 ZrpTestNetwork.node5.wlan[0].mac.dcf datarateSelected:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr title "datarates selected"
+vector 454 ZrpTestNetwork.node5.wlan[0].mac.rx nav:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source navChanged
+attr title "network allocation vector"
+vector 455 ZrpTestNetwork.node5.wlan[0].mac packetSentToUpper:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets sent to upper layer, packetBytes"
+vector 456 ZrpTestNetwork.node5.wlan[0].mac packetSentToLower:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets sent to lower layer, packetBytes"
+vector 457 ZrpTestNetwork.node5.wlan[0].mac packetReceivedFromUpper:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets received from upper layer, packetBytes"
+vector 458 ZrpTestNetwork.node5.wlan[0].mac packetReceivedFromLower:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets received from lower layer, packetBytes"
+vector 459 ZrpTestNetwork.node5.wlan[0].mac packetDrop:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropped
+attr title "packet drops, packetBytes"
+vector 460 ZrpTestNetwork.node5.wlan[0].mac packetDropIncorrectlyReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packet drops: incorrectly received, packetBytes"
+vector 461 ZrpTestNetwork.node5.wlan[0].mac packetDropNotAddressedToUs:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNotAddressedToUs(packetDropped)
+attr title "packet drops: not addressed to us, packetBytes"
+vector 462 ZrpTestNetwork.node5.wlan[0].mac packetDropQueueOverflow:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsQueueOverflow(packetDropped)
+attr title "packet drops: queue overflow, packetBytes"
+vector 463 ZrpTestNetwork.node5.wlan[0].mac packetDropRetryLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsRetryLimitReached(packetDropped)
+attr title "packet drops: retry limit reached, packetBytes"
+vector 464 ZrpTestNetwork.node5.wlan[0].mac packetDropDuplicateDetected:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsDuplicateDetected(packetDropped)
+attr title "packet drops: duplicate detected, packetBytes"
+vector 465 ZrpTestNetwork.node5.wlan[0].mac packetDropOther:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsOther(packetDropped)
+attr title "packet drops: other, packetBytes"
+vector 466 ZrpTestNetwork.node5.wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 467 ZrpTestNetwork.node5.wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 468 ZrpTestNetwork.node5.wlan[0].radio transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "Radio transmission state"
+vector 469 ZrpTestNetwork.node5.wlan[0].radio radioChannel:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioChannelChanged
+attr title "Radio channel"
+vector 470 ZrpTestNetwork.node5.wlan[0] packetDropInterfaceDown:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsInterfaceDown(packetDropped)
+attr title "packet drops: interface down, packetBytes"
+vector 471 ZrpTestNetwork.node5.wlan[0] packetDropNoCarrier:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoCarrier(packetDropped)
+attr title "packet drops: no carrier, packetBytes"
+vector 472 ZrpTestNetwork.node5.ipv4.ip packetDropAddressResolutionFailed:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsAddressResolutionFailed(packetDropped)
+attr title "packet drop: address resolution failed, packetBytes"
+vector 473 ZrpTestNetwork.node5.ipv4.ip packetDropHopLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsHopLimitReached(packetDropped)
+attr title "packet drop: hop limit reached, packetBytes"
+vector 474 ZrpTestNetwork.node5.ipv4.ip packetDropForwardingDisabled:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsForwardingDisabled(packetDropped)
+attr title "packet drop: forwarding disabled, packetBytes"
+vector 475 ZrpTestNetwork.node5.ipv4.ip packetDropNoInterfaceFound:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoInterfaceFound(packetDropped)
+attr title "packet drop: no interface found, packetBytes"
+vector 476 ZrpTestNetwork.node5.ipv4.ip packetDropNoRouteFound:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoRouteFound(packetDropped)
+attr title "packet drop: no route found, packetBytes"
+vector 477 ZrpTestNetwork.node5.ipv4.ip packetDropUndefined:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsUndefined(packetDropped)
+attr title "packet drop: undefined, packetBytes"
+vector 478 ZrpTestNetwork.node5.udp packetSent:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSent
+attr title "packets sent, packetBytes"
+vector 479 ZrpTestNetwork.node5.udp packetReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceived
+attr title "packets received, packetBytes"
+vector 480 ZrpTestNetwork.node5.udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 481 ZrpTestNetwork.node5.udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 482 ZrpTestNetwork.node5.udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 483 ZrpTestNetwork.node6.lo[0].lo rcvdPkFromHl:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceivedFromUpper
+attr title "packets received from higher layer, packetBytes"
+vector 484 ZrpTestNetwork.node6.lo[0].lo passedUpPk:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSentToUpper
+attr title "packets passed to higher layer, packetBytes"
+vector 485 ZrpTestNetwork.node6.lo[0] packetDropInterfaceDown:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsInterfaceDown(packetDropped)
+attr title "packet drops: interface down, packetBytes"
+vector 486 ZrpTestNetwork.node6.lo[0] packetDropNoCarrier:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoCarrier(packetDropped)
+attr title "packet drops: no carrier, packetBytes"
+vector 487 ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.pendingQueue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 488 ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.pendingQueue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 489 ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.pendingQueue queueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(packetPulled)
+attr title "queueing times"
+attr unit s
+vector 490 ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPushStarted)
+attr title "incoming packet lengths"
+attr unit b
+vector 491 ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.pendingQueue incomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPushStarted)
+attr title "incoming datarate"
+attr unit bps
+vector 492 ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPulled)
+attr title "outgoing packet lengths"
+attr unit b
+vector 493 ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPulled)
+attr title "outgoing datarate"
+attr unit bps
+vector 494 ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.pendingQueue droppedPacketLengthsQueueOverflow:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetDropReasonIsQueueOverflow(packetDropped))
+attr title "dropped packet lengths: queue overflow"
+attr unit b
+vector 495 ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.pendingQueue flowQueueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(demuxFlow(packetPulled))
+attr title "flow queueing times"
+attr unit s
+vector 496 ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.pendingQueue flowIncomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(flowPacketLength(demuxFlow(packetPushStarted)))
+attr title "flow specific incoming data rate"
+attr unit bps
+vector 497 ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.pendingQueue flowOutgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(flowPacketLength(demuxFlow(packetPulled)))
+attr title "flow specific outgoing data rate"
+attr unit bps
+vector 498 ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.inProgressFrames queueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(packetDequeued)
+attr title "queueing times"
+vector 499 ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.inProgressFrames queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(count(packetEnqueued) - count(packetDequeued))"
+attr title "queue length"
+vector 500 ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.contention backoffPeriodGenerated:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr title "backoff periods"
+vector 501 ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.contention backoffActive:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source warmup(count(backoffStarted)-count(backoffStopped))
+attr title "backoff active"
+vector 502 ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.contention stateChanged:vector ETV
+attr enum IDLE,DEFER,IFS_AND_BACKOFF
+attr interpolationmode none
+attr recordingmode vector
+attr title "contention state changed"
+attr type enum
+vector 503 ZrpTestNetwork.node6.wlan[0].mac.dcf.recipientMacDataService packetDropDuplicateDetected:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsDuplicateDetected(packetDropped)
+attr title "packet drops: duplicate detected, packetBytes"
+vector 504 ZrpTestNetwork.node6.wlan[0].mac.dcf.recoveryProcedure contentionWindowChanged:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr title "contention window"
+vector 505 ZrpTestNetwork.node6.wlan[0].mac.dcf packetSentToPeer:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets sent, packetBytes"
+vector 506 ZrpTestNetwork.node6.wlan[0].mac.dcf packetSentToPeerUnicast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Unicast(packetSentToPeer)
+attr title "packets sent: unicast, packetBytes"
+vector 507 ZrpTestNetwork.node6.wlan[0].mac.dcf packetSentToPeerMulticast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Multicast(packetSentToPeer)
+attr title "packets sent: multicast, packetBytes"
+vector 508 ZrpTestNetwork.node6.wlan[0].mac.dcf packetSentToPeerBroadcast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Broadcast(packetSentToPeer)
+attr title "packets sent: broadcast , packetBytes"
+vector 509 ZrpTestNetwork.node6.wlan[0].mac.dcf packetSentToPeerWithRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Retry(packetSentToPeer)
+attr title "packets sent: with retry, packetBytes"
+vector 510 ZrpTestNetwork.node6.wlan[0].mac.dcf packetSentToPeerWithoutRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211NotRetry(packetSentToPeer)
+attr title "packets sent: without retry, packetBytes"
+vector 511 ZrpTestNetwork.node6.wlan[0].mac.dcf packetReceivedFromPeer:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets received, packetBytes"
+vector 512 ZrpTestNetwork.node6.wlan[0].mac.dcf packetReceivedFromPeerUnicast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Unicast(packetReceivedFromPeer)
+attr title "packets received: unicast, packetBytes"
+vector 513 ZrpTestNetwork.node6.wlan[0].mac.dcf packetReceivedFromPeerMulticast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Multicast(packetReceivedFromPeer)
+attr title "packets received: multicast, packetBytes"
+vector 514 ZrpTestNetwork.node6.wlan[0].mac.dcf packetReceivedFromPeerBroadcast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Broadcast(packetReceivedFromPeer)
+attr title "packets received: broadcast, packetBytes"
+vector 515 ZrpTestNetwork.node6.wlan[0].mac.dcf packetReceivedFromPeerWithRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Retry(packetReceivedFromPeer)
+attr title "packets received: with retry, packetBytes"
+vector 516 ZrpTestNetwork.node6.wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211NotRetry(packetReceivedFromPeer)
+attr title "packets received: without retry, packetBytes"
+vector 517 ZrpTestNetwork.node6.wlan[0].mac.dcf packetDrop:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropped
+attr title "packet drops, packetBytes"
+vector 518 ZrpTestNetwork.node6.wlan[0].mac.dcf packetDropNotAddressedToUs:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNotAddressedToUs(packetDropped)
+attr title "packet drops: not addressed to us, packetBytes"
+vector 519 ZrpTestNetwork.node6.wlan[0].mac.dcf packetDropQueueOverflow:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsQueueOverflow(packetDropped)
+attr title "packet drops: queue overflow, packetBytes"
+vector 520 ZrpTestNetwork.node6.wlan[0].mac.dcf packetDropRetryLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsRetryLimitReached(packetDropped)
+attr title "packet drops: retry limit reached, packetBytes"
+vector 521 ZrpTestNetwork.node6.wlan[0].mac.dcf frameSequenceActive:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source warmup(count(frameSequenceStarted)-count(frameSequenceFinished))
+attr title "frame sequence active"
+vector 522 ZrpTestNetwork.node6.wlan[0].mac.dcf datarateSelected:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr title "datarates selected"
+vector 523 ZrpTestNetwork.node6.wlan[0].mac.rx nav:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source navChanged
+attr title "network allocation vector"
+vector 524 ZrpTestNetwork.node6.wlan[0].mac packetSentToUpper:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets sent to upper layer, packetBytes"
+vector 525 ZrpTestNetwork.node6.wlan[0].mac packetSentToLower:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets sent to lower layer, packetBytes"
+vector 526 ZrpTestNetwork.node6.wlan[0].mac packetReceivedFromUpper:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets received from upper layer, packetBytes"
+vector 527 ZrpTestNetwork.node6.wlan[0].mac packetReceivedFromLower:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets received from lower layer, packetBytes"
+vector 528 ZrpTestNetwork.node6.wlan[0].mac packetDrop:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropped
+attr title "packet drops, packetBytes"
+vector 529 ZrpTestNetwork.node6.wlan[0].mac packetDropIncorrectlyReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packet drops: incorrectly received, packetBytes"
+vector 530 ZrpTestNetwork.node6.wlan[0].mac packetDropNotAddressedToUs:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNotAddressedToUs(packetDropped)
+attr title "packet drops: not addressed to us, packetBytes"
+vector 531 ZrpTestNetwork.node6.wlan[0].mac packetDropQueueOverflow:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsQueueOverflow(packetDropped)
+attr title "packet drops: queue overflow, packetBytes"
+vector 532 ZrpTestNetwork.node6.wlan[0].mac packetDropRetryLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsRetryLimitReached(packetDropped)
+attr title "packet drops: retry limit reached, packetBytes"
+vector 533 ZrpTestNetwork.node6.wlan[0].mac packetDropDuplicateDetected:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsDuplicateDetected(packetDropped)
+attr title "packet drops: duplicate detected, packetBytes"
+vector 534 ZrpTestNetwork.node6.wlan[0].mac packetDropOther:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsOther(packetDropped)
+attr title "packet drops: other, packetBytes"
+vector 535 ZrpTestNetwork.node6.wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 536 ZrpTestNetwork.node6.wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 537 ZrpTestNetwork.node6.wlan[0].radio transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "Radio transmission state"
+vector 538 ZrpTestNetwork.node6.wlan[0].radio radioChannel:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioChannelChanged
+attr title "Radio channel"
+vector 539 ZrpTestNetwork.node6.wlan[0] packetDropInterfaceDown:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsInterfaceDown(packetDropped)
+attr title "packet drops: interface down, packetBytes"
+vector 540 ZrpTestNetwork.node6.wlan[0] packetDropNoCarrier:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoCarrier(packetDropped)
+attr title "packet drops: no carrier, packetBytes"
+vector 541 ZrpTestNetwork.node6.ipv4.ip packetDropAddressResolutionFailed:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsAddressResolutionFailed(packetDropped)
+attr title "packet drop: address resolution failed, packetBytes"
+vector 542 ZrpTestNetwork.node6.ipv4.ip packetDropHopLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsHopLimitReached(packetDropped)
+attr title "packet drop: hop limit reached, packetBytes"
+vector 543 ZrpTestNetwork.node6.ipv4.ip packetDropForwardingDisabled:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsForwardingDisabled(packetDropped)
+attr title "packet drop: forwarding disabled, packetBytes"
+vector 544 ZrpTestNetwork.node6.ipv4.ip packetDropNoInterfaceFound:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoInterfaceFound(packetDropped)
+attr title "packet drop: no interface found, packetBytes"
+vector 545 ZrpTestNetwork.node6.ipv4.ip packetDropNoRouteFound:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoRouteFound(packetDropped)
+attr title "packet drop: no route found, packetBytes"
+vector 546 ZrpTestNetwork.node6.ipv4.ip packetDropUndefined:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsUndefined(packetDropped)
+attr title "packet drop: undefined, packetBytes"
+vector 547 ZrpTestNetwork.node6.udp packetSent:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSent
+attr title "packets sent, packetBytes"
+vector 548 ZrpTestNetwork.node6.udp packetReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceived
+attr title "packets received, packetBytes"
+vector 549 ZrpTestNetwork.node6.udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 550 ZrpTestNetwork.node6.udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 551 ZrpTestNetwork.node6.udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+4	143346 370 0 2314 0 4.196392396581 19 0 1 7 7
+5	143716 384 0 2314 0 4.196392396581 19 0 736 4272 2651392
+6	144100 165 176 2314 0.056804456376 4.196392396581 7 0 0 0 0
+7	144265 179 174 2312 0.056804456376 4.196392396581 7 560 736 4272 2651392
+8	144444 523 532 2312 0.1 4.1 41 0 7360 35360 210969600
+9	144967 179 176 2314 0.056804456376 4.196392396581 7 560 736 4272 2651392
+10	145146 564 534 2314 0.1 4.1 41 0 7360 35360 210969600
+15	145710 214 186 2324 0.056858456376 4.196450396581 7 5.4e-05 5.8e-05 0.000386 2.1308e-08
+16	145924 362 0 2324 0 4.196450396581 16 0 1 7 7
+17	146286 176 174 2312 0.056804456376 4.196392396581 7 0 23 70 1230
+18	146462 362 0 2313 0 4.196392396581 16 0 1 7 7
+19	146824 2946 0 2594 0 5.007157969456 122 0 2 28 56
+21	149770 10 0 0 0 0 1 31 31 31 961
+22	149780 179 186 2324 0.056858456376 4.196450396581 7 70 92 534 41428
+24	149959 179 186 2324 0.056858456376 4.196450396581 7 70 92 534 41428
+25	150138 179 186 2324 0.056858456376 4.196450396581 7 70 92 534 41428
+27	150317 179 186 2324 0.056858456376 4.196450396581 7 70 92 534 41428
+28	150496 408 48 2595 0.002076328296 5.007157969456 16 70 116 1288 109040
+30	150904 408 48 2595 0.002076328296 5.007157969456 16 70 116 1288 109040
+31	151312 408 48 2595 0.002076328296 5.007157969456 16 70 116 1288 109040
+33	151720 408 48 2595 0.002076328296 5.007157969456 16 70 116 1288 109040
+38	152128 362 0 2324 0 4.196450396581 16 0 1 7 7
+39	152490 221 176 2314 0.056804456376 4.196392396581 7 24000000 24000000 168000000 4.032e+15
+41	152711 404 48 2595 0.002076328296 5.007157969456 16 42 88 840 49456
+42	153115 179 176 2314 0.056804456376 4.196392396581 7 70 92 534 41428
+43	153294 179 174 2312 0.056804456376 4.196392396581 7 42 64 338 17012
+44	153473 408 48 2595 0.002076328296 5.007157969456 16 70 116 1288 109040
+52	153881 371 0 2325 0 4.196450396581 17 0 3 37 95
+53	154252 1129 0 2594 0 5.007157969456 47 0 3 72 168
+54	155381 688 177 2325 0.056804456376 4.196450396581 28 0 2 28 42
+55	156069 9 0 0 0 0 1 0 0 0 0
+64	156078 179 171 2309 0.056804456376 4.196392396581 7 14 36 142 3572
+65	156257 404 51 2598 0.002076328296 5.007157969456 16 14 60 392 14960
+66	156661 404 0 2598 0 5.007157969456 17 0 16 136 1496
+67	157065 9 0 0 0 0 1 0 0 0 0
+68	157074 9 0 0 0 0 1 0 0 0 0
+73	157083 391 0 2406 0 4.418039384414 19 0 1 7 7
+74	157474 405 0 2406 0 4.418039384414 19 0 800 4400 2848000
+75	157879 173 338 2406 0.092559663323 4.418039384414 7 0 0 0 0
+76	158052 187 336 2404 0.092559663323 4.418039384414 7 560 800 4400 2848000
+77	158239 616 694 2404 0.1 4.4 44 0 8000 36000 220800000
+78	158855 187 338 2406 0.092559663323 4.418039384414 7 560 800 4400 2848000
+79	159042 616 696 2406 0.1 4.4 44 0 8000 36000 220800000
+84	159658 215 348 2416 0.092613663323 4.418101384414 7 5.4e-05 6.2e-05 0.000394 2.2268e-08
+85	159873 364 0 2416 0 4.418101384414 16 0 1 7 7
+86	160237 177 336 2404 0.092559663323 4.418039384414 7 0 23 77 1339
+87	160414 364 0 2405 0 4.418039384414 16 0 1 7 7
+88	160778 3458 0 2506 0 4.478639969803 142 0 2 28 56
+90	164236 10 0 0 0 0 1 31 31 31 961
+91	164246 182 348 2416 0.092613663323 4.418101384414 7 70 100 550 44500
+93	164428 182 348 2416 0.092613663323 4.418101384414 7 70 100 550 44500
+94	164610 182 348 2416 0.092613663323 4.418101384414 7 70 100 550 44500
+96	164792 182 348 2416 0.092613663323 4.418101384414 7 70 100 550 44500
+97	164974 541 149 2507 0.008767368293 4.478639969803 21 70 124 1714 147580
+99	165515 541 149 2507 0.008767368293 4.478639969803 21 70 124 1714 147580
+100	166056 562 149 2507 0.008767368293 4.478639969803 21 70 124 1714 147580
+102	166618 562 149 2507 0.008767368293 4.478639969803 21 70 124 1714 147580
+107	167180 380 0 2416 0 4.418101384414 16 0 1 7 7
+108	167560 229 338 2406 0.092559663323 4.418039384414 7 24000000 24000000 168000000 4.032e+15
+110	167789 556 149 2507 0.008767368293 4.478639969803 21 42 96 1126 68060
+111	168345 189 338 2406 0.092559663323 4.418039384414 7 70 100 550 44500
+112	168534 187 336 2404 0.092559663323 4.418039384414 7 42 72 354 19188
+113	168721 562 149 2507 0.008767368293 4.478639969803 21 70 124 1714 147580
+121	169283 390 0 2417 0 4.418101384414 17 0 3 37 95
+122	169673 1440 0 2506 0 4.478639969803 57 0 3 92 218
+123	171113 720 339 2417 0.092559663323 4.418101384414 28 0 2 28 42
+124	171833 10 0 0 0 0 1 0 0 0 0
+133	171843 187 333 2401 0.092559663323 4.418039384414 7 14 44 158 4852
+134	172030 557 152 2510 0.008767368293 4.478639969803 21 14 68 538 21468
+135	172587 558 0 2510 0 4.478639969803 22 0 21 231 3311
+136	173145 10 0 0 0 0 1 0 0 0 0
+137	173155 10 0 0 0 0 1 0 0 0 0
+142	173165 458 0 2582 0 5.007103605871 21 0 1 8 8
+143	173623 474 0 2582 0 5.007103605871 21 0 928 5216 3603968
+144	174097 204 68 2582 0.007103605871 5.007103605871 8 0 0 0 0
+145	174301 220 66 2580 0.007103605871 5.007103605871 8 560 928 5216 3603968
+146	174521 741 424 2580 0.1 5 50 0 9280 46560 329036800
+147	175262 220 68 2582 0.007103605871 5.007103605871 8 560 928 5216 3603968
+148	175482 741 426 2582 0.1 5 50 0 9280 46560 329036800
+153	176223 252 78 2592 0.007157605871 5.007157605871 8 5.4e-05 6.6e-05 0.000456 2.6208e-08
+154	176475 428 0 2592 0 5.007157605871 18 0 1 8 8
+155	176903 207 66 2580 0.007103605871 5.007103605871 8 3 31 96 2012
+156	177110 428 0 2581 0 5.007103605871 18 0 1 8 8
+157	177538 5310 0 2593 0 5.007157605871 210 0 2 32 64
+159	182848 11 0 0 0 0 1 31 31 31 961
+160	182859 214 78 2592 0.007157605871 5.007157605871 8 70 116 652 56312
+162	183073 214 78 2592 0.007157605871 5.007157605871 8 70 116 652 56312
+163	183287 214 78 2592 0.007157605871 5.007157605871 8 70 116 652 56312
+165	183501 214 78 2592 0.007157605871 5.007157605871 8 70 116 652 56312
+166	183715 959 42 2556 0.00207631699 5.00207631699 36 70 124 2884 241736
+168	184674 959 42 2556 0.00207631699 5.00207631699 36 70 124 2884 241736
+169	185633 959 42 2556 0.00207631699 5.00207631699 36 70 124 2884 241736
+171	186592 959 42 2556 0.00207631699 5.00207631699 36 70 124 2884 241736
+176	187551 428 0 2592 0 5.007157605871 18 0 1 8 8
+177	187979 260 68 2582 0.007103605871 5.007103605871 8 24000000 24000000 192000000 4.608e+15
+179	188239 951 42 2556 0.00207631699 5.00207631699 36 42 96 1876 108456
+180	189190 214 68 2582 0.007103605871 5.007103605871 8 70 116 652 56312
+181	189404 212 66 2580 0.007103605871 5.007103605871 8 42 88 428 26072
+182	189616 959 42 2556 0.00207631699 5.00207631699 36 70 124 2884 241736
+190	190575 438 0 2593 0 5.007157605871 19 0 3 42 108
+191	191013 2247 0 2593 0 5.007157605871 89 0 3 153 369
+192	193260 816 69 2593 0.007103605871 5.007157605871 32 0 2 32 48
+193	194076 10 0 0 0 0 1 0 0 0 0
+202	194086 212 63 2577 0.007103605871 5.007103605871 8 14 60 204 8376
+203	194298 951 45 2559 0.00207631699 5.00207631699 36 14 68 868 31624
+204	195249 952 0 2559 0 5.00207631699 37 0 36 666 16206
+205	196201 10 0 0 0 0 1 0 0 0 0
+206	196211 10 0 0 0 0 1 0 0 0 0
+211	196221 460 0 2632 0 5.008712929697 21 0 1 8 8
+212	196681 476 0 2632 0 5.008712929697 21 0 992 5344 3849728
+213	197157 205 118 2632 0.008712929697 5.008712929697 8 0 0 0 0
+214	197362 221 116 2630 0.008712929697 5.008712929697 8 560 992 5344 3849728
+215	197583 741 474 2630 0.1 5 50 0 9920 47840 353612800
+216	198324 221 118 2632 0.008712929697 5.008712929697 8 560 992 5344 3849728
+217	198545 741 476 2632 0.1 5 50 0 9920 47840 353612800
+222	199286 217 128 2360 0.008766929697 4.324155938279 7 5.4e-05 7e-05 0.00041 2.438e-08
+223	199503 404 0 2632 0 5.008712929697 17 0 1 8 8
+224	199907 211 116 2630 0.008712929697 5.008712929697 8 0 24 123 2589
+225	200118 430 0 2631 0 5.008712929697 18 0 1 8 8
+226	200548 6076 0 2633 0 5.008712929697 240 0 2 32 64
+228	206624 11 0 0 0 0 1 31 31 31 961
+229	206635 188 128 2360 0.008766929697 4.324155938279 7 70 124 598 55252
+231	206823 188 128 2360 0.008766929697 4.324155938279 7 70 124 598 55252
+232	207011 188 128 2360 0.008766929697 4.324155938279 7 70 124 598 55252
+234	207199 188 128 2360 0.008766929697 4.324155938279 7 70 124 598 55252
+235	207387 1173 54 2607 0.002076339869 5.007157977866 44 70 116 3504 290368
+237	208560 1173 54 2607 0.002076339869 5.007157977866 44 70 116 3504 290368
+238	209733 1173 54 2607 0.002076339869 5.007157977866 44 70 116 3504 290368
+240	210906 1173 54 2607 0.002076339869 5.007157977866 44 70 116 3504 290368
+245	212079 404 0 2632 0 5.008712929697 17 0 1 8 8
+246	212483 261 118 2632 0.008712929697 5.008712929697 8 24000000 24000000 192000000 4.608e+15
+248	212744 1161 54 2607 0.002076339869 5.007157977866 44 42 88 2272 128640
+249	213905 215 118 2632 0.008712929697 5.008712929697 8 70 124 668 60152
+250	214120 213 116 2630 0.008712929697 5.008712929697 8 42 96 444 29016
+251	214333 1173 54 2607 0.002076339869 5.007157977866 44 70 116 3504 290368
+259	215506 414 0 2633 0 5.008712929697 18 0 3 40 104
+260	215920 2628 0 2633 0 5.008712929697 104 0 3 184 448
+261	218548 768 119 2634 0.008712929697 5.008712929697 30 0 2 31 47
+262	219316 10 0 0 0 0 1 0 0 0 0
+271	219326 213 113 2627 0.008712929697 5.008712929697 8 14 68 220 10424
+272	219539 1161 57 2610 0.002076339869 5.007157977866 44 14 60 1040 35904
+273	220700 1162 0 2610 0 5.007157977866 45 0 44 990 29370
+274	221862 10 0 0 0 0 1 0 0 0 0
+275	221872 10 0 0 0 0 1 0 0 0 0
+280	221882 458 0 2537 0 5.002021839912 21 0 1 8 8
+281	222340 474 0 2537 0 5.002021839912 21 0 864 5088 3374592
+282	222814 204 23 2537 0.002021839912 5.002021839912 8 0 0 0 0
+283	223018 220 21 2535 0.002021839912 5.002021839912 8 560 864 5088 3374592
+284	223238 741 379 2535 0.1 5 50 0 8640 45280 306099200
+285	223979 220 23 2537 0.002021839912 5.002021839912 8 560 864 5088 3374592
+286	224199 741 381 2537 0.1 5 50 0 8640 45280 306099200
+291	224940 252 33 2547 0.002075839912 5.002075839912 8 5.4e-05 6.6e-05 0.000456 2.6208e-08
+292	225192 428 0 2547 0 5.002075839912 18 0 1 8 8
+293	225620 210 21 2535 0.002021839912 5.002021839912 8 2 31 134 2922
+294	225830 428 0 2536 0 5.002021839912 18 0 1 8 8
+295	226258 4600 0 2612 0 5.007158082949 182 0 2 32 64
+297	230858 11 0 0 0 0 1 31 31 31 961
+298	230869 214 33 2547 0.002075839912 5.002075839912 8 70 108 636 52728
+300	231083 214 33 2547 0.002075839912 5.002075839912 8 70 108 636 52728
+301	231297 214 33 2547 0.002075839912 5.002075839912 8 70 108 636 52728
+303	231511 214 33 2547 0.002075839912 5.002075839912 8 70 108 636 52728
+304	231725 772 99 2613 0.007158082949 5.007158082949 29 70 124 2334 197492
+306	232497 772 99 2613 0.007158082949 5.007158082949 29 70 124 2334 197492
+307	233269 772 99 2613 0.007158082949 5.007158082949 29 70 124 2334 197492
+309	234041 772 99 2613 0.007158082949 5.007158082949 29 70 124 2334 197492
+314	234813 428 0 2547 0 5.002075839912 18 0 1 8 8
+315	235241 260 23 2537 0.002021839912 5.002021839912 8 24000000 24000000 192000000 4.608e+15
+317	235501 766 99 2613 0.007158082949 5.007158082949 29 42 96 1522 89524
+318	236267 214 23 2537 0.002021839912 5.002021839912 8 70 108 636 52728
+319	236481 212 21 2535 0.002021839912 5.002021839912 8 42 80 412 23384
+320	236693 772 99 2613 0.007158082949 5.007158082949 29 70 124 2334 197492
+328	237465 438 0 2548 0 5.002075839912 19 0 3 42 108
+329	237903 1892 0 2612 0 5.007158082949 75 0 3 125 299
+330	239795 816 24 2548 0.002021839912 5.002075839912 32 0 2 32 48
+331	240611 10 0 0 0 0 1 0 0 0 0
+340	240621 212 18 2532 0.002021839912 5.002021839912 8 14 52 188 6584
+341	240833 767 102 2616 0.007158082949 5.007158082949 29 14 68 710 27028
+342	241600 768 0 2616 0 5.007158082949 30 0 29 435 8555
+343	242368 10 0 0 0 0 1 0 0 0 0
+344	242378 10 0 0 0 0 1 0 0 0 0
+349	242388 406 0 2488 0 4.47857757716 19 0 1 7 7
+350	242794 420 0 2488 0 4.47857757716 19 0 800 4400 2848000
+351	243214 178 257 2488 0.083261984284 4.47857757716 7 0 0 0 0
+352	243392 192 255 2486 0.083261984284 4.47857757716 7 560 800 4400 2848000
+353	243584 660 613 2486 0.1 4.4 44 0 8000 36000 220800000
+354	244244 192 257 2488 0.083261984284 4.47857757716 7 560 800 4400 2848000
+355	244436 660 615 2488 0.1 4.4 44 0 8000 36000 220800000
+360	245096 220 267 2498 0.083315984284 4.47863957716 7 5.4e-05 6.2e-05 0.000394 2.2268e-08
+361	245316 376 0 2498 0 4.47863957716 16 0 1 7 7
+362	245692 181 255 2486 0.083261984284 4.47857757716 7 0 29 83 1709
+363	245873 376 0 2487 0 4.47857757716 16 0 1 7 7
+364	246249 3672 0 2549 0 5.00207620342 146 0 2 28 56
+366	249921 11 0 0 0 0 1 31 31 31 961
+367	249932 187 267 2498 0.083315984284 4.47863957716 7 70 100 550 44500
+369	250119 187 267 2498 0.083315984284 4.47863957716 7 70 100 550 44500
+370	250306 187 267 2498 0.083315984284 4.47863957716 7 70 100 550 44500
+372	250493 187 267 2498 0.083315984284 4.47863957716 7 70 100 550 44500
+373	250680 585 36 2550 0.00207620342 5.00207620342 22 70 124 1784 152480
+375	251265 585 36 2550 0.00207620342 5.00207620342 22 70 124 1784 152480
+376	251850 585 36 2550 0.00207620342 5.00207620342 22 70 124 1784 152480
+378	252435 585 36 2550 0.00207620342 5.00207620342 22 70 124 1784 152480
+383	253020 376 0 2498 0 4.47863957716 16 0 1 7 7
+384	253396 227 257 2488 0.083261984284 4.47857757716 7 24000000 24000000 168000000 4.032e+15
+386	253623 579 36 2550 0.00207620342 5.00207620342 22 42 96 1168 69824
+387	254202 187 257 2488 0.083261984284 4.47857757716 7 70 100 550 44500
+388	254389 185 255 2486 0.083261984284 4.47857757716 7 42 72 354 19188
+389	254574 585 36 2550 0.00207620342 5.00207620342 22 70 124 1784 152480
+397	255159 386 0 2499 0 4.47863957716 17 0 3 37 95
+398	255545 1480 0 2549 0 5.00207620342 59 0 3 96 228
+399	257025 712 258 2499 0.083261984284 4.47863957716 28 0 2 28 42
+400	257737 10 0 0 0 0 1 0 0 0 0
+409	257747 185 252 2483 0.083261984284 4.47857757716 7 14 44 158 4852
+410	257932 579 39 2553 0.00207620342 5.00207620342 22 14 68 552 21664
+411	258511 580 0 2553 0 5.00207620342 23 0 22 253 3795
+412	259091 10 0 0 0 0 1 0 0 0 0
+413	259101 10 0 0 0 0 1 0 0 0 0
+418	259111 406 0 2047 0 4.077815675689 19 0 1 7 7
+419	259517 420 0 2047 0 4.077815675689 19 0 864 4528 3060992
+420	259937 178 212 2047 0.077815675689 4.077815675689 7 0 0 0 0
+421	260115 192 210 2045 0.077815675689 4.077815675689 7 560 864 4528 3060992
+422	260307 585 568 2000 0.1 4 40 0 14240 31040 296857600
+423	260892 192 212 2047 0.077815675689 4.077815675689 7 560 864 4528 3060992
+424	261084 585 570 2002 0.1 4 40 0 14240 31040 296857600
+429	261669 220 222 2057 0.077869675689 4.077869675689 7 5.4e-05 6.6e-05 0.000402 2.3292e-08
+430	261889 376 0 2057 0 4.077869675689 16 0 1 7 7
+431	262265 181 210 2045 0.077815675689 4.077815675689 7 1 30 84 1626
+432	262446 376 0 2046 0 4.077815675689 16 0 1 7 7
+433	262822 4470 0 2635 0 5.008713190496 176 0 2 28 56
+435	267292 11 0 0 0 0 1 31 31 31 961
+436	267303 187 222 2057 0.077869675689 4.077869675689 7 70 108 566 47828
+438	267490 187 222 2057 0.077869675689 4.077869675689 7 70 108 566 47828
+439	267677 187 222 2057 0.077869675689 4.077869675689 7 70 108 566 47828
+441	267864 187 222 2057 0.077869675689 4.077869675689 7 70 108 566 47828
+442	268051 781 105 2619 0.007158155291 5.007158155291 29 70 124 2350 200564
+444	268832 781 105 2619 0.007158155291 5.007158155291 29 70 124 2350 200564
+445	269613 781 105 2619 0.007158155291 5.007158155291 29 70 124 2350 200564
+447	270394 781 105 2619 0.007158155291 5.007158155291 29 70 124 2350 200564
+452	271175 376 0 2057 0 4.077869675689 16 0 1 7 7
+453	271551 227 212 2047 0.077815675689 4.077815675689 7 24000000 24000000 168000000 4.032e+15
+455	271778 773 105 2619 0.007158155291 5.007158155291 29 42 96 1538 91700
+456	272551 187 212 2047 0.077815675689 4.077815675689 7 70 108 566 47828
+457	272738 185 210 2045 0.077815675689 4.077815675689 7 42 80 370 21620
+458	272923 781 105 2619 0.007158155291 5.007158155291 29 70 124 2350 200564
+466	273704 386 0 2058 0 4.077869675689 17 0 3 37 95
+467	274090 1879 0 2635 0 5.008713190496 74 0 3 127 307
+468	275969 712 213 2058 0.077815675689 4.077869675689 28 0 2 28 42
+469	276681 10 0 0 0 0 1 0 0 0 0
+478	276691 185 207 2042 0.077815675689 4.077815675689 7 14 52 174 6388
+479	276876 773 108 2622 0.007158155291 5.007158155291 29 14 68 726 28308
+480	277649 774 0 2622 0 5.007158155291 30 0 29 435 8555
+481	278423 10 0 0 0 0 1 0 0 0 0
+482	278433 10 0 0 0 0 1 0 0 0 0
+487	278443 410 0 2447 0 4.435043625534 19 0 1 7 7
+488	278853 424 0 2447 0 4.435043625534 19 0 800 4400 2848000
+489	279277 180 297 2447 0.087001214526 4.435043625534 7 0 0 0 0
+490	279457 194 295 2445 0.087001214526 4.435043625534 7 560 800 4400 2848000
+491	279651 660 653 2445 0.1 4.4 44 0 8000 36000 220800000
+492	280311 194 297 2447 0.087001214526 4.435043625534 7 560 800 4400 2848000
+493	280505 660 655 2447 0.1 4.4 44 0 8000 36000 220800000
+498	281165 222 307 2457 0.087055214526 4.435105625534 7 5.4e-05 6.2e-05 0.000394 2.2268e-08
+499	281387 380 0 2457 0 4.435105625534 16 0 1 7 7
+500	281767 186 295 2445 0.087001214526 4.435043625534 7 9 31 150 3522
+501	281953 380 0 2446 0 4.435043625534 16 0 1 7 7
+502	282333 3696 0 2600 0 5.007157973352 146 0 2 28 56
+504	286029 11 0 0 0 0 1 31 31 31 961
+505	286040 189 307 2457 0.087055214526 4.435105625534 7 70 100 550 44500
+507	286229 189 307 2457 0.087055214526 4.435105625534 7 70 100 550 44500
+508	286418 189 307 2457 0.087055214526 4.435105625534 7 70 100 550 44500
+510	286607 189 307 2457 0.087055214526 4.435105625534 7 70 100 550 44500
+511	286796 587 87 2601 0.007157973352 5.007157973352 22 70 124 1816 159392
+513	287383 587 87 2601 0.007157973352 5.007157973352 22 70 124 1816 159392
+514	287970 587 87 2601 0.007157973352 5.007157973352 22 70 124 1816 159392
+516	288557 587 87 2601 0.007157973352 5.007157973352 22 70 124 1816 159392
+521	289144 380 0 2457 0 4.435105625534 16 0 1 7 7
+522	289524 229 297 2447 0.087001214526 4.435043625534 7 24000000 24000000 168000000 4.032e+15
+524	289753 581 87 2601 0.007157973352 5.007157973352 22 42 96 1200 74944
+525	290334 189 297 2447 0.087001214526 4.435043625534 7 70 100 550 44500
+526	290523 187 295 2445 0.087001214526 4.435043625534 7 42 72 354 19188
+527	290710 587 87 2601 0.007157973352 5.007157973352 22 70 124 1816 159392
+535	291297 390 0 2458 0 4.435105625534 17 0 3 37 95
+536	291687 1488 0 2600 0 5.007157973352 59 0 3 96 228
+537	293175 720 298 2458 0.087001214526 4.435105625534 28 0 2 28 42
+538	293895 10 0 0 0 0 1 0 0 0 0
+547	293905 187 292 2442 0.087001214526 4.435043625534 7 14 44 158 4852
+548	294092 581 90 2604 0.007157973352 5.007157973352 22 14 68 584 24992
+549	294673 582 0 2604 0 5.007157973352 23 0 22 253 3795
+550	295255 10 0 0 0 0 1 0 0 0 0
+551	295265 10 0 0 0 0 1 0 0 0 0
+4	295275 386 2688 5204 5.056804456376 10.056804456376 16 0 1 8 8
+5	295661 402 2688 5204 5.056804456376 10.056804456376 16 0 736 4832 2964992
+6	296063 193 2690 5204 5.056804456376 10.056804456376 8 0 0 0 0
+7	296256 209 2688 5202 5.056804456376 10.056804456376 8 560 736 4832 2964992
+8	296465 780 2688 5202 4.2 10 59 0 7360 50080 319308800
+9	297245 209 2690 5204 5.056804456376 10.056804456376 8 560 736 4832 2964992
+10	297454 839 2690 5204 4.2 10 59 0 7360 50080 319308800
+15	298293 249 2700 5214 5.056858456376 10.056858456376 8 5.4e-05 5.8e-05 0.00044 2.4224e-08
+16	298542 402 2690 5214 5.056804456376 10.056858456376 16 0 1 8 8
+17	298944 209 2688 5202 5.056804456376 10.056804456376 8 12 31 161 3625
+18	299153 402 2688 5203 5.056804456376 10.056804456376 16 0 1 8 8
+19	299555 3000 2688 5215 5.056804456376 10.056858456376 120 0 2 32 64
+22	302555 209 2700 5214 5.056858456376 10.056858456376 8 70 92 604 46328
+24	302764 209 2700 5214 5.056858456376 10.056858456376 8 70 92 604 46328
+25	302973 209 2700 5214 5.056858456376 10.056858456376 8 70 92 604 46328
+27	303182 209 2700 5214 5.056858456376 10.056858456376 8 70 92 604 46328
+28	303391 366 2920 5109 6.002076328296 10.007157969456 14 70 116 1148 99240
+30	303757 366 2920 5109 6.002076328296 10.007157969456 14 70 116 1148 99240
+31	304123 366 2920 5109 6.002076328296 10.007157969456 14 70 116 1148 99240
+33	304489 366 2920 5109 6.002076328296 10.007157969456 14 70 116 1148 99240
+38	304855 402 2690 5214 5.056804456376 10.056858456376 16 0 1 8 8
+39	305257 257 2690 5204 5.056804456376 10.056804456376 8 24000000 24000000 192000000 4.608e+15
+41	305514 362 2920 5109 6.002076328296 10.007157969456 14 42 88 756 45928
+42	305876 209 2690 5204 5.056804456376 10.056804456376 8 70 92 604 46328
+43	306085 209 2688 5202 5.056804456376 10.056804456376 8 42 64 380 18776
+44	306294 366 2920 5109 6.002076328296 10.007157969456 14 70 116 1148 99240
+52	306660 402 2691 5215 5.056804456376 10.056858456376 16 2 3 40 104
+53	307062 1098 2691 5215 5.056804456376 10.056858456376 44 0 3 64 148
+54	308160 804 2691 5215 5.056804456376 10.056858456376 32 0 2 32 48
+64	308964 209 2685 5199 5.056804456376 10.056804456376 8 14 36 156 3768
+65	309173 362 2923 5112 6.002076328296 10.007157969456 14 14 60 364 14568
+66	309535 362 2923 5112 6.002076328296 10.007157969456 14 17 30 329 7959
+73	309897 402 2850 5412 5.092559663323 10.092559663323 16 0 1 8 8
+74	310299 418 2850 5412 5.092559663323 10.092559663323 16 0 800 4960 3161600
+75	310717 201 2852 5412 5.092559663323 10.092559663323 8 0 0 0 0
+76	310918 217 2850 5410 5.092559663323 10.092559663323 8 560 800 4960 3161600
+77	311135 797 2850 5410 4.5 10 56 0 8000 52000 348800000
+78	311932 217 2852 5412 5.092559663323 10.092559663323 8 560 800 4960 3161600
+79	312149 797 2852 5412 4.5 10 56 0 8000 52000 348800000
+84	312946 217 2862 5010 5.092613663323 9.092613663323 7 5.4e-05 6.2e-05 0.000394 2.2268e-08
+85	313163 376 2852 5412 5.092559663323 10.092559663323 15 0 1 8 8
+86	313539 205 2850 5410 5.092559663323 10.092559663323 8 2 20 73 999
+87	313744 402 2850 5411 5.092559663323 10.092559663323 16 0 1 8 8
+88	314146 4060 2638 5413 5.008713368293 10.092559663323 162 0 2 32 64
+91	318206 184 2862 5010 5.092613663323 9.092613663323 7 70 100 550 44500
+93	318390 184 2862 5010 5.092613663323 9.092613663323 7 70 100 550 44500
+94	318574 184 2862 5010 5.092613663323 9.092613663323 7 70 100 550 44500
+96	318758 184 2862 5010 5.092613663323 9.092613663323 7 70 100 550 44500
+97	318942 658 2663 5350 5.008767368293 10.083316376927 25 70 124 2032 173944
+99	319600 658 2663 5350 5.008767368293 10.083316376927 25 70 124 2032 173944
+100	320258 683 2663 5350 5.008767368293 10.083316376927 25 70 124 2032 173944
+102	320941 683 2663 5350 5.008767368293 10.083316376927 25 70 124 2032 173944
+107	321624 391 2852 5412 5.092559663323 10.092559663323 15 0 1 8 8
+108	322015 265 2852 5412 5.092559663323 10.092559663323 8 24000000 24000000 192000000 4.608e+15
+110	322280 676 2663 5350 5.008767368293 10.083316376927 25 42 96 1332 79752
+111	322956 219 2852 5412 5.092559663323 10.092559663323 8 70 100 620 49400
+112	323175 217 2850 5410 5.092559663323 10.092559663323 8 42 72 396 20952
+113	323392 683 2663 5350 5.008767368293 10.083316376927 25 70 124 2032 173944
+121	324075 391 2853 5413 5.092559663323 10.092559663323 15 2 3 38 100
+122	324466 1693 2638 5413 5.008713368293 10.092559663323 65 0 3 107 257
+123	326159 782 2853 5414 5.092559663323 10.092559663323 30 0 2 31 47
+133	326941 217 2847 5407 5.092559663323 10.092559663323 8 14 44 172 5048
+134	327158 676 2666 5353 5.008767368293 10.083316376927 25 14 68 632 24760
+135	327834 676 2666 5353 5.008767368293 10.083316376927 25 22 46 850 30200
+142	328510 366 2938 5096 6.007103605871 10.007103605871 14 0 1 7 7
+143	328876 380 2938 5096 6.007103605871 10.007103605871 14 0 928 4656 3290368
+144	329256 183 2940 5096 6.007103605871 10.007103605871 7 0 0 0 0
+145	329439 197 2938 5094 6.007103605871 10.007103605871 7 560 928 4656 3290368
+146	329636 762 2938 5094 5.1 10 50 0 9280 46560 329036800
+147	330398 197 2940 5096 6.007103605871 10.007103605871 7 560 928 4656 3290368
+148	330595 762 2940 5096 5.1 10 50 0 9280 46560 329036800
+153	331357 225 2950 5106 6.007157605871 10.007157605871 7 5.4e-05 6.6e-05 0.000402 2.3292e-08
+154	331582 366 2940 5106 6.007103605871 10.007157605871 14 0 1 7 7
+155	331948 187 2938 5094 6.007103605871 10.007103605871 7 3 20 75 1063
+156	332135 366 2938 5095 6.007103605871 10.007103605871 14 0 1 7 7
+157	332501 5628 2636 5389 5.008713301692 10.087055582007 216 0 2 28 56
+160	338129 192 2950 5106 6.007157605871 10.007157605871 7 70 116 582 51412
+162	338321 192 2950 5106 6.007157605871 10.007157605871 7 70 116 582 51412
+163	338513 192 2950 5106 6.007157605871 10.007157605871 7 70 116 582 51412
+165	338705 192 2950 5106 6.007157605871 10.007157605871 7 70 116 582 51412
+166	338897 1090 2651 5390 5.008767301692 10.087055582007 40 70 124 3202 268100
+168	339987 1090 2651 5390 5.008767301692 10.087055582007 40 70 124 3202 268100
+169	341077 1090 2651 5390 5.008767301692 10.087055582007 40 70 124 3202 268100
+171	342167 1090 2651 5390 5.008767301692 10.087055582007 40 70 124 3202 268100
+176	343257 366 2940 5106 6.007103605871 10.007157605871 14 0 1 7 7
+177	343623 232 2940 5096 6.007103605871 10.007103605871 7 24000000 24000000 168000000 4.032e+15
+179	343855 1081 2651 5390 5.008767301692 10.087055582007 40 42 96 2082 120148
+180	344936 192 2940 5096 6.007103605871 10.007103605871 7 70 116 582 51412
+181	345128 190 2938 5094 6.007103605871 10.007103605871 7 42 88 386 24308
+182	345318 1090 2651 5390 5.008767301692 10.087055582007 40 70 124 3202 268100
+190	346408 366 2941 5107 6.007103605871 10.007157605871 14 2 3 35 91
+191	346774 2448 2636 5389 5.008713301692 10.087055582007 94 0 3 167 407
+192	349222 732 2941 5107 6.007103605871 10.007157605871 28 0 2 28 42
+202	349954 190 2935 5091 6.007103605871 10.007103605871 7 14 60 190 8180
+203	350144 1081 2654 5393 5.008767301692 10.087055582007 40 14 68 962 34916
+204	351225 1081 2654 5393 5.008767301692 10.087055582007 40 37 76 2260 133020
+211	352306 366 2988 5146 6.008712929697 10.008712929697 14 0 1 7 7
+212	352672 380 2988 5146 6.008712929697 10.008712929697 14 0 992 4784 3536128
+213	353052 183 2990 5146 6.008712929697 10.008712929697 7 0 0 0 0
+214	353235 197 2988 5144 6.008712929697 10.008712929697 7 560 992 4784 3536128
+215	353432 762 2988 5144 5.1 10 50 0 9920 47840 353612800
+216	354194 197 2990 5146 6.008712929697 10.008712929697 7 560 992 4784 3536128
+217	354391 762 2990 5146 5.1 10 50 0 9920 47840 353612800
+222	355153 253 2642 5156 5.008766929697 10.008766929697 8 5.4e-05 7e-05 0.000464 2.7296e-08
+223	355406 392 2642 5156 5.008766929697 10.008766929697 15 0 1 7 7
+224	355798 187 2988 5144 6.008712929697 10.008712929697 7 0 29 94 1976
+225	355985 366 2988 5145 6.008712929697 10.008712929697 14 0 1 7 7
+226	356351 6284 2643 5395 5.008766929697 10.087055601374 242 0 2 28 56
+229	362635 219 2642 5156 5.008766929697 10.008766929697 8 70 124 668 60152
+231	362854 219 2642 5156 5.008766929697 10.008766929697 8 70 124 668 60152
+232	363073 219 2642 5156 5.008766929697 10.008766929697 8 70 124 668 60152
+234	363292 219 2642 5156 5.008766929697 10.008766929697 8 70 124 668 60152
+235	363511 1251 2739 5396 5.077869936488 10.087055601374 46 70 116 3682 306932
+237	364762 1251 2739 5396 5.077869936488 10.087055601374 46 70 116 3682 306932
+238	366013 1251 2739 5396 5.077869936488 10.087055601374 46 70 116 3682 306932
+240	367264 1251 2739 5396 5.077869936488 10.087055601374 46 70 116 3682 306932
+245	368515 392 2642 5156 5.008766929697 10.008766929697 15 0 1 7 7
+246	368907 232 2990 5146 6.008712929697 10.008712929697 7 24000000 24000000 168000000 4.032e+15
+248	369139 1238 2739 5396 5.077869936488 10.087055601374 46 42 88 2394 136804
+249	370377 192 2990 5146 6.008712929697 10.008712929697 7 70 124 598 55252
+250	370569 190 2988 5144 6.008712929697 10.008712929697 7 42 96 402 27252
+251	370759 1251 2739 5396 5.077869936488 10.087055601374 46 70 116 3682 306932
+259	372010 392 2643 5157 5.008766929697 10.008766929697 15 2 3 37 95
+260	372402 2776 2643 5395 5.008766929697 10.087055601374 107 0 3 192 468
+261	375178 784 2642 5157 5.008766929697 10.008766929697 30 0 2 29 43
+271	375962 190 2985 5141 6.008712929697 10.008712929697 7 14 68 206 10228
+272	376152 1238 2742 5399 5.077869936488 10.087055601374 46 14 60 1106 38804
+273	377390 1238 2742 5399 5.077869936488 10.087055601374 46 45 90 3105 217695
+280	378628 366 2893 5051 6.002021839912 10.002021839912 14 0 1 7 7
+281	378994 380 2893 5051 6.002021839912 10.002021839912 14 0 864 4528 3060992
+282	379374 183 2895 5051 6.002021839912 10.002021839912 7 0 0 0 0
+283	379557 197 2893 5049 6.002021839912 10.002021839912 7 560 864 4528 3060992
+284	379754 762 2893 5049 5.1 10 50 0 8640 45280 306099200
+285	380516 197 2895 5051 6.002021839912 10.002021839912 7 560 864 4528 3060992
+286	380713 762 2895 5051 5.1 10 50 0 8640 45280 306099200
+291	381475 225 2905 5061 6.002075839912 10.002075839912 7 5.4e-05 6.6e-05 0.000402 2.3292e-08
+292	381700 366 2895 5061 6.002021839912 10.002075839912 14 0 1 7 7
+293	382066 186 2893 5049 6.002021839912 10.002021839912 7 2 23 77 1187
+294	382252 366 2893 5050 6.002021839912 10.002021839912 14 0 1 7 7
+295	382618 4680 2640 5343 5.008713429654 10.083316347792 180 0 2 28 56
+298	387298 192 2905 5061 6.002075839912 10.002075839912 7 70 108 566 47828
+300	387490 192 2905 5061 6.002075839912 10.002075839912 7 70 108 566 47828
+301	387682 192 2905 5061 6.002075839912 10.002075839912 7 70 108 566 47828
+303	387874 192 2905 5061 6.002075839912 10.002075839912 7 70 108 566 47828
+304	388066 841 2675 5344 5.008767429654 10.083316347792 31 70 124 2474 207292
+306	388907 841 2675 5344 5.008767429654 10.083316347792 31 70 124 2474 207292
+307	389748 841 2675 5344 5.008767429654 10.083316347792 31 70 124 2474 207292
+309	390589 841 2675 5344 5.008767429654 10.083316347792 31 70 124 2474 207292
+314	391430 366 2895 5061 6.002021839912 10.002075839912 14 0 1 7 7
+315	391796 232 2895 5051 6.002021839912 10.002021839912 7 24000000 24000000 168000000 4.032e+15
+317	392028 835 2675 5344 5.008767429654 10.083316347792 31 42 96 1606 93052
+318	392863 192 2895 5051 6.002021839912 10.002021839912 7 70 108 566 47828
+319	393055 190 2893 5049 6.002021839912 10.002021839912 7 42 80 370 21620
+320	393245 841 2675 5344 5.008767429654 10.083316347792 31 70 124 2474 207292
+328	394086 366 2896 5062 6.002021839912 10.002075839912 14 2 3 35 91
+329	394452 1974 2640 5343 5.008713429654 10.083316347792 76 0 3 131 317
+330	396426 732 2896 5062 6.002021839912 10.002075839912 28 0 2 28 42
+340	397158 190 2890 5046 6.002021839912 10.002021839912 7 14 52 174 6388
+341	397348 835 2678 5347 5.008767429654 10.083316347792 31 14 68 738 27420
+342	398183 835 2678 5347 5.008767429654 10.083316347792 31 30 60 1395 65255
+349	399018 414 2769 5331 5.083261984284 10.083261984284 16 0 1 8 8
+350	399432 430 2769 5331 5.083261984284 10.083261984284 16 0 800 4960 3161600
+351	399862 207 2771 5331 5.083261984284 10.083261984284 8 0 0 0 0
+352	400069 223 2769 5329 5.083261984284 10.083261984284 8 560 800 4960 3161600
+353	400292 853 2769 5329 4.5 10 56 0 8000 52000 348800000
+354	401145 223 2771 5331 5.083261984284 10.083261984284 8 560 800 4960 3161600
+355	401368 853 2771 5331 4.5 10 56 0 8000 52000 348800000
+360	402221 255 2781 5341 5.083315984284 10.083315984284 8 5.4e-05 6.2e-05 0.000448 2.5184e-08
+361	402476 414 2771 5341 5.083261984284 10.083315984284 16 0 1 8 8
+362	402890 212 2769 5329 5.083261984284 10.083261984284 8 0 31 98 2106
+363	403102 414 2769 5330 5.083261984284 10.083261984284 16 0 1 8 8
+364	403516 3932 2639 5342 5.008713423383 10.083315984284 152 0 2 32 64
+367	407448 217 2781 5341 5.083315984284 10.083315984284 8 70 100 620 49400
+369	407665 217 2781 5341 5.083315984284 10.083315984284 8 70 100 620 49400
+370	407882 217 2781 5341 5.083315984284 10.083315984284 8 70 100 620 49400
+372	408099 217 2781 5341 5.083315984284 10.083315984284 8 70 100 620 49400
+373	408316 597 2669 5183 5.008767423383 10.008767423383 22 70 124 1784 152480
+375	408913 597 2669 5183 5.008767423383 10.008767423383 22 70 124 1784 152480
+376	409510 597 2669 5183 5.008767423383 10.008767423383 22 70 124 1784 152480
+378	410107 597 2669 5183 5.008767423383 10.008767423383 22 70 124 1784 152480
+383	410704 414 2771 5341 5.083261984284 10.083315984284 16 0 1 8 8
+384	411118 263 2771 5331 5.083261984284 10.083261984284 8 24000000 24000000 192000000 4.608e+15
+386	411381 591 2669 5183 5.008767423383 10.008767423383 22 42 96 1168 69824
+387	411972 217 2771 5331 5.083261984284 10.083261984284 8 70 100 620 49400
+388	412189 215 2769 5329 5.083261984284 10.083261984284 8 42 72 396 20952
+389	412404 597 2669 5183 5.008767423383 10.008767423383 22 70 124 1784 152480
+397	413001 414 2772 5342 5.083261984284 10.083315984284 16 2 3 40 104
+398	413415 1552 2639 5342 5.008713423383 10.083315984284 60 0 3 96 228
+399	414967 828 2772 5342 5.083261984284 10.083315984284 32 0 2 32 48
+409	415795 215 2766 5326 5.083261984284 10.083261984284 8 14 44 172 5048
+410	416010 591 2672 5186 5.008767423383 10.008767423383 22 14 68 552 21664
+411	416601 591 2672 5186 5.008767423383 10.008767423383 22 23 44 737 25575
+418	417192 472 2724 5285 5.077815675689 10.077815675689 18 0 1 9 9
+419	417664 490 2724 5285 5.077815675689 10.077815675689 18 0 864 5952 4121088
+420	418154 236 2726 5285 5.077815675689 10.077815675689 9 0 0 0 0
+421	418390 254 2724 5283 5.077815675689 10.077815675689 9 560 864 5952 4121088
+422	418644 910 2724 5238 4.1 10 60 0 14240 59520 702412800
+423	419554 254 2726 5285 5.077815675689 10.077815675689 9 560 864 5952 4121088
+424	419808 910 2726 5240 4.1 10 60 0 14240 59520 702412800
+429	420718 290 2736 5295 5.077869675689 10.077869675689 9 5.4e-05 6.6e-05 0.000522 3.0564e-08
+430	421008 472 2726 5295 5.077815675689 10.077869675689 18 0 1 9 9
+431	421480 243 2724 5283 5.077815675689 10.077815675689 9 5 31 191 4691
+432	421723 472 2724 5284 5.077815675689 10.077815675689 18 0 1 9 9
+433	422195 4968 2644 5383 5.008767190496 10.087055563304 190 0 2 36 72
+436	427163 248 2736 5295 5.077869675689 10.077869675689 9 70 108 744 64392
+438	427411 248 2736 5295 5.077869675689 10.077869675689 9 70 108 744 64392
+439	427659 248 2736 5295 5.077869675689 10.077869675689 9 70 108 744 64392
+441	427907 248 2736 5295 5.077869675689 10.077869675689 9 70 108 744 64392
+442	428155 821 2645 5384 5.008767190496 10.087055563304 30 70 124 2420 205464
+444	428976 821 2645 5384 5.008767190496 10.087055563304 30 70 124 2420 205464
+445	429797 821 2645 5384 5.008767190496 10.087055563304 30 70 124 2420 205464
+447	430618 821 2645 5384 5.008767190496 10.087055563304 30 70 124 2420 205464
+452	431439 472 2726 5295 5.077815675689 10.077869675689 18 0 1 9 9
+453	431911 299 2726 5285 5.077815675689 10.077815675689 9 24000000 24000000 216000000 5.184e+15
+455	432210 813 2645 5384 5.008767190496 10.087055563304 30 42 96 1580 93464
+456	433023 248 2726 5285 5.077815675689 10.077815675689 9 70 108 744 64392
+457	433271 245 2724 5283 5.077815675689 10.077815675689 9 42 80 492 29784
+458	433516 821 2645 5384 5.008767190496 10.087055563304 30 70 124 2420 205464
+466	434337 472 2727 5296 5.077815675689 10.077869675689 18 2 3 45 117
+467	434809 2012 2644 5383 5.008767190496 10.087055563304 77 0 3 126 300
+468	436821 944 2727 5296 5.077815675689 10.077869675689 36 0 2 36 54
+478	437765 245 2721 5280 5.077815675689 10.077815675689 9 14 52 240 9288
+479	438010 813 2648 5387 5.008767190496 10.087055563304 30 14 68 740 28504
+480	438823 813 2648 5387 5.008767190496 10.087055563304 30 30 59 1335 61655
+487	439636 418 2809 5371 5.087001214526 10.087001214526 16 0 1 8 8
+488	440054 434 2809 5371 5.087001214526 10.087001214526 16 0 800 4960 3161600
+489	440488 209 2811 5371 5.087001214526 10.087001214526 8 0 0 0 0
+490	440697 225 2809 5369 5.087001214526 10.087001214526 8 560 800 4960 3161600
+491	440922 853 2809 5369 4.5 10 56 0 8000 52000 348800000
+492	441775 225 2811 5371 5.087001214526 10.087001214526 8 560 800 4960 3161600
+493	442000 853 2811 5371 4.5 10 56 0 8000 52000 348800000
+498	442853 257 2821 5381 5.087055214526 10.087055214526 8 5.4e-05 6.2e-05 0.000448 2.5184e-08
+499	443110 418 2811 5381 5.087001214526 10.087055214526 16 0 1 8 8
+500	443528 214 2809 5369 5.087001214526 10.087001214526 8 0 25 96 1760
+501	443742 418 2809 5370 5.087001214526 10.087001214526 16 0 1 8 8
+502	444160 4172 2637 5382 5.008713316545 10.087055214526 160 0 2 32 64
+505	448332 219 2821 5381 5.087055214526 10.087055214526 8 70 100 620 49400
+507	448551 219 2821 5381 5.087055214526 10.087055214526 8 70 100 620 49400
+508	448770 219 2821 5381 5.087055214526 10.087055214526 8 70 100 620 49400
+510	448989 219 2821 5381 5.087055214526 10.087055214526 8 70 100 620 49400
+511	449208 656 2657 5304 5.008767316545 10.077870024467 24 70 124 1994 175956
+513	449864 656 2657 5304 5.008767316545 10.077870024467 24 70 124 1994 175956
+514	450520 656 2657 5304 5.008767316545 10.077870024467 24 70 124 1994 175956
+516	451176 656 2657 5304 5.008767316545 10.077870024467 24 70 124 1994 175956
+521	451832 418 2811 5381 5.087001214526 10.087055214526 16 0 1 8 8
+522	452250 265 2811 5371 5.087001214526 10.087001214526 8 24000000 24000000 192000000 4.608e+15
+524	452515 649 2657 5304 5.008767316545 10.077870024467 24 42 96 1322 83108
+525	453164 219 2811 5371 5.087001214526 10.087001214526 8 70 100 620 49400
+526	453383 217 2809 5369 5.087001214526 10.087001214526 8 42 72 396 20952
+527	453600 656 2657 5304 5.008767316545 10.077870024467 24 70 124 1994 175956
+535	454256 418 2812 5382 5.087001214526 10.087055214526 16 2 3 40 104
+536	454674 1668 2637 5382 5.008713316545 10.087055214526 64 0 3 104 248
+537	456342 836 2812 5382 5.087001214526 10.087055214526 32 0 2 32 48
+547	457178 217 2806 5366 5.087001214526 10.087001214526 8 14 44 172 5048
+548	457395 649 2660 5307 5.008767316545 10.077870024467 24 14 68 650 27892
+549	458044 649 2660 5307 5.008767316545 10.077870024467 24 23 46 828 29716
+8	458693 38 5414 5414 10.09256000103 10.09256000103 1 6050.1295783099 6050.1295783099 6050.1295783099 36604067.914341
+10	458731 39 5414 5414 10.09256000103 10.09256000103 1 6050.1295783099 6050.1295783099 6050.1295783099 36604067.914341
+77	458770 39 5414 5414 10.09256000103 10.09256000103 1 6050.1295783099 6050.1295783099 6050.1295783099 36604067.914341
+79	458809 39 5414 5414 10.09256000103 10.09256000103 1 6050.1295783099 6050.1295783099 6050.1295783099 36604067.914341
+146	458848 40 5414 5414 10.09256000103 10.09256000103 1 6050.1295783099 6050.1295783099 6050.1295783099 36604067.914341
+148	458888 40 5414 5414 10.09256000103 10.09256000103 1 6050.1295783099 6050.1295783099 6050.1295783099 36604067.914341
+215	458928 40 5414 5414 10.09256000103 10.09256000103 1 6050.1295783099 6050.1295783099 6050.1295783099 36604067.914341
+217	458968 40 5414 5414 10.09256000103 10.09256000103 1 6050.1295783099 6050.1295783099 6050.1295783099 36604067.914341
+284	459008 40 5414 5414 10.09256000103 10.09256000103 1 6050.1295783099 6050.1295783099 6050.1295783099 36604067.914341
+286	459048 40 5414 5414 10.09256000103 10.09256000103 1 6050.1295783099 6050.1295783099 6050.1295783099 36604067.914341
+353	459088 40 5414 5414 10.09256000103 10.09256000103 1 6050.1295783099 6050.1295783099 6050.1295783099 36604067.914341
+355	459128 40 5414 5414 10.09256000103 10.09256000103 1 6050.1295783099 6050.1295783099 6050.1295783099 36604067.914341
+422	459168 40 5414 5414 10.09256000103 10.09256000103 1 15384.615213417 15384.615213417 15384.615213417 236686385.26489
+424	459208 40 5414 5414 10.09256000103 10.09256000103 1 15384.615213417 15384.615213417 15384.615213417 236686385.26489
+491	459248 40 5414 5414 10.09256000103 10.09256000103 1 6050.1295783099 6050.1295783099 6050.1295783099 36604067.914341
+493	459288 40 5414 5414 10.09256000103 10.09256000103 1 6050.1295783099 6050.1295783099 6050.1295783099 36604067.914341
+
