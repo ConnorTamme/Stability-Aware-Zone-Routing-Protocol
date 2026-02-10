@@ -19,6 +19,8 @@
 #include <sstream>  // for std::ostringstream in debug output
 #include <iomanip>  // for std::setw, std::setprecision in debug output
 #include <set>
+#include <algorithm>  // for std::find
+#include <queue>      // for std::priority_queue in BRP
 
 #include "inet/common/IProtocolRegistrationListener.h"
 #include "inet/common/ModuleAccess.h"
@@ -81,6 +83,8 @@ void Zrp::initialize(int stage)
         zoneRadius = par("zoneRadius");
         linkStateLifetime = par("linkStateLifetime");
         debugInterval = par("debugInterval");
+        brpJitterMax = par("brpJitterMax");
+        brpCoverageLifetime = par("brpCoverageLifetime");
 
         // WATCH variables for GUI inspection
         // In Qtenv, double-click on a node's app[0] to see these values
@@ -104,6 +108,9 @@ void Zrp::handleMessageWhenUp(cMessage *msg)
         else if (msg == IARP_updateTimer) {
             IARP_refreshLinkStateTable();
             sendIARPUpdate();
+            // Periodic cleanup of stale query/coverage entries
+            IERP_cleanQueryTable();
+            BRP_cleanCoverageTable();
         }
         else if (msg == debugTimer) {
             printDebugTables();
@@ -111,10 +118,48 @@ void Zrp::handleMessageWhenUp(cMessage *msg)
                 scheduleAfter(debugInterval, debugTimer);
         }
         else if (msg->getKind() == ZRP_SELF_BRP_JITTER) {
-            // BRP jitter timer expired - deliver the encapsulated IERP packet.
-            // For now this is a stub; BRP implementation will populate this.
-            // The message's context pointer can carry the bordercast data.
-            EV_INFO << "BRP jitter timer expired (stub)" << endl;
+            // BRP jitter timer expired - deliver the encapsulated IERP packet to IERP.
+            // RFC BRP Section 4.D.3: "schedules (with a random delay) delivery of
+            // the encapsulated query to the higher layer (i.e. IERP)"
+            //
+            // The cMessage carries a cMsgPar with the BRP cache ID, and the
+            // context pointer holds a copy of the BRP_Data packet.
+            int brpCacheId = (int)msg->par("brpCacheId").longValue();
+            auto *brpDataRaw = static_cast<inet::zrp::BRP_Data *>(msg->getContextPointer());
+
+            if (brpDataRaw) {
+                // Extract encapsulated IERP packet
+                const auto& encapIerp = brpDataRaw->getEncapsulatedPacket();
+                auto ierpCopy = makeShared<inet::zrp::IERP_RouteData>();
+                ierpCopy->setType(encapIerp.getType());
+                ierpCopy->setLength(encapIerp.getLength());
+                ierpCopy->setNodePtr(encapIerp.getNodePtr());
+                ierpCopy->setQueryID(encapIerp.getQueryID());
+                ierpCopy->setSourceAddr(encapIerp.getSourceAddr());
+                ierpCopy->setDestAddr(encapIerp.getDestAddr());
+                ierpCopy->setIntermediateNodesArraySize(encapIerp.getIntermediateNodesArraySize());
+                for (size_t i = 0; i < encapIerp.getIntermediateNodesArraySize(); i++)
+                    ierpCopy->setIntermediateNodes(i, encapIerp.getIntermediateNodes(i));
+                ierpCopy->setChunkLength(encapIerp.getChunkLength());
+
+                L3Address sourceAddr = brpDataRaw->getPrevBordercastAddr();
+
+                EV_INFO << "BRP jitter expired: delivering IERP packet (queryID="
+                        << ierpCopy->getQueryID() << ", cacheId=" << brpCacheId
+                        << ") to IERP" << endl;
+
+                // Deliver to IERP - this is the equivalent of IERP's Deliver(encap_packet, BRP_cache_ID)
+                uint8_t type = ierpCopy->getType();
+                if (type == inet::zrp::IERP_QUERY) {
+                    IERP_handleRouteRequest(ierpCopy, sourceAddr);
+                }
+                else if (type == inet::zrp::IERP_REPLY) {
+                    IERP_handleRouteReply(ierpCopy, sourceAddr);
+                }
+
+                delete brpDataRaw;
+            }
+
             // Remove from pending timers list
             auto it = std::find(pendingTimers.begin(), pendingTimers.end(), msg);
             if (it != pendingTimers.end())
@@ -186,11 +231,13 @@ void Zrp::clearState()
     neighborTable.clear();
     linkStateTable.clear();
     ierpQueryTable.clear();
+    brpCoverageTable.clear();
     
     // Reset sequence numbers
     NDP_seqNum = 0;
     IARP_seqNum = 0;
     IERP_queryId = 0;
+    BRP_bordercastId = 0;
 
     //Clear routing tables (both IARP and IERP routes)
     IARP_purgeRoutingTable();
@@ -314,6 +361,25 @@ void Zrp::printDebugTables()
         os << "    (empty)\n";
     }
     
+    // --- BRP Coverage Table ---
+    os << "\n  BRP COVERAGE TABLE (" << brpCoverageTable.size() << " entries):\n";
+    if (!brpCoverageTable.empty()) {
+        os << "  +----------+-----------------+----------+--------------+---------+\n";
+        os << "  | Cache ID | Query Source     | Query ID | Age (sec)    | Covered |\n";
+        os << "  +----------+-----------------+----------+--------------+---------+\n";
+        for (const auto& entry : brpCoverageTable) {
+            double age = (simTime() - entry.second.createTime).dbl();
+            os << "  | " << std::setw(8) << entry.first
+               << " | " << std::setw(15) << std::left << entry.second.queryId.source.str()
+               << " | " << std::setw(8) << entry.second.queryId.queryId
+               << " | " << std::setw(12) << std::fixed << std::setprecision(2) << age
+               << " | " << std::setw(7) << entry.second.coveredNodes.size() << " |\n";
+        }
+        os << "  +----------+-----------------+----------+--------------+---------+\n";
+    } else {
+        os << "    (empty)\n";
+    }
+
     os << "========================================================================\n\n";
     
     EV_INFO << os.str();
@@ -471,35 +537,9 @@ void Zrp::processPacket(Packet *packet)
         }
     }
     else if (auto brpPacket = dynamicPtrCast<const inet::zrp::BRP_Data>(chunk)) {
-        // BRP packet received - extract encapsulated IERP packet and process
-        // For now: just extract and handle the encapsulated IERP directly
-        // Full BRP handling (coverage tracking, jitter, bordercast trees) will be added later
-        EV_INFO << "Received BRP packet from " << sourceAddr << " (BRP handling is stub)" << endl;
+        // RFC BRP Section 4.E.2: Deliver(packet) - BRP packet received from IP
         auto mutableBrp = CHK(dynamicPtrCast<inet::zrp::BRP_Data>(chunk->dupShared()));
-        
-        // Extract the encapsulated IERP packet and handle it
-        const auto& encapIerp = mutableBrp->getEncapsulatedPacket();
-        auto ierpCopy = makeShared<inet::zrp::IERP_RouteData>();
-        // Copy fields from encapsulated packet
-        ierpCopy->setType(encapIerp.getType());
-        ierpCopy->setLength(encapIerp.getLength());
-        ierpCopy->setNodePtr(encapIerp.getNodePtr());
-        ierpCopy->setQueryID(encapIerp.getQueryID());
-        ierpCopy->setSourceAddr(encapIerp.getSourceAddr());
-        ierpCopy->setDestAddr(encapIerp.getDestAddr());
-        ierpCopy->setIntermediateNodesArraySize(encapIerp.getIntermediateNodesArraySize());
-        for (size_t i = 0; i < encapIerp.getIntermediateNodesArraySize(); i++) {
-            ierpCopy->setIntermediateNodes(i, encapIerp.getIntermediateNodes(i));
-        }
-        ierpCopy->setChunkLength(encapIerp.getChunkLength());
-        
-        uint8_t type = ierpCopy->getType();
-        if (type == inet::zrp::IERP_QUERY) {
-            IERP_handleRouteRequest(ierpCopy, sourceAddr);
-        }
-        else if (type == inet::zrp::IERP_REPLY) {
-            IERP_handleRouteReply(ierpCopy, sourceAddr);
-        }
+        BRP_deliver(mutableBrp, sourceAddr);
     }
     else {
         EV_WARN << "Unknown ZRP packet type received" << endl;
@@ -925,7 +965,7 @@ void Zrp::IERP_initiateRouteDiscovery(const L3Address& dest)
 
     // Per RFC IERP Section 4: "broadcast() should be replaced with bordercast()"
     // Call BRP to bordercast the route request
-    BRP_bordercast(request, -1);  // -1 = new query (no existing BRP cache)
+    BRP_bordercast(request);
 }
 
 const Ptr<inet::zrp::IERP_RouteData> Zrp::IERP_createRouteRequest(const L3Address& dest)
@@ -1144,7 +1184,7 @@ void Zrp::IERP_handleRouteRequest(const Ptr<inet::zrp::IERP_RouteData>& request,
         editableRequest->setChunkLength(B(16 + totalNodes * 4));
 
         // Per RFC: "bordercast(packet, BRP_cache_ID)" replaces broadcast()
-        BRP_bordercast(editableRequest, 0);  // 0 = existing query being relayed
+        BRP_bordercast(editableRequest);
     }
 }
 
@@ -1509,27 +1549,378 @@ void Zrp::IERP_cleanQueryTable()
 }
 
 // ============================================================================
-// BRP Stub Functions
+// BRP Functions (RFC BRP draft-ietf-manet-zone-brp-02)
 // ============================================================================
 
-void Zrp::BRP_bordercast(const Ptr<inet::zrp::IERP_RouteData>& packet, int brpCacheId)
+// RFC BRP E.1: Send(encap_packet, BRP_cache_ID)
+// Called by IERP to bordercast a route query.
+// brpCacheId == -1 means new query (we are the originator), otherwise existing relay.
+void Zrp::BRP_bordercast(const Ptr<inet::zrp::IERP_RouteData>& packet)
 {
-    // STUB: Full BRP implementation will construct bordercast trees,
-    // apply coverage tracking, and use jitter delays.
-    //
-    // For now: degenerate to simple broadcast (zone radius 1 = flood search).
-    // Per RFC IERP Section 2: "For a routing zone radius of one hop,
-    // bordercasting degenerates into flood searching."
-    //
-    // When BRP is implemented, this will:
-    // 1. Construct a bordercast tree spanning uncovered peripheral nodes
-    // 2. Forward the query to tree neighbors with random jitter delay
-    //    (using schedulePendingTimer with ZRP_SELF_BRP_JITTER kind)
-    // 3. Mark routing zone nodes as covered after forwarding
+    L3Address self = getSelfIPAddress();
+    L3Address queryDest = packet->getDestAddr();
 
-    EV_INFO << "BRP_bordercast (STUB): Broadcasting IERP packet as simple flood" << endl;
+    // Build the query ID from the IERP packet
+    IerpQueryId qid;
+    qid.source = packet->getSourceAddr();
+    qid.queryId = packet->getQueryID();
 
-    sendZrpPacket(packet, Ipv4Address::ALLONES_ADDRESS, zoneRadius);
+    // Find existing coverage for this query, or create a new entry.
+    // The RFC passes BRP_cache_ID explicitly between Deliver/Send, but we
+    // resolve it by query ID lookup, which is equivalent and simpler.
+    int cacheId = BRP_findOrCreateCoverage(qid);
+
+
+    auto& coverage = brpCoverageTable[cacheId];
+
+    // Determine the set of outgoing neighbors
+    std::set<L3Address> outNeighbors;
+
+    // RFC BRP E.1: Check if we have an IARP route to the query destination
+    bool haveIarpRouteToDest = false;
+    for (int i = 0; i < routingTable->getNumRoutes(); i++) {
+        IRoute *route = routingTable->getRoute(i);
+        if (route->getSource() == this && route->getDestinationAsGeneric() == queryDest) {
+            auto *rd = dynamic_cast<ZrpRouteData*>(route->getProtocolData());
+            if (rd && rd->isIarpRoute()) {
+                haveIarpRouteToDest = true;
+                // If the destination is not already covered, send to next hop toward it
+                if (coverage.coveredNodes.find(queryDest) == coverage.coveredNodes.end()) {
+                    outNeighbors.insert(route->getNextHopAsGeneric());
+                }
+                break;
+            }
+        }
+    }
+
+    if (!haveIarpRouteToDest) {
+        // RFC BRP E.1: "Construct the node's bordercast tree, spanning
+        // all remaining uncovered peripheral nodes."
+
+        // Get our peripheral nodes
+        std::set<L3Address> peripherals = BRP_getMyPeripherals();
+
+        // Filter to uncovered peripherals
+        std::set<L3Address> uncoveredPeripherals;
+        for (const auto& p : peripherals) {
+            if (coverage.coveredNodes.find(p) == coverage.coveredNodes.end()) {
+                uncoveredPeripherals.insert(p);
+            }
+        }
+
+        EV_DETAIL << "BRP: Peripheral nodes: " << peripherals.size()
+                  << ", uncovered: " << uncoveredPeripherals.size() << endl;
+
+        if (!uncoveredPeripherals.empty()) {
+            // Get next-hop neighbors on shortest paths to uncovered peripherals
+            outNeighbors = BRP_getOutNeighbors(uncoveredPeripherals);
+        }
+    }
+
+    if (outNeighbors.empty()) {
+        EV_INFO << "BRP: No uncovered peripheral nodes to bordercast to" << endl;
+    }
+    else {
+        EV_INFO << "BRP: Bordercasting to " << outNeighbors.size() << " neighbor(s): ";
+        for (const auto& n : outNeighbors) EV_INFO << n << " ";
+        EV_INFO << endl;
+
+        // Build BRP packet wrapping the IERP packet
+        for (const auto& neighbor : outNeighbors) {
+            auto brpPacket = makeShared<inet::zrp::BRP_Data>();
+            brpPacket->setSourceAddr(qid.source);
+            brpPacket->setDestAddr(queryDest);
+            brpPacket->setQueryID(qid.queryId);
+            brpPacket->setQueryExtension(0);
+            brpPacket->setPrevBordercastAddr(self);
+
+            // Encapsulate the IERP packet
+            inet::zrp::IERP_RouteData encapCopy;
+            encapCopy.setType(packet->getType());
+            encapCopy.setLength(packet->getLength());
+            encapCopy.setNodePtr(packet->getNodePtr());
+            encapCopy.setQueryID(packet->getQueryID());
+            encapCopy.setSourceAddr(packet->getSourceAddr());
+            encapCopy.setDestAddr(packet->getDestAddr());
+            encapCopy.setIntermediateNodesArraySize(packet->getIntermediateNodesArraySize());
+            for (size_t i = 0; i < packet->getIntermediateNodesArraySize(); i++)
+                encapCopy.setIntermediateNodes(i, packet->getIntermediateNodes(i));
+            brpPacket->setEncapsulatedPacket(encapCopy);
+
+            // BRP header: source(4) + dest(4) + queryID(2) + queryExt(1) + reserved(1) + prevBcast(4) = 16 bytes
+            brpPacket->setChunkLength(B(16) + packet->getChunkLength());
+
+            // RFC BRP E.1: "send(packet, out_neighbors, IP)"
+            // Unicast to each out_neighbor
+            sendZrpPacket(brpPacket, neighbor, zoneRadius);
+        }
+    }
+
+    // RFC BRP E.1: "After relaying the route query, the node can mark its
+    // entire routing zone as covered."
+    std::set<L3Address> myZone = BRP_getMyZone();
+    BRP_recordCoverage(cacheId, myZone);
+}
+
+// RFC BRP E.2: Deliver(packet)
+// Called when a BRP packet arrives from IP (via processPacket).
+void Zrp::BRP_deliver(const Ptr<inet::zrp::BRP_Data>& brpPacket, const L3Address& sourceAddr)
+{
+    L3Address self = getSelfIPAddress();
+    L3Address prevBordercaster = brpPacket->getPrevBordercastAddr();
+    L3Address querySource = brpPacket->getSourceAddr();
+    L3Address queryDest = brpPacket->getDestAddr();
+    uint16_t queryID = brpPacket->getQueryID();
+
+    EV_INFO << "BRP: Received BRP packet from " << sourceAddr
+            << " (prevBcast=" << prevBordercaster << ", query src=" << querySource
+            << ", dest=" << queryDest << ", queryID=" << queryID << ")" << endl;
+
+    // Build query ID
+    IerpQueryId qid;
+    qid.source = querySource;
+    qid.queryId = queryID;
+
+    // RFC BRP E.2: "Load the known coverage of this query"
+    int cacheId = BRP_findOrCreateCoverage(qid);
+
+    // RFC BRP E.2: "Mark the previous bordercaster's routing zone nodes as covered"
+    // and check if we are an out_neighbor in one pass (BRP_isOutNeighbor computes
+    // the prevBordercaster's zone as a byproduct of its Dijkstra)
+    std::set<L3Address> prevBcastZone;
+    bool isOutNbr = BRP_isOutNeighbor(prevBordercaster, self,
+                                      brpCoverageTable[cacheId].coveredNodes, prevBcastZone);
+    BRP_recordCoverage(cacheId, prevBcastZone);
+
+    // RFC BRP E.2: "If this node is the previous bordercaster's outgoing
+    // neighbor, then this node becomes a bordercasting node"
+    if (isOutNbr && !brpCoverageTable[cacheId].delivered) {
+        // We are an intended recipient - schedule delivery to IERP with random jitter.
+        // RFC: "schedule(deliver(encap_packet, BRP_cache_ID), RELAY_JITTER)"
+        // Mark as delivered so duplicate arrivals for the same query only add
+        // coverage but don't schedule additional jitter timers.
+        brpCoverageTable[cacheId].delivered = true;
+        simtime_t jitter = uniform(0, brpJitterMax);
+
+        EV_DETAIL << "BRP: We are an out_neighbor of " << prevBordercaster
+                  << ", scheduling IERP delivery with jitter=" << jitter << "s" << endl;
+
+        // Create a self-message carrying the BRP data for when jitter expires
+        cMessage *jitterMsg = new cMessage("BRP_jitter", ZRP_SELF_BRP_JITTER);
+        jitterMsg->addPar("brpCacheId") = cacheId;
+
+        // Attach BRP packet data via context pointer
+        auto *brpCopy = new inet::zrp::BRP_Data();
+        brpCopy->setSourceAddr(querySource);
+        brpCopy->setDestAddr(queryDest);
+        brpCopy->setQueryID(queryID);
+        brpCopy->setQueryExtension(brpPacket->getQueryExtension());
+        brpCopy->setPrevBordercastAddr(prevBordercaster);
+        brpCopy->setEncapsulatedPacket(brpPacket->getEncapsulatedPacket());
+        jitterMsg->setContextPointer(brpCopy);
+
+        schedulePendingTimer(jitterMsg, jitter);
+    }
+    else {
+        // Either we're not an out_neighbor, or we already scheduled delivery
+        // for this query on a previous arrival. In both cases, just accumulate
+        // coverage and discard.
+        if (isOutNbr) {
+            EV_DETAIL << "BRP: Already scheduled delivery for this query (cacheId="
+                      << cacheId << "), updating coverage only" << endl;
+        }
+        else {
+            EV_DETAIL << "BRP: Not an out_neighbor of " << prevBordercaster
+                      << ", marking own zone as covered and discarding" << endl;
+        }
+
+        std::set<L3Address> myZone = BRP_getMyZone();
+        BRP_recordCoverage(cacheId, myZone);
+    }
+}
+
+// Get our own routing zone members by reading the IARP routing table.
+// Every node we have an IARP route to is in our zone, plus ourselves.
+std::set<L3Address> Zrp::BRP_getMyZone() const
+{
+    std::set<L3Address> zone;
+    zone.insert(getSelfIPAddress());
+
+    // Every IARP route destination is in our zone (IARP only installs routes within R hops)
+    for (int i = 0; i < routingTable->getNumRoutes(); i++) {
+        IRoute *route = routingTable->getRoute(i);
+        if (route->getSource() == this) {
+            auto *rd = dynamic_cast<ZrpRouteData*>(route->getProtocolData());
+            if (rd && rd->isIarpRoute()) {
+                zone.insert(route->getDestinationAsGeneric());
+            }
+        }
+    }
+
+    return zone;
+}
+
+// Get our peripheral nodes - IARP routes at exactly zoneRadius hops distance.
+std::set<L3Address> Zrp::BRP_getMyPeripherals() const
+{
+    std::set<L3Address> peripherals;
+
+    for (int i = 0; i < routingTable->getNumRoutes(); i++) {
+        IRoute *route = routingTable->getRoute(i);
+        if (route->getSource() == this && route->getMetric() == zoneRadius) {
+            auto *rd = dynamic_cast<ZrpRouteData*>(route->getProtocolData());
+            if (rd && rd->isIarpRoute()) {
+                peripherals.insert(route->getDestinationAsGeneric());
+            }
+        }
+    }
+
+    return peripherals;
+}
+
+// Get the set of next-hop neighbors on shortest paths to the given uncovered peripheral nodes.
+// Since these are always our own peripherals, we just look up each one in the IARP routing table.
+std::set<L3Address> Zrp::BRP_getOutNeighbors(const std::set<L3Address>& uncoveredPeripherals) const
+{
+    std::set<L3Address> outNeighbors;
+
+    for (const auto& peripheral : uncoveredPeripherals) {
+        // Find the IARP route to this peripheral and get its next-hop
+        for (int i = 0; i < routingTable->getNumRoutes(); i++) {
+            IRoute *route = routingTable->getRoute(i);
+            if (route->getSource() == this && route->getDestinationAsGeneric() == peripheral) {
+                auto *rd = dynamic_cast<ZrpRouteData*>(route->getProtocolData());
+                if (rd && rd->isIarpRoute()) {
+                    outNeighbors.insert(route->getNextHopAsGeneric());
+                    break;
+                }
+            }
+        }
+    }
+
+    return outNeighbors;
+}
+
+// Check if 'node' would be an outgoing neighbor in prevBordercaster's bordercast tree.
+// RFC BRP E.2: "if(is_out_neighbor(prev_bcast, MY_ID, coverage))"
+// We reconstruct the prev_bordercaster's bordercast tree from our view of the topology
+// and check if 'node' is one of the tree's downstream neighbors.
+// Also outputs the prevBordercaster's routing zone (all nodes within R hops of it),
+// which is computed as a byproduct of the Dijkstra, avoiding a separate traversal.
+bool Zrp::BRP_isOutNeighbor(const L3Address& prevBordercaster, const L3Address& node,
+                             const std::set<L3Address>& coveredNodes,
+                             std::set<L3Address>& outPrevZone) const
+{
+    // Single Dijkstra from prevBordercaster: computes zone, peripherals, and next-hops
+    std::map<L3Address, unsigned int> dist;
+    std::map<L3Address, L3Address> nextHop;
+    std::set<L3Address> visited;
+    std::set<L3Address> peripherals;
+
+    typedef std::pair<unsigned int, L3Address> PQEntry;
+    std::priority_queue<PQEntry, std::vector<PQEntry>, std::greater<PQEntry>> pq;
+
+    dist[prevBordercaster] = 0;
+    pq.push({0, prevBordercaster});
+
+    L3Address self = getSelfIPAddress();
+
+    while (!pq.empty()) {
+        auto [d, u] = pq.top();
+        pq.pop();
+
+        if (visited.count(u)) continue;
+        visited.insert(u);
+        outPrevZone.insert(u);  // Every visited node is in prevBordercaster's zone
+
+        if (d == zoneRadius) {
+            peripherals.insert(u);  // Peripheral = exactly at zone radius
+            continue;  // Don't expand beyond peripherals
+        }
+
+        // Get neighbors of u from link state table
+        std::vector<std::pair<L3Address, unsigned int>> neighbors;
+        if (u == self) {
+            for (const auto& entry : neighborTable)
+                neighbors.push_back({entry.first, 1});
+        }
+        else {
+            auto it = linkStateTable.find(u);
+            if (it != linkStateTable.end()) {
+                for (const auto& linkDest : it->second.linkDestinations)
+                    neighbors.push_back({linkDest.destAddr, linkDest.metrics[0]});
+            }
+        }
+
+        for (const auto& [v, weight] : neighbors) {
+            if (visited.count(v)) continue;
+            unsigned int newDist = d + weight;
+            if (newDist > zoneRadius) continue;
+            if (dist.find(v) == dist.end() || newDist < dist[v]) {
+                dist[v] = newDist;
+                nextHop[v] = (u == prevBordercaster) ? v : nextHop[u];
+                pq.push({newDist, v});
+            }
+        }
+    }
+
+    // Filter peripherals to uncovered only
+    // Check if 'node' is the next-hop for any uncovered peripheral
+    for (const auto& peripheral : peripherals) {
+        if (coveredNodes.find(peripheral) == coveredNodes.end()) {
+            if (nextHop.find(peripheral) != nextHop.end() && nextHop[peripheral] == node) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+void Zrp::BRP_recordCoverage(int brpCacheId, const std::set<L3Address>& nodes)
+{
+    auto it = brpCoverageTable.find(brpCacheId);
+    if (it != brpCoverageTable.end()) {
+        it->second.coveredNodes.insert(nodes.begin(), nodes.end());
+    }
+}
+
+int Zrp::BRP_findOrCreateCoverage(const IerpQueryId& qid)
+{
+    // Check if we already have a coverage entry for this query
+    for (auto& entry : brpCoverageTable) {
+        if (entry.second.queryId == qid) {
+            return entry.first;
+        }
+    }
+
+    // Create new entry
+    int newCacheId = BRP_bordercastId++;
+    BrpQueryCoverage cov;
+    cov.queryId = qid;
+    cov.brpCacheId = newCacheId;
+    cov.createTime = simTime();
+    cov.delivered = false;
+    brpCoverageTable[newCacheId] = cov;
+
+    EV_DETAIL << "BRP: Created coverage entry " << newCacheId
+              << " for query (src=" << qid.source << ", id=" << qid.queryId << ")" << endl;
+
+    return newCacheId;
+}
+
+void Zrp::BRP_cleanCoverageTable()
+{
+    simtime_t now = simTime();
+    for (auto it = brpCoverageTable.begin(); it != brpCoverageTable.end(); ) {
+        if (now - it->second.createTime > brpCoverageLifetime) {
+            EV_DETAIL << "BRP: Removing expired coverage entry " << it->first << endl;
+            it = brpCoverageTable.erase(it);
+        }
+        else {
+            ++it;
+        }
+    }
 }
 
 // ============================================================================
@@ -1554,6 +1945,10 @@ void Zrp::cancelPendingTimer(cMessage *msg)
 void Zrp::cancelAllPendingTimers()
 {
     for (auto *msg : pendingTimers) {
+        // Free any BRP_Data attached via context pointer
+        if (msg->getKind() == ZRP_SELF_BRP_JITTER && msg->getContextPointer()) {
+            delete static_cast<inet::zrp::BRP_Data *>(msg->getContextPointer());
+        }
         cancelAndDelete(msg);
     }
     pendingTimers.clear();
