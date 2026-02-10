@@ -1782,6 +1782,1103 @@ void IARP_LinkStateUpdateDescriptor::setFieldStructValuePointer(omnetpp::any_ptr
     }
 }
 
+Register_Enum(inet::zrp::IERP_Type, (inet::zrp::IERP_Type::IERP_QUERY, inet::zrp::IERP_Type::IERP_REPLY));
+
+Register_Class(IERP_RouteData)
+
+IERP_RouteData::IERP_RouteData() : ::inet::FieldsChunk()
+{
+}
+
+IERP_RouteData::IERP_RouteData(const IERP_RouteData& other) : ::inet::FieldsChunk(other)
+{
+    copy(other);
+}
+
+IERP_RouteData::~IERP_RouteData()
+{
+    delete [] this->intermediateNodes;
+}
+
+IERP_RouteData& IERP_RouteData::operator=(const IERP_RouteData& other)
+{
+    if (this == &other) return *this;
+    ::inet::FieldsChunk::operator=(other);
+    copy(other);
+    return *this;
+}
+
+void IERP_RouteData::copy(const IERP_RouteData& other)
+{
+    this->type = other.type;
+    this->length = other.length;
+    this->nodePtr = other.nodePtr;
+    this->reserved1 = other.reserved1;
+    this->queryID = other.queryID;
+    this->reserved2 = other.reserved2;
+    this->sourceAddr = other.sourceAddr;
+    delete [] this->intermediateNodes;
+    this->intermediateNodes = (other.intermediateNodes_arraysize==0) ? nullptr : new ::inet::L3Address[other.intermediateNodes_arraysize];
+    intermediateNodes_arraysize = other.intermediateNodes_arraysize;
+    for (size_t i = 0; i < intermediateNodes_arraysize; i++) {
+        this->intermediateNodes[i] = other.intermediateNodes[i];
+    }
+    this->destAddr = other.destAddr;
+}
+
+void IERP_RouteData::parsimPack(omnetpp::cCommBuffer *b) const
+{
+    ::inet::FieldsChunk::parsimPack(b);
+    doParsimPacking(b,this->type);
+    doParsimPacking(b,this->length);
+    doParsimPacking(b,this->nodePtr);
+    doParsimPacking(b,this->reserved1);
+    doParsimPacking(b,this->queryID);
+    doParsimPacking(b,this->reserved2);
+    doParsimPacking(b,this->sourceAddr);
+    b->pack(intermediateNodes_arraysize);
+    doParsimArrayPacking(b,this->intermediateNodes,intermediateNodes_arraysize);
+    doParsimPacking(b,this->destAddr);
+}
+
+void IERP_RouteData::parsimUnpack(omnetpp::cCommBuffer *b)
+{
+    ::inet::FieldsChunk::parsimUnpack(b);
+    doParsimUnpacking(b,this->type);
+    doParsimUnpacking(b,this->length);
+    doParsimUnpacking(b,this->nodePtr);
+    doParsimUnpacking(b,this->reserved1);
+    doParsimUnpacking(b,this->queryID);
+    doParsimUnpacking(b,this->reserved2);
+    doParsimUnpacking(b,this->sourceAddr);
+    delete [] this->intermediateNodes;
+    b->unpack(intermediateNodes_arraysize);
+    if (intermediateNodes_arraysize == 0) {
+        this->intermediateNodes = nullptr;
+    } else {
+        this->intermediateNodes = new ::inet::L3Address[intermediateNodes_arraysize];
+        doParsimArrayUnpacking(b,this->intermediateNodes,intermediateNodes_arraysize);
+    }
+    doParsimUnpacking(b,this->destAddr);
+}
+
+uint8_t IERP_RouteData::getType() const
+{
+    return this->type;
+}
+
+void IERP_RouteData::setType(uint8_t type)
+{
+    handleChange();
+    this->type = type;
+}
+
+uint8_t IERP_RouteData::getLength() const
+{
+    return this->length;
+}
+
+void IERP_RouteData::setLength(uint8_t length)
+{
+    handleChange();
+    this->length = length;
+}
+
+uint8_t IERP_RouteData::getNodePtr() const
+{
+    return this->nodePtr;
+}
+
+void IERP_RouteData::setNodePtr(uint8_t nodePtr)
+{
+    handleChange();
+    this->nodePtr = nodePtr;
+}
+
+uint8_t IERP_RouteData::getReserved1() const
+{
+    return this->reserved1;
+}
+
+void IERP_RouteData::setReserved1(uint8_t reserved1)
+{
+    handleChange();
+    this->reserved1 = reserved1;
+}
+
+uint16_t IERP_RouteData::getQueryID() const
+{
+    return this->queryID;
+}
+
+void IERP_RouteData::setQueryID(uint16_t queryID)
+{
+    handleChange();
+    this->queryID = queryID;
+}
+
+uint16_t IERP_RouteData::getReserved2() const
+{
+    return this->reserved2;
+}
+
+void IERP_RouteData::setReserved2(uint16_t reserved2)
+{
+    handleChange();
+    this->reserved2 = reserved2;
+}
+
+const ::inet::L3Address& IERP_RouteData::getSourceAddr() const
+{
+    return this->sourceAddr;
+}
+
+void IERP_RouteData::setSourceAddr(const ::inet::L3Address& sourceAddr)
+{
+    handleChange();
+    this->sourceAddr = sourceAddr;
+}
+
+size_t IERP_RouteData::getIntermediateNodesArraySize() const
+{
+    return intermediateNodes_arraysize;
+}
+
+const ::inet::L3Address& IERP_RouteData::getIntermediateNodes(size_t k) const
+{
+    if (k >= intermediateNodes_arraysize) throw omnetpp::cRuntimeError("Array of size %lu indexed by %lu", (unsigned long)intermediateNodes_arraysize, (unsigned long)k);
+    return this->intermediateNodes[k];
+}
+
+void IERP_RouteData::setIntermediateNodesArraySize(size_t newSize)
+{
+    handleChange();
+    ::inet::L3Address *intermediateNodes2 = (newSize==0) ? nullptr : new ::inet::L3Address[newSize];
+    size_t minSize = intermediateNodes_arraysize < newSize ? intermediateNodes_arraysize : newSize;
+    for (size_t i = 0; i < minSize; i++)
+        intermediateNodes2[i] = this->intermediateNodes[i];
+    delete [] this->intermediateNodes;
+    this->intermediateNodes = intermediateNodes2;
+    intermediateNodes_arraysize = newSize;
+}
+
+void IERP_RouteData::setIntermediateNodes(size_t k, const ::inet::L3Address& intermediateNodes)
+{
+    if (k >= intermediateNodes_arraysize) throw omnetpp::cRuntimeError("Array of size %lu indexed by %lu", (unsigned long)intermediateNodes_arraysize, (unsigned long)k);
+    handleChange();
+    this->intermediateNodes[k] = intermediateNodes;
+}
+
+void IERP_RouteData::insertIntermediateNodes(size_t k, const ::inet::L3Address& intermediateNodes)
+{
+    if (k > intermediateNodes_arraysize) throw omnetpp::cRuntimeError("Array of size %lu indexed by %lu", (unsigned long)intermediateNodes_arraysize, (unsigned long)k);
+    handleChange();
+    size_t newSize = intermediateNodes_arraysize + 1;
+    ::inet::L3Address *intermediateNodes2 = new ::inet::L3Address[newSize];
+    size_t i;
+    for (i = 0; i < k; i++)
+        intermediateNodes2[i] = this->intermediateNodes[i];
+    intermediateNodes2[k] = intermediateNodes;
+    for (i = k + 1; i < newSize; i++)
+        intermediateNodes2[i] = this->intermediateNodes[i-1];
+    delete [] this->intermediateNodes;
+    this->intermediateNodes = intermediateNodes2;
+    intermediateNodes_arraysize = newSize;
+}
+
+void IERP_RouteData::appendIntermediateNodes(const ::inet::L3Address& intermediateNodes)
+{
+    insertIntermediateNodes(intermediateNodes_arraysize, intermediateNodes);
+}
+
+void IERP_RouteData::eraseIntermediateNodes(size_t k)
+{
+    if (k >= intermediateNodes_arraysize) throw omnetpp::cRuntimeError("Array of size %lu indexed by %lu", (unsigned long)intermediateNodes_arraysize, (unsigned long)k);
+    handleChange();
+    size_t newSize = intermediateNodes_arraysize - 1;
+    ::inet::L3Address *intermediateNodes2 = (newSize == 0) ? nullptr : new ::inet::L3Address[newSize];
+    size_t i;
+    for (i = 0; i < k; i++)
+        intermediateNodes2[i] = this->intermediateNodes[i];
+    for (i = k; i < newSize; i++)
+        intermediateNodes2[i] = this->intermediateNodes[i+1];
+    delete [] this->intermediateNodes;
+    this->intermediateNodes = intermediateNodes2;
+    intermediateNodes_arraysize = newSize;
+}
+
+const ::inet::L3Address& IERP_RouteData::getDestAddr() const
+{
+    return this->destAddr;
+}
+
+void IERP_RouteData::setDestAddr(const ::inet::L3Address& destAddr)
+{
+    handleChange();
+    this->destAddr = destAddr;
+}
+
+class IERP_RouteDataDescriptor : public omnetpp::cClassDescriptor
+{
+  private:
+    mutable const char **propertyNames;
+    enum FieldConstants {
+        FIELD_type,
+        FIELD_length,
+        FIELD_nodePtr,
+        FIELD_reserved1,
+        FIELD_queryID,
+        FIELD_reserved2,
+        FIELD_sourceAddr,
+        FIELD_intermediateNodes,
+        FIELD_destAddr,
+    };
+  public:
+    IERP_RouteDataDescriptor();
+    virtual ~IERP_RouteDataDescriptor();
+
+    virtual bool doesSupport(omnetpp::cObject *obj) const override;
+    virtual const char **getPropertyNames() const override;
+    virtual const char *getProperty(const char *propertyName) const override;
+    virtual int getFieldCount() const override;
+    virtual const char *getFieldName(int field) const override;
+    virtual int findField(const char *fieldName) const override;
+    virtual unsigned int getFieldTypeFlags(int field) const override;
+    virtual const char *getFieldTypeString(int field) const override;
+    virtual const char **getFieldPropertyNames(int field) const override;
+    virtual const char *getFieldProperty(int field, const char *propertyName) const override;
+    virtual int getFieldArraySize(omnetpp::any_ptr object, int field) const override;
+    virtual void setFieldArraySize(omnetpp::any_ptr object, int field, int size) const override;
+
+    virtual const char *getFieldDynamicTypeString(omnetpp::any_ptr object, int field, int i) const override;
+    virtual std::string getFieldValueAsString(omnetpp::any_ptr object, int field, int i) const override;
+    virtual void setFieldValueAsString(omnetpp::any_ptr object, int field, int i, const char *value) const override;
+    virtual omnetpp::cValue getFieldValue(omnetpp::any_ptr object, int field, int i) const override;
+    virtual void setFieldValue(omnetpp::any_ptr object, int field, int i, const omnetpp::cValue& value) const override;
+
+    virtual const char *getFieldStructName(int field) const override;
+    virtual omnetpp::any_ptr getFieldStructValuePointer(omnetpp::any_ptr object, int field, int i) const override;
+    virtual void setFieldStructValuePointer(omnetpp::any_ptr object, int field, int i, omnetpp::any_ptr ptr) const override;
+};
+
+Register_ClassDescriptor(IERP_RouteDataDescriptor)
+
+IERP_RouteDataDescriptor::IERP_RouteDataDescriptor() : omnetpp::cClassDescriptor(omnetpp::opp_typename(typeid(inet::zrp::IERP_RouteData)), "inet::FieldsChunk")
+{
+    propertyNames = nullptr;
+}
+
+IERP_RouteDataDescriptor::~IERP_RouteDataDescriptor()
+{
+    delete[] propertyNames;
+}
+
+bool IERP_RouteDataDescriptor::doesSupport(omnetpp::cObject *obj) const
+{
+    return dynamic_cast<IERP_RouteData *>(obj)!=nullptr;
+}
+
+const char **IERP_RouteDataDescriptor::getPropertyNames() const
+{
+    if (!propertyNames) {
+        static const char *names[] = {  nullptr };
+        omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
+        const char **baseNames = base ? base->getPropertyNames() : nullptr;
+        propertyNames = mergeLists(baseNames, names);
+    }
+    return propertyNames;
+}
+
+const char *IERP_RouteDataDescriptor::getProperty(const char *propertyName) const
+{
+    omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
+    return base ? base->getProperty(propertyName) : nullptr;
+}
+
+int IERP_RouteDataDescriptor::getFieldCount() const
+{
+    omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
+    return base ? 9+base->getFieldCount() : 9;
+}
+
+unsigned int IERP_RouteDataDescriptor::getFieldTypeFlags(int field) const
+{
+    omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
+    if (base) {
+        if (field < base->getFieldCount())
+            return base->getFieldTypeFlags(field);
+        field -= base->getFieldCount();
+    }
+    static unsigned int fieldTypeFlags[] = {
+        FD_ISEDITABLE,    // FIELD_type
+        FD_ISEDITABLE,    // FIELD_length
+        FD_ISEDITABLE,    // FIELD_nodePtr
+        FD_ISEDITABLE,    // FIELD_reserved1
+        FD_ISEDITABLE,    // FIELD_queryID
+        FD_ISEDITABLE,    // FIELD_reserved2
+        0,    // FIELD_sourceAddr
+        FD_ISARRAY | FD_ISRESIZABLE,    // FIELD_intermediateNodes
+        0,    // FIELD_destAddr
+    };
+    return (field >= 0 && field < 9) ? fieldTypeFlags[field] : 0;
+}
+
+const char *IERP_RouteDataDescriptor::getFieldName(int field) const
+{
+    omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
+    if (base) {
+        if (field < base->getFieldCount())
+            return base->getFieldName(field);
+        field -= base->getFieldCount();
+    }
+    static const char *fieldNames[] = {
+        "type",
+        "length",
+        "nodePtr",
+        "reserved1",
+        "queryID",
+        "reserved2",
+        "sourceAddr",
+        "intermediateNodes",
+        "destAddr",
+    };
+    return (field >= 0 && field < 9) ? fieldNames[field] : nullptr;
+}
+
+int IERP_RouteDataDescriptor::findField(const char *fieldName) const
+{
+    omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
+    int baseIndex = base ? base->getFieldCount() : 0;
+    if (strcmp(fieldName, "type") == 0) return baseIndex + 0;
+    if (strcmp(fieldName, "length") == 0) return baseIndex + 1;
+    if (strcmp(fieldName, "nodePtr") == 0) return baseIndex + 2;
+    if (strcmp(fieldName, "reserved1") == 0) return baseIndex + 3;
+    if (strcmp(fieldName, "queryID") == 0) return baseIndex + 4;
+    if (strcmp(fieldName, "reserved2") == 0) return baseIndex + 5;
+    if (strcmp(fieldName, "sourceAddr") == 0) return baseIndex + 6;
+    if (strcmp(fieldName, "intermediateNodes") == 0) return baseIndex + 7;
+    if (strcmp(fieldName, "destAddr") == 0) return baseIndex + 8;
+    return base ? base->findField(fieldName) : -1;
+}
+
+const char *IERP_RouteDataDescriptor::getFieldTypeString(int field) const
+{
+    omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
+    if (base) {
+        if (field < base->getFieldCount())
+            return base->getFieldTypeString(field);
+        field -= base->getFieldCount();
+    }
+    static const char *fieldTypeStrings[] = {
+        "uint8_t",    // FIELD_type
+        "uint8_t",    // FIELD_length
+        "uint8_t",    // FIELD_nodePtr
+        "uint8_t",    // FIELD_reserved1
+        "uint16_t",    // FIELD_queryID
+        "uint16_t",    // FIELD_reserved2
+        "inet::L3Address",    // FIELD_sourceAddr
+        "inet::L3Address",    // FIELD_intermediateNodes
+        "inet::L3Address",    // FIELD_destAddr
+    };
+    return (field >= 0 && field < 9) ? fieldTypeStrings[field] : nullptr;
+}
+
+const char **IERP_RouteDataDescriptor::getFieldPropertyNames(int field) const
+{
+    omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
+    if (base) {
+        if (field < base->getFieldCount())
+            return base->getFieldPropertyNames(field);
+        field -= base->getFieldCount();
+    }
+    switch (field) {
+        default: return nullptr;
+    }
+}
+
+const char *IERP_RouteDataDescriptor::getFieldProperty(int field, const char *propertyName) const
+{
+    omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
+    if (base) {
+        if (field < base->getFieldCount())
+            return base->getFieldProperty(field, propertyName);
+        field -= base->getFieldCount();
+    }
+    switch (field) {
+        default: return nullptr;
+    }
+}
+
+int IERP_RouteDataDescriptor::getFieldArraySize(omnetpp::any_ptr object, int field) const
+{
+    omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
+    if (base) {
+        if (field < base->getFieldCount())
+            return base->getFieldArraySize(object, field);
+        field -= base->getFieldCount();
+    }
+    IERP_RouteData *pp = omnetpp::fromAnyPtr<IERP_RouteData>(object); (void)pp;
+    switch (field) {
+        case FIELD_intermediateNodes: return pp->getIntermediateNodesArraySize();
+        default: return 0;
+    }
+}
+
+void IERP_RouteDataDescriptor::setFieldArraySize(omnetpp::any_ptr object, int field, int size) const
+{
+    omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
+    if (base) {
+        if (field < base->getFieldCount()){
+            base->setFieldArraySize(object, field, size);
+            return;
+        }
+        field -= base->getFieldCount();
+    }
+    IERP_RouteData *pp = omnetpp::fromAnyPtr<IERP_RouteData>(object); (void)pp;
+    switch (field) {
+        case FIELD_intermediateNodes: pp->setIntermediateNodesArraySize(size); break;
+        default: throw omnetpp::cRuntimeError("Cannot set array size of field %d of class 'IERP_RouteData'", field);
+    }
+}
+
+const char *IERP_RouteDataDescriptor::getFieldDynamicTypeString(omnetpp::any_ptr object, int field, int i) const
+{
+    omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
+    if (base) {
+        if (field < base->getFieldCount())
+            return base->getFieldDynamicTypeString(object,field,i);
+        field -= base->getFieldCount();
+    }
+    IERP_RouteData *pp = omnetpp::fromAnyPtr<IERP_RouteData>(object); (void)pp;
+    switch (field) {
+        default: return nullptr;
+    }
+}
+
+std::string IERP_RouteDataDescriptor::getFieldValueAsString(omnetpp::any_ptr object, int field, int i) const
+{
+    omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
+    if (base) {
+        if (field < base->getFieldCount())
+            return base->getFieldValueAsString(object,field,i);
+        field -= base->getFieldCount();
+    }
+    IERP_RouteData *pp = omnetpp::fromAnyPtr<IERP_RouteData>(object); (void)pp;
+    switch (field) {
+        case FIELD_type: return ulong2string(pp->getType());
+        case FIELD_length: return ulong2string(pp->getLength());
+        case FIELD_nodePtr: return ulong2string(pp->getNodePtr());
+        case FIELD_reserved1: return ulong2string(pp->getReserved1());
+        case FIELD_queryID: return ulong2string(pp->getQueryID());
+        case FIELD_reserved2: return ulong2string(pp->getReserved2());
+        case FIELD_sourceAddr: return pp->getSourceAddr().str();
+        case FIELD_intermediateNodes: return pp->getIntermediateNodes(i).str();
+        case FIELD_destAddr: return pp->getDestAddr().str();
+        default: return "";
+    }
+}
+
+void IERP_RouteDataDescriptor::setFieldValueAsString(omnetpp::any_ptr object, int field, int i, const char *value) const
+{
+    omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
+    if (base) {
+        if (field < base->getFieldCount()){
+            base->setFieldValueAsString(object, field, i, value);
+            return;
+        }
+        field -= base->getFieldCount();
+    }
+    IERP_RouteData *pp = omnetpp::fromAnyPtr<IERP_RouteData>(object); (void)pp;
+    switch (field) {
+        case FIELD_type: pp->setType(string2ulong(value)); break;
+        case FIELD_length: pp->setLength(string2ulong(value)); break;
+        case FIELD_nodePtr: pp->setNodePtr(string2ulong(value)); break;
+        case FIELD_reserved1: pp->setReserved1(string2ulong(value)); break;
+        case FIELD_queryID: pp->setQueryID(string2ulong(value)); break;
+        case FIELD_reserved2: pp->setReserved2(string2ulong(value)); break;
+        default: throw omnetpp::cRuntimeError("Cannot set field %d of class 'IERP_RouteData'", field);
+    }
+}
+
+omnetpp::cValue IERP_RouteDataDescriptor::getFieldValue(omnetpp::any_ptr object, int field, int i) const
+{
+    omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
+    if (base) {
+        if (field < base->getFieldCount())
+            return base->getFieldValue(object,field,i);
+        field -= base->getFieldCount();
+    }
+    IERP_RouteData *pp = omnetpp::fromAnyPtr<IERP_RouteData>(object); (void)pp;
+    switch (field) {
+        case FIELD_type: return (omnetpp::intval_t)(pp->getType());
+        case FIELD_length: return (omnetpp::intval_t)(pp->getLength());
+        case FIELD_nodePtr: return (omnetpp::intval_t)(pp->getNodePtr());
+        case FIELD_reserved1: return (omnetpp::intval_t)(pp->getReserved1());
+        case FIELD_queryID: return (omnetpp::intval_t)(pp->getQueryID());
+        case FIELD_reserved2: return (omnetpp::intval_t)(pp->getReserved2());
+        case FIELD_sourceAddr: return omnetpp::toAnyPtr(&pp->getSourceAddr()); break;
+        case FIELD_intermediateNodes: return omnetpp::toAnyPtr(&pp->getIntermediateNodes(i)); break;
+        case FIELD_destAddr: return omnetpp::toAnyPtr(&pp->getDestAddr()); break;
+        default: throw omnetpp::cRuntimeError("Cannot return field %d of class 'IERP_RouteData' as cValue -- field index out of range?", field);
+    }
+}
+
+void IERP_RouteDataDescriptor::setFieldValue(omnetpp::any_ptr object, int field, int i, const omnetpp::cValue& value) const
+{
+    omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
+    if (base) {
+        if (field < base->getFieldCount()){
+            base->setFieldValue(object, field, i, value);
+            return;
+        }
+        field -= base->getFieldCount();
+    }
+    IERP_RouteData *pp = omnetpp::fromAnyPtr<IERP_RouteData>(object); (void)pp;
+    switch (field) {
+        case FIELD_type: pp->setType(omnetpp::checked_int_cast<uint8_t>(value.intValue())); break;
+        case FIELD_length: pp->setLength(omnetpp::checked_int_cast<uint8_t>(value.intValue())); break;
+        case FIELD_nodePtr: pp->setNodePtr(omnetpp::checked_int_cast<uint8_t>(value.intValue())); break;
+        case FIELD_reserved1: pp->setReserved1(omnetpp::checked_int_cast<uint8_t>(value.intValue())); break;
+        case FIELD_queryID: pp->setQueryID(omnetpp::checked_int_cast<uint16_t>(value.intValue())); break;
+        case FIELD_reserved2: pp->setReserved2(omnetpp::checked_int_cast<uint16_t>(value.intValue())); break;
+        default: throw omnetpp::cRuntimeError("Cannot set field %d of class 'IERP_RouteData'", field);
+    }
+}
+
+const char *IERP_RouteDataDescriptor::getFieldStructName(int field) const
+{
+    omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
+    if (base) {
+        if (field < base->getFieldCount())
+            return base->getFieldStructName(field);
+        field -= base->getFieldCount();
+    }
+    switch (field) {
+        default: return nullptr;
+    };
+}
+
+omnetpp::any_ptr IERP_RouteDataDescriptor::getFieldStructValuePointer(omnetpp::any_ptr object, int field, int i) const
+{
+    omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
+    if (base) {
+        if (field < base->getFieldCount())
+            return base->getFieldStructValuePointer(object, field, i);
+        field -= base->getFieldCount();
+    }
+    IERP_RouteData *pp = omnetpp::fromAnyPtr<IERP_RouteData>(object); (void)pp;
+    switch (field) {
+        case FIELD_sourceAddr: return omnetpp::toAnyPtr(&pp->getSourceAddr()); break;
+        case FIELD_intermediateNodes: return omnetpp::toAnyPtr(&pp->getIntermediateNodes(i)); break;
+        case FIELD_destAddr: return omnetpp::toAnyPtr(&pp->getDestAddr()); break;
+        default: return omnetpp::any_ptr(nullptr);
+    }
+}
+
+void IERP_RouteDataDescriptor::setFieldStructValuePointer(omnetpp::any_ptr object, int field, int i, omnetpp::any_ptr ptr) const
+{
+    omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
+    if (base) {
+        if (field < base->getFieldCount()){
+            base->setFieldStructValuePointer(object, field, i, ptr);
+            return;
+        }
+        field -= base->getFieldCount();
+    }
+    IERP_RouteData *pp = omnetpp::fromAnyPtr<IERP_RouteData>(object); (void)pp;
+    switch (field) {
+        default: throw omnetpp::cRuntimeError("Cannot set field %d of class 'IERP_RouteData'", field);
+    }
+}
+
+Register_Class(BRP_Data)
+
+BRP_Data::BRP_Data() : ::inet::FieldsChunk()
+{
+}
+
+BRP_Data::BRP_Data(const BRP_Data& other) : ::inet::FieldsChunk(other)
+{
+    copy(other);
+}
+
+BRP_Data::~BRP_Data()
+{
+}
+
+BRP_Data& BRP_Data::operator=(const BRP_Data& other)
+{
+    if (this == &other) return *this;
+    ::inet::FieldsChunk::operator=(other);
+    copy(other);
+    return *this;
+}
+
+void BRP_Data::copy(const BRP_Data& other)
+{
+    this->sourceAddr = other.sourceAddr;
+    this->destAddr = other.destAddr;
+    this->queryID = other.queryID;
+    this->queryExtension = other.queryExtension;
+    this->reserved = other.reserved;
+    this->prevBordercastAddr = other.prevBordercastAddr;
+    this->encapsulatedPacket = other.encapsulatedPacket;
+}
+
+void BRP_Data::parsimPack(omnetpp::cCommBuffer *b) const
+{
+    ::inet::FieldsChunk::parsimPack(b);
+    doParsimPacking(b,this->sourceAddr);
+    doParsimPacking(b,this->destAddr);
+    doParsimPacking(b,this->queryID);
+    doParsimPacking(b,this->queryExtension);
+    doParsimPacking(b,this->reserved);
+    doParsimPacking(b,this->prevBordercastAddr);
+    doParsimPacking(b,this->encapsulatedPacket);
+}
+
+void BRP_Data::parsimUnpack(omnetpp::cCommBuffer *b)
+{
+    ::inet::FieldsChunk::parsimUnpack(b);
+    doParsimUnpacking(b,this->sourceAddr);
+    doParsimUnpacking(b,this->destAddr);
+    doParsimUnpacking(b,this->queryID);
+    doParsimUnpacking(b,this->queryExtension);
+    doParsimUnpacking(b,this->reserved);
+    doParsimUnpacking(b,this->prevBordercastAddr);
+    doParsimUnpacking(b,this->encapsulatedPacket);
+}
+
+const ::inet::L3Address& BRP_Data::getSourceAddr() const
+{
+    return this->sourceAddr;
+}
+
+void BRP_Data::setSourceAddr(const ::inet::L3Address& sourceAddr)
+{
+    handleChange();
+    this->sourceAddr = sourceAddr;
+}
+
+const ::inet::L3Address& BRP_Data::getDestAddr() const
+{
+    return this->destAddr;
+}
+
+void BRP_Data::setDestAddr(const ::inet::L3Address& destAddr)
+{
+    handleChange();
+    this->destAddr = destAddr;
+}
+
+uint16_t BRP_Data::getQueryID() const
+{
+    return this->queryID;
+}
+
+void BRP_Data::setQueryID(uint16_t queryID)
+{
+    handleChange();
+    this->queryID = queryID;
+}
+
+uint8_t BRP_Data::getQueryExtension() const
+{
+    return this->queryExtension;
+}
+
+void BRP_Data::setQueryExtension(uint8_t queryExtension)
+{
+    handleChange();
+    this->queryExtension = queryExtension;
+}
+
+uint8_t BRP_Data::getReserved() const
+{
+    return this->reserved;
+}
+
+void BRP_Data::setReserved(uint8_t reserved)
+{
+    handleChange();
+    this->reserved = reserved;
+}
+
+const ::inet::L3Address& BRP_Data::getPrevBordercastAddr() const
+{
+    return this->prevBordercastAddr;
+}
+
+void BRP_Data::setPrevBordercastAddr(const ::inet::L3Address& prevBordercastAddr)
+{
+    handleChange();
+    this->prevBordercastAddr = prevBordercastAddr;
+}
+
+const IERP_RouteData& BRP_Data::getEncapsulatedPacket() const
+{
+    return this->encapsulatedPacket;
+}
+
+void BRP_Data::setEncapsulatedPacket(const IERP_RouteData& encapsulatedPacket)
+{
+    handleChange();
+    this->encapsulatedPacket = encapsulatedPacket;
+}
+
+class BRP_DataDescriptor : public omnetpp::cClassDescriptor
+{
+  private:
+    mutable const char **propertyNames;
+    enum FieldConstants {
+        FIELD_sourceAddr,
+        FIELD_destAddr,
+        FIELD_queryID,
+        FIELD_queryExtension,
+        FIELD_reserved,
+        FIELD_prevBordercastAddr,
+        FIELD_encapsulatedPacket,
+    };
+  public:
+    BRP_DataDescriptor();
+    virtual ~BRP_DataDescriptor();
+
+    virtual bool doesSupport(omnetpp::cObject *obj) const override;
+    virtual const char **getPropertyNames() const override;
+    virtual const char *getProperty(const char *propertyName) const override;
+    virtual int getFieldCount() const override;
+    virtual const char *getFieldName(int field) const override;
+    virtual int findField(const char *fieldName) const override;
+    virtual unsigned int getFieldTypeFlags(int field) const override;
+    virtual const char *getFieldTypeString(int field) const override;
+    virtual const char **getFieldPropertyNames(int field) const override;
+    virtual const char *getFieldProperty(int field, const char *propertyName) const override;
+    virtual int getFieldArraySize(omnetpp::any_ptr object, int field) const override;
+    virtual void setFieldArraySize(omnetpp::any_ptr object, int field, int size) const override;
+
+    virtual const char *getFieldDynamicTypeString(omnetpp::any_ptr object, int field, int i) const override;
+    virtual std::string getFieldValueAsString(omnetpp::any_ptr object, int field, int i) const override;
+    virtual void setFieldValueAsString(omnetpp::any_ptr object, int field, int i, const char *value) const override;
+    virtual omnetpp::cValue getFieldValue(omnetpp::any_ptr object, int field, int i) const override;
+    virtual void setFieldValue(omnetpp::any_ptr object, int field, int i, const omnetpp::cValue& value) const override;
+
+    virtual const char *getFieldStructName(int field) const override;
+    virtual omnetpp::any_ptr getFieldStructValuePointer(omnetpp::any_ptr object, int field, int i) const override;
+    virtual void setFieldStructValuePointer(omnetpp::any_ptr object, int field, int i, omnetpp::any_ptr ptr) const override;
+};
+
+Register_ClassDescriptor(BRP_DataDescriptor)
+
+BRP_DataDescriptor::BRP_DataDescriptor() : omnetpp::cClassDescriptor(omnetpp::opp_typename(typeid(inet::zrp::BRP_Data)), "inet::FieldsChunk")
+{
+    propertyNames = nullptr;
+}
+
+BRP_DataDescriptor::~BRP_DataDescriptor()
+{
+    delete[] propertyNames;
+}
+
+bool BRP_DataDescriptor::doesSupport(omnetpp::cObject *obj) const
+{
+    return dynamic_cast<BRP_Data *>(obj)!=nullptr;
+}
+
+const char **BRP_DataDescriptor::getPropertyNames() const
+{
+    if (!propertyNames) {
+        static const char *names[] = {  nullptr };
+        omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
+        const char **baseNames = base ? base->getPropertyNames() : nullptr;
+        propertyNames = mergeLists(baseNames, names);
+    }
+    return propertyNames;
+}
+
+const char *BRP_DataDescriptor::getProperty(const char *propertyName) const
+{
+    omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
+    return base ? base->getProperty(propertyName) : nullptr;
+}
+
+int BRP_DataDescriptor::getFieldCount() const
+{
+    omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
+    return base ? 7+base->getFieldCount() : 7;
+}
+
+unsigned int BRP_DataDescriptor::getFieldTypeFlags(int field) const
+{
+    omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
+    if (base) {
+        if (field < base->getFieldCount())
+            return base->getFieldTypeFlags(field);
+        field -= base->getFieldCount();
+    }
+    static unsigned int fieldTypeFlags[] = {
+        0,    // FIELD_sourceAddr
+        0,    // FIELD_destAddr
+        FD_ISEDITABLE,    // FIELD_queryID
+        FD_ISEDITABLE,    // FIELD_queryExtension
+        FD_ISEDITABLE,    // FIELD_reserved
+        0,    // FIELD_prevBordercastAddr
+        FD_ISCOMPOUND | FD_ISCOBJECT,    // FIELD_encapsulatedPacket
+    };
+    return (field >= 0 && field < 7) ? fieldTypeFlags[field] : 0;
+}
+
+const char *BRP_DataDescriptor::getFieldName(int field) const
+{
+    omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
+    if (base) {
+        if (field < base->getFieldCount())
+            return base->getFieldName(field);
+        field -= base->getFieldCount();
+    }
+    static const char *fieldNames[] = {
+        "sourceAddr",
+        "destAddr",
+        "queryID",
+        "queryExtension",
+        "reserved",
+        "prevBordercastAddr",
+        "encapsulatedPacket",
+    };
+    return (field >= 0 && field < 7) ? fieldNames[field] : nullptr;
+}
+
+int BRP_DataDescriptor::findField(const char *fieldName) const
+{
+    omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
+    int baseIndex = base ? base->getFieldCount() : 0;
+    if (strcmp(fieldName, "sourceAddr") == 0) return baseIndex + 0;
+    if (strcmp(fieldName, "destAddr") == 0) return baseIndex + 1;
+    if (strcmp(fieldName, "queryID") == 0) return baseIndex + 2;
+    if (strcmp(fieldName, "queryExtension") == 0) return baseIndex + 3;
+    if (strcmp(fieldName, "reserved") == 0) return baseIndex + 4;
+    if (strcmp(fieldName, "prevBordercastAddr") == 0) return baseIndex + 5;
+    if (strcmp(fieldName, "encapsulatedPacket") == 0) return baseIndex + 6;
+    return base ? base->findField(fieldName) : -1;
+}
+
+const char *BRP_DataDescriptor::getFieldTypeString(int field) const
+{
+    omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
+    if (base) {
+        if (field < base->getFieldCount())
+            return base->getFieldTypeString(field);
+        field -= base->getFieldCount();
+    }
+    static const char *fieldTypeStrings[] = {
+        "inet::L3Address",    // FIELD_sourceAddr
+        "inet::L3Address",    // FIELD_destAddr
+        "uint16_t",    // FIELD_queryID
+        "uint8_t",    // FIELD_queryExtension
+        "uint8_t",    // FIELD_reserved
+        "inet::L3Address",    // FIELD_prevBordercastAddr
+        "inet::zrp::IERP_RouteData",    // FIELD_encapsulatedPacket
+    };
+    return (field >= 0 && field < 7) ? fieldTypeStrings[field] : nullptr;
+}
+
+const char **BRP_DataDescriptor::getFieldPropertyNames(int field) const
+{
+    omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
+    if (base) {
+        if (field < base->getFieldCount())
+            return base->getFieldPropertyNames(field);
+        field -= base->getFieldCount();
+    }
+    switch (field) {
+        default: return nullptr;
+    }
+}
+
+const char *BRP_DataDescriptor::getFieldProperty(int field, const char *propertyName) const
+{
+    omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
+    if (base) {
+        if (field < base->getFieldCount())
+            return base->getFieldProperty(field, propertyName);
+        field -= base->getFieldCount();
+    }
+    switch (field) {
+        default: return nullptr;
+    }
+}
+
+int BRP_DataDescriptor::getFieldArraySize(omnetpp::any_ptr object, int field) const
+{
+    omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
+    if (base) {
+        if (field < base->getFieldCount())
+            return base->getFieldArraySize(object, field);
+        field -= base->getFieldCount();
+    }
+    BRP_Data *pp = omnetpp::fromAnyPtr<BRP_Data>(object); (void)pp;
+    switch (field) {
+        default: return 0;
+    }
+}
+
+void BRP_DataDescriptor::setFieldArraySize(omnetpp::any_ptr object, int field, int size) const
+{
+    omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
+    if (base) {
+        if (field < base->getFieldCount()){
+            base->setFieldArraySize(object, field, size);
+            return;
+        }
+        field -= base->getFieldCount();
+    }
+    BRP_Data *pp = omnetpp::fromAnyPtr<BRP_Data>(object); (void)pp;
+    switch (field) {
+        default: throw omnetpp::cRuntimeError("Cannot set array size of field %d of class 'BRP_Data'", field);
+    }
+}
+
+const char *BRP_DataDescriptor::getFieldDynamicTypeString(omnetpp::any_ptr object, int field, int i) const
+{
+    omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
+    if (base) {
+        if (field < base->getFieldCount())
+            return base->getFieldDynamicTypeString(object,field,i);
+        field -= base->getFieldCount();
+    }
+    BRP_Data *pp = omnetpp::fromAnyPtr<BRP_Data>(object); (void)pp;
+    switch (field) {
+        default: return nullptr;
+    }
+}
+
+std::string BRP_DataDescriptor::getFieldValueAsString(omnetpp::any_ptr object, int field, int i) const
+{
+    omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
+    if (base) {
+        if (field < base->getFieldCount())
+            return base->getFieldValueAsString(object,field,i);
+        field -= base->getFieldCount();
+    }
+    BRP_Data *pp = omnetpp::fromAnyPtr<BRP_Data>(object); (void)pp;
+    switch (field) {
+        case FIELD_sourceAddr: return pp->getSourceAddr().str();
+        case FIELD_destAddr: return pp->getDestAddr().str();
+        case FIELD_queryID: return ulong2string(pp->getQueryID());
+        case FIELD_queryExtension: return ulong2string(pp->getQueryExtension());
+        case FIELD_reserved: return ulong2string(pp->getReserved());
+        case FIELD_prevBordercastAddr: return pp->getPrevBordercastAddr().str();
+        case FIELD_encapsulatedPacket: return pp->getEncapsulatedPacket().str();
+        default: return "";
+    }
+}
+
+void BRP_DataDescriptor::setFieldValueAsString(omnetpp::any_ptr object, int field, int i, const char *value) const
+{
+    omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
+    if (base) {
+        if (field < base->getFieldCount()){
+            base->setFieldValueAsString(object, field, i, value);
+            return;
+        }
+        field -= base->getFieldCount();
+    }
+    BRP_Data *pp = omnetpp::fromAnyPtr<BRP_Data>(object); (void)pp;
+    switch (field) {
+        case FIELD_queryID: pp->setQueryID(string2ulong(value)); break;
+        case FIELD_queryExtension: pp->setQueryExtension(string2ulong(value)); break;
+        case FIELD_reserved: pp->setReserved(string2ulong(value)); break;
+        default: throw omnetpp::cRuntimeError("Cannot set field %d of class 'BRP_Data'", field);
+    }
+}
+
+omnetpp::cValue BRP_DataDescriptor::getFieldValue(omnetpp::any_ptr object, int field, int i) const
+{
+    omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
+    if (base) {
+        if (field < base->getFieldCount())
+            return base->getFieldValue(object,field,i);
+        field -= base->getFieldCount();
+    }
+    BRP_Data *pp = omnetpp::fromAnyPtr<BRP_Data>(object); (void)pp;
+    switch (field) {
+        case FIELD_sourceAddr: return omnetpp::toAnyPtr(&pp->getSourceAddr()); break;
+        case FIELD_destAddr: return omnetpp::toAnyPtr(&pp->getDestAddr()); break;
+        case FIELD_queryID: return (omnetpp::intval_t)(pp->getQueryID());
+        case FIELD_queryExtension: return (omnetpp::intval_t)(pp->getQueryExtension());
+        case FIELD_reserved: return (omnetpp::intval_t)(pp->getReserved());
+        case FIELD_prevBordercastAddr: return omnetpp::toAnyPtr(&pp->getPrevBordercastAddr()); break;
+        case FIELD_encapsulatedPacket: return omnetpp::toAnyPtr(&pp->getEncapsulatedPacket()); break;
+        default: throw omnetpp::cRuntimeError("Cannot return field %d of class 'BRP_Data' as cValue -- field index out of range?", field);
+    }
+}
+
+void BRP_DataDescriptor::setFieldValue(omnetpp::any_ptr object, int field, int i, const omnetpp::cValue& value) const
+{
+    omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
+    if (base) {
+        if (field < base->getFieldCount()){
+            base->setFieldValue(object, field, i, value);
+            return;
+        }
+        field -= base->getFieldCount();
+    }
+    BRP_Data *pp = omnetpp::fromAnyPtr<BRP_Data>(object); (void)pp;
+    switch (field) {
+        case FIELD_queryID: pp->setQueryID(omnetpp::checked_int_cast<uint16_t>(value.intValue())); break;
+        case FIELD_queryExtension: pp->setQueryExtension(omnetpp::checked_int_cast<uint8_t>(value.intValue())); break;
+        case FIELD_reserved: pp->setReserved(omnetpp::checked_int_cast<uint8_t>(value.intValue())); break;
+        default: throw omnetpp::cRuntimeError("Cannot set field %d of class 'BRP_Data'", field);
+    }
+}
+
+const char *BRP_DataDescriptor::getFieldStructName(int field) const
+{
+    omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
+    if (base) {
+        if (field < base->getFieldCount())
+            return base->getFieldStructName(field);
+        field -= base->getFieldCount();
+    }
+    switch (field) {
+        case FIELD_encapsulatedPacket: return omnetpp::opp_typename(typeid(IERP_RouteData));
+        default: return nullptr;
+    };
+}
+
+omnetpp::any_ptr BRP_DataDescriptor::getFieldStructValuePointer(omnetpp::any_ptr object, int field, int i) const
+{
+    omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
+    if (base) {
+        if (field < base->getFieldCount())
+            return base->getFieldStructValuePointer(object, field, i);
+        field -= base->getFieldCount();
+    }
+    BRP_Data *pp = omnetpp::fromAnyPtr<BRP_Data>(object); (void)pp;
+    switch (field) {
+        case FIELD_sourceAddr: return omnetpp::toAnyPtr(&pp->getSourceAddr()); break;
+        case FIELD_destAddr: return omnetpp::toAnyPtr(&pp->getDestAddr()); break;
+        case FIELD_prevBordercastAddr: return omnetpp::toAnyPtr(&pp->getPrevBordercastAddr()); break;
+        case FIELD_encapsulatedPacket: return omnetpp::toAnyPtr(&pp->getEncapsulatedPacket()); break;
+        default: return omnetpp::any_ptr(nullptr);
+    }
+}
+
+void BRP_DataDescriptor::setFieldStructValuePointer(omnetpp::any_ptr object, int field, int i, omnetpp::any_ptr ptr) const
+{
+    omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
+    if (base) {
+        if (field < base->getFieldCount()){
+            base->setFieldStructValuePointer(object, field, i, ptr);
+            return;
+        }
+        field -= base->getFieldCount();
+    }
+    BRP_Data *pp = omnetpp::fromAnyPtr<BRP_Data>(object); (void)pp;
+    switch (field) {
+        default: throw omnetpp::cRuntimeError("Cannot set field %d of class 'BRP_Data'", field);
+    }
+}
+
 }  // namespace zrp
 }  // namespace inet
 

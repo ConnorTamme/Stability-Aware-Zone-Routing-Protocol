@@ -35,9 +35,7 @@ class NDP_Hello extends FieldsChunk
 
 //
 // IARP Link State Update Packet
-// RFC Appendix A - Complete packet format
 //
-// RFC Format:
 //                       1                   2                   3
 //   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 //   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -106,5 +104,76 @@ class IARP_LinkStateUpdate extends FieldsChunk
 	IARP_LinkDestData linkDestData[];
 }
 
+//IERP Packet
+//
+//                        1                   2                   3
+//    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+//    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+//    |     Type      |     Length    |    Node Ptr   |    RESERVED   |
+//    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+//    |           Query ID            |        R E S E R V E D        |
+//    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
+//    |                  Query/Route Source Address                   |  
+//    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ -+-
+//    |                 Intermediate Node (1) Address                 |  |
+//    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+  |
+//    |                 Intermediate Node (2) Address                 |  |
+//    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+  |
+//                                   | |                                 |
+//                                   | |                               route
+//                                  \| |/                                |
+//                                   \ /                                 |
+//    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-|  |
+//    |                Intermediate Node (N) Address                  |  |
+//    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+  |
+//    |                Query/Route Destination Address                |  |
+//    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ -+-
+
+enum IERP_Type
+{
+	IERP_QUERY = 1;
+	IERP_REPLY = 2;
+};
+
+class IERP_RouteData extends FieldsChunk
+{
+	uint8_t type;
+	uint8_t length; //Total packet length in  multiples of 4 bytes
+	uint8_t nodePtr;
+	uint8_t reserved1 = 0;
+	uint16_t queryID;
+	uint16_t reserved2 = 0;
+	L3Address sourceAddr;
+	L3Address intermediateNodes[]; //The number of intermediate nodes is determined by the length field
+	L3Address destAddr;
+}
 
 
+//BRP Packet
+//
+//	                     1                   2                   3
+//	 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+//	 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+//	 |                       Query Source Address                    |
+//	 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+//	 |                    Query Destination Address                  |
+//	 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+//	 |           Query ID            |Query Extension|    RESERVED   |
+//	 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+//	 |                    Prev Bordercast Address                    |   
+//	 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
+//	 |                                                               |
+//   |            E N C A P S U L A T E D     P A C K E T            |
+// 	 |                                                               |
+//   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+class BRP_Data extends FieldsChunk
+{
+	L3Address sourceAddr;
+	L3Address destAddr;
+	uint16_t queryID;
+	uint8_t queryExtension;
+	uint8_t reserved = 0;
+	L3Address prevBordercastAddr;
+	IERP_RouteData encapsulatedPacket; //The packet being sent to the destination
+}
