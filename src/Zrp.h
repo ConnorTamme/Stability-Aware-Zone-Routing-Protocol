@@ -147,6 +147,8 @@ class INET_API Zrp : public RoutingProtocolBase,  public NetfilterBase::HookBase
     unsigned int zrpUDPPort = 0;
     simtime_t NDP_helloInterval = 3;
     simtime_t debugInterval = 0;  // 0 = disabled
+    simtime_t brpJitterMax = 0.1;        // Max random jitter for BRP relay (RFC: RELAY_JITTER)
+    simtime_t brpCoverageLifetime = 30;  // How long to keep coverage entries (RFC: MAX_QUERY_LIFETIME)
 
     // state - NDP/IARP
     unsigned int NDP_seqNum = 0;  // sequence number for NDP hello messages
@@ -163,8 +165,23 @@ class INET_API Zrp : public RoutingProtocolBase,  public NetfilterBase::HookBase
     // Buffered datagrams waiting for route discovery to complete
     std::multimap<L3Address, Packet *> delayedPackets;
 
+    // state - BRP
+    uint16_t BRP_bordercastId = 0;  // locally unique bordercast ID counter
+    // BRP Query Coverage Table (RFC BRP Section 4.B.3)
+    // Tracks which nodes have been covered per query, so bordercast trees
+    // can be pruned to only span uncovered peripheral nodes.
+    struct BrpQueryCoverage {
+        IerpQueryId queryId;         // The IERP query this coverage tracks
+        int brpCacheId;              // Locally unique cache ID for this entry
+        std::set<L3Address> coveredNodes;  // Set of nodes covered by this query
+        simtime_t createTime;        // When this coverage entry was created
+        bool delivered;              // True once we've scheduled/completed IERP delivery for this query
+    };
+    // Key: brpCacheId -> coverage entry
+    std::map<int, BrpQueryCoverage> brpCoverageTable;
+
     // Pending jitter timers - dynamically created self-messages carrying context data.
-    // BRP will schedule these with random delay so the node can collect coverage
+    // BRP schedules these with random delay so the node can collect coverage
     // info from other bordercasts before forwarding. We track them here so
     // clearState() can cancel them all.
     std::vector<cMessage*> pendingTimers;
@@ -258,9 +275,33 @@ class INET_API Zrp : public RoutingProtocolBase,  public NetfilterBase::HookBase
     // extract() populates local variables from an IERP packet
     // load() writes local variables back into an IERP packet (handled by setters)
 
-    // BRP interface stubs (to be implemented with BRP later)
+    // BRP Functions (RFC BRP draft-ietf-manet-zone-brp-02)
     // bordercast() replaces traditional broadcast() per RFC IERP Section 4
-    void BRP_bordercast(const Ptr<inet::zrp::IERP_RouteData>& packet, int brpCacheId);
+    // RFC BRP E.1: Send(encap_packet) - called by IERP
+    // Coverage state is resolved internally via BRP_findOrCreateCoverage.
+    void BRP_bordercast(const Ptr<inet::zrp::IERP_RouteData>& packet);
+    // RFC BRP E.2: Deliver(packet) - called when BRP packet arrives from IP
+    void BRP_deliver(const Ptr<inet::zrp::BRP_Data>& brpPacket, const L3Address& sourceAddr);
+
+    // BRP helper functions
+    // Get our own routing zone members (self + all IARP route destinations)
+    std::set<L3Address> BRP_getMyZone() const;
+    // Get our peripheral nodes (IARP routes at exactly zoneRadius hops)
+    std::set<L3Address> BRP_getMyPeripherals() const;
+    // Get next-hop neighbors for reaching the given set of (uncovered) peripheral nodes
+    // Uses IARP routing table next-hop entries directly
+    std::set<L3Address> BRP_getOutNeighbors(const std::set<L3Address>& uncoveredPeripherals) const;
+    // Check if 'node' is an outgoing neighbor in prevBordercaster's bordercast tree,
+    // and also output the prevBordercaster's routing zone (computed as a byproduct of the Dijkstra)
+    bool BRP_isOutNeighbor(const L3Address& prevBordercaster, const L3Address& node,
+                           const std::set<L3Address>& coveredNodes,
+                           std::set<L3Address>& outPrevZone) const;
+    // Mark a set of nodes as covered in a coverage entry
+    void BRP_recordCoverage(int brpCacheId, const std::set<L3Address>& nodes);
+    // Find or create a coverage entry for a query
+    int BRP_findOrCreateCoverage(const IerpQueryId& qid);
+    // Clean old coverage entries
+    void BRP_cleanCoverageTable();
 
     // Pending timer management
     void schedulePendingTimer(cMessage *msg, simtime_t delay);

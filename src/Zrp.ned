@@ -33,6 +33,8 @@ simple Zrp like IApp
 	    double IARP_updateInterval @unit(s) = default(1s);
 	    double linkStateLifetime @unit(s) = default(3s);  // How long before link state entries expire
 	    double debugInterval @unit(s) = default(0s);      // Debug output interval (0 = disabled)
+	    double brpJitterMax @unit(s) = default(0.1s);     // Max random jitter before BRP relays query to IERP (RFC BRP Section 4: RELAY_JITTER)
+	    double brpCoverageLifetime @unit(s) = default(30s); // How long to keep BRP query coverage entries (RFC: MAX_QUERY_LIFETIME)
 	
 	gates:
 	    input socketIn;
