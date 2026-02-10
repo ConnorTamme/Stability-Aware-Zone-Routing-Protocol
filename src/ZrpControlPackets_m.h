@@ -24,6 +24,8 @@ class NDP_Hello;
 struct IARP_MetricData;
 struct IARP_LinkDestData;
 class IARP_LinkStateUpdate;
+class IERP_RouteData;
+class BRP_Data;
 
 }  // namespace zrp
 }  // namespace inet
@@ -57,9 +59,7 @@ namespace zrp {
  * 
  * //
  * // IARP Link State Update Packet
- * // RFC Appendix A - Complete packet format
  * //
- * // RFC Format:
  * //                       1                   2                   3
  * //   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
  * //   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -134,7 +134,7 @@ inline void doParsimPacking(omnetpp::cCommBuffer *b, const NDP_Hello& obj) {obj.
 inline void doParsimUnpacking(omnetpp::cCommBuffer *b, NDP_Hello& obj) {obj.parsimUnpack(b);}
 
 /**
- * Struct generated from ZrpControlPackets.msg:81 by opp_msgtool.
+ * Struct generated from ZrpControlPackets.msg:79 by opp_msgtool.
  */
 struct IARP_MetricData
 {
@@ -152,7 +152,7 @@ inline void doParsimPacking(omnetpp::cCommBuffer *b, const IARP_MetricData& obj)
 inline void doParsimUnpacking(omnetpp::cCommBuffer *b, IARP_MetricData& obj) { __doUnpacking(b, obj); }
 
 /**
- * Struct generated from ZrpControlPackets.msg:89 by opp_msgtool.
+ * Struct generated from ZrpControlPackets.msg:87 by opp_msgtool.
  */
 struct IARP_LinkDestData
 {
@@ -169,7 +169,7 @@ inline void doParsimPacking(omnetpp::cCommBuffer *b, const IARP_LinkDestData& ob
 inline void doParsimUnpacking(omnetpp::cCommBuffer *b, IARP_LinkDestData& obj) { __doUnpacking(b, obj); }
 
 /**
- * Class generated from <tt>ZrpControlPackets.msg:98</tt> by opp_msgtool.
+ * Class generated from <tt>ZrpControlPackets.msg:96</tt> by opp_msgtool.
  * <pre>
  * class IARP_LinkStateUpdate extends FieldsChunk
  * {
@@ -182,6 +182,31 @@ inline void doParsimUnpacking(omnetpp::cCommBuffer *b, IARP_LinkDestData& obj) {
  *     uint8_t linkDestCount; //The number of neighbors the source has
  *     IARP_LinkDestData linkDestData[];
  * }
+ * 
+ * //IERP Packet
+ * //
+ * //                        1                   2                   3
+ * //    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+ * //    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ * //    |     Type      |     Length    |    Node Ptr   |    RESERVED   |
+ * //    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ * //    |           Query ID            |        R E S E R V E D        |
+ * //    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
+ * //    |                  Query/Route Source Address                   |  
+ * //    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ -+-
+ * //    |                 Intermediate Node (1) Address                 |  |
+ * //    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+  |
+ * //    |                 Intermediate Node (2) Address                 |  |
+ * //    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+  |
+ * //                                   | |                                 |
+ * //                                   | |                               route
+ * //                                  \| |/                                |
+ * //                                   \ /                                 |
+ * //    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-|  |
+ * //    |                Intermediate Node (N) Address                  |  |
+ * //    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+  |
+ * //    |                Query/Route Destination Address                |  |
+ * //    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ -+-
  * </pre>
  */
 class IARP_LinkStateUpdate : public ::inet::FieldsChunk
@@ -248,6 +273,199 @@ class IARP_LinkStateUpdate : public ::inet::FieldsChunk
 inline void doParsimPacking(omnetpp::cCommBuffer *b, const IARP_LinkStateUpdate& obj) {obj.parsimPack(b);}
 inline void doParsimUnpacking(omnetpp::cCommBuffer *b, IARP_LinkStateUpdate& obj) {obj.parsimUnpack(b);}
 
+/**
+ * Enum generated from <tt>ZrpControlPackets.msg:133</tt> by opp_msgtool.
+ * <pre>
+ * enum IERP_Type
+ * {
+ *     IERP_QUERY = 1;
+ *     IERP_REPLY = 2;
+ * }
+ * </pre>
+ */
+enum IERP_Type {
+    IERP_QUERY = 1,
+    IERP_REPLY = 2
+};
+
+inline void doParsimPacking(omnetpp::cCommBuffer *b, const IERP_Type& e) { b->pack(static_cast<int>(e)); }
+inline void doParsimUnpacking(omnetpp::cCommBuffer *b, IERP_Type& e) { int n; b->unpack(n); e = static_cast<IERP_Type>(n); }
+
+/**
+ * Class generated from <tt>ZrpControlPackets.msg:139</tt> by opp_msgtool.
+ * <pre>
+ * class IERP_RouteData extends FieldsChunk
+ * {
+ *     uint8_t type;
+ *     uint8_t length; //Total packet length in  multiples of 4 bytes
+ *     uint8_t nodePtr;
+ *     uint8_t reserved1 = 0;
+ *     uint16_t queryID;
+ *     uint16_t reserved2 = 0;
+ *     L3Address sourceAddr;
+ *     L3Address intermediateNodes[]; //The number of intermediate nodes is determined by the length field
+ *     L3Address destAddr;
+ * }
+ * 
+ * 
+ * //BRP Packet
+ * //
+ * //	                     1                   2                   3
+ * //	 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+ * //	 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ * //	 |                       Query Source Address                    |
+ * //	 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ * //	 |                    Query Destination Address                  |
+ * //	 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ * //	 |           Query ID            |Query Extension|    RESERVED   |
+ * //	 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ * //	 |                    Prev Bordercast Address                    |   
+ * //	 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
+ * //	 |                                                               |
+ * //   |            E N C A P S U L A T E D     P A C K E T            |
+ * // 	 |                                                               |
+ * //   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ * </pre>
+ */
+class IERP_RouteData : public ::inet::FieldsChunk
+{
+  protected:
+    uint8_t type = 0;
+    uint8_t length = 0;
+    uint8_t nodePtr = 0;
+    uint8_t reserved1 = 0;
+    uint16_t queryID = 0;
+    uint16_t reserved2 = 0;
+    ::inet::L3Address sourceAddr;
+    ::inet::L3Address *intermediateNodes = nullptr;
+    size_t intermediateNodes_arraysize = 0;
+    ::inet::L3Address destAddr;
+
+  private:
+    void copy(const IERP_RouteData& other);
+
+  protected:
+    bool operator==(const IERP_RouteData&) = delete;
+
+  public:
+    IERP_RouteData();
+    IERP_RouteData(const IERP_RouteData& other);
+    virtual ~IERP_RouteData();
+    IERP_RouteData& operator=(const IERP_RouteData& other);
+    virtual IERP_RouteData *dup() const override {return new IERP_RouteData(*this);}
+    virtual void parsimPack(omnetpp::cCommBuffer *b) const override;
+    virtual void parsimUnpack(omnetpp::cCommBuffer *b) override;
+
+    virtual uint8_t getType() const;
+    virtual void setType(uint8_t type);
+
+    virtual uint8_t getLength() const;
+    virtual void setLength(uint8_t length);
+
+    virtual uint8_t getNodePtr() const;
+    virtual void setNodePtr(uint8_t nodePtr);
+
+    virtual uint8_t getReserved1() const;
+    virtual void setReserved1(uint8_t reserved1);
+
+    virtual uint16_t getQueryID() const;
+    virtual void setQueryID(uint16_t queryID);
+
+    virtual uint16_t getReserved2() const;
+    virtual void setReserved2(uint16_t reserved2);
+
+    virtual const ::inet::L3Address& getSourceAddr() const;
+    virtual ::inet::L3Address& getSourceAddrForUpdate() { handleChange();return const_cast<::inet::L3Address&>(const_cast<IERP_RouteData*>(this)->getSourceAddr());}
+    virtual void setSourceAddr(const ::inet::L3Address& sourceAddr);
+
+    virtual void setIntermediateNodesArraySize(size_t size);
+    virtual size_t getIntermediateNodesArraySize() const;
+    virtual const ::inet::L3Address& getIntermediateNodes(size_t k) const;
+    virtual ::inet::L3Address& getIntermediateNodesForUpdate(size_t k) { handleChange();return const_cast<::inet::L3Address&>(const_cast<IERP_RouteData*>(this)->getIntermediateNodes(k));}
+    virtual void setIntermediateNodes(size_t k, const ::inet::L3Address& intermediateNodes);
+    virtual void insertIntermediateNodes(size_t k, const ::inet::L3Address& intermediateNodes);
+    [[deprecated]] void insertIntermediateNodes(const ::inet::L3Address& intermediateNodes) {appendIntermediateNodes(intermediateNodes);}
+    virtual void appendIntermediateNodes(const ::inet::L3Address& intermediateNodes);
+    virtual void eraseIntermediateNodes(size_t k);
+
+    virtual const ::inet::L3Address& getDestAddr() const;
+    virtual ::inet::L3Address& getDestAddrForUpdate() { handleChange();return const_cast<::inet::L3Address&>(const_cast<IERP_RouteData*>(this)->getDestAddr());}
+    virtual void setDestAddr(const ::inet::L3Address& destAddr);
+};
+
+inline void doParsimPacking(omnetpp::cCommBuffer *b, const IERP_RouteData& obj) {obj.parsimPack(b);}
+inline void doParsimUnpacking(omnetpp::cCommBuffer *b, IERP_RouteData& obj) {obj.parsimUnpack(b);}
+
+/**
+ * Class generated from <tt>ZrpControlPackets.msg:171</tt> by opp_msgtool.
+ * <pre>
+ * class BRP_Data extends FieldsChunk
+ * {
+ *     L3Address sourceAddr;
+ *     L3Address destAddr;
+ *     uint16_t queryID;
+ *     uint8_t queryExtension;
+ *     uint8_t reserved = 0;
+ *     L3Address prevBordercastAddr;
+ *     IERP_RouteData encapsulatedPacket; //The packet being sent to the destination
+ * }
+ * </pre>
+ */
+class BRP_Data : public ::inet::FieldsChunk
+{
+  protected:
+    ::inet::L3Address sourceAddr;
+    ::inet::L3Address destAddr;
+    uint16_t queryID = 0;
+    uint8_t queryExtension = 0;
+    uint8_t reserved = 0;
+    ::inet::L3Address prevBordercastAddr;
+    IERP_RouteData encapsulatedPacket;
+
+  private:
+    void copy(const BRP_Data& other);
+
+  protected:
+    bool operator==(const BRP_Data&) = delete;
+
+  public:
+    BRP_Data();
+    BRP_Data(const BRP_Data& other);
+    virtual ~BRP_Data();
+    BRP_Data& operator=(const BRP_Data& other);
+    virtual BRP_Data *dup() const override {return new BRP_Data(*this);}
+    virtual void parsimPack(omnetpp::cCommBuffer *b) const override;
+    virtual void parsimUnpack(omnetpp::cCommBuffer *b) override;
+
+    virtual const ::inet::L3Address& getSourceAddr() const;
+    virtual ::inet::L3Address& getSourceAddrForUpdate() { handleChange();return const_cast<::inet::L3Address&>(const_cast<BRP_Data*>(this)->getSourceAddr());}
+    virtual void setSourceAddr(const ::inet::L3Address& sourceAddr);
+
+    virtual const ::inet::L3Address& getDestAddr() const;
+    virtual ::inet::L3Address& getDestAddrForUpdate() { handleChange();return const_cast<::inet::L3Address&>(const_cast<BRP_Data*>(this)->getDestAddr());}
+    virtual void setDestAddr(const ::inet::L3Address& destAddr);
+
+    virtual uint16_t getQueryID() const;
+    virtual void setQueryID(uint16_t queryID);
+
+    virtual uint8_t getQueryExtension() const;
+    virtual void setQueryExtension(uint8_t queryExtension);
+
+    virtual uint8_t getReserved() const;
+    virtual void setReserved(uint8_t reserved);
+
+    virtual const ::inet::L3Address& getPrevBordercastAddr() const;
+    virtual ::inet::L3Address& getPrevBordercastAddrForUpdate() { handleChange();return const_cast<::inet::L3Address&>(const_cast<BRP_Data*>(this)->getPrevBordercastAddr());}
+    virtual void setPrevBordercastAddr(const ::inet::L3Address& prevBordercastAddr);
+
+    virtual const IERP_RouteData& getEncapsulatedPacket() const;
+    virtual IERP_RouteData& getEncapsulatedPacketForUpdate() { handleChange();return const_cast<IERP_RouteData&>(const_cast<BRP_Data*>(this)->getEncapsulatedPacket());}
+    virtual void setEncapsulatedPacket(const IERP_RouteData& encapsulatedPacket);
+};
+
+inline void doParsimPacking(omnetpp::cCommBuffer *b, const BRP_Data& obj) {obj.parsimPack(b);}
+inline void doParsimUnpacking(omnetpp::cCommBuffer *b, BRP_Data& obj) {obj.parsimUnpack(b);}
+
 
 }  // namespace zrp
 }  // namespace inet
@@ -261,6 +479,8 @@ template<> inline inet::zrp::IARP_MetricData *fromAnyPtr(any_ptr ptr) { return p
 inline any_ptr toAnyPtr(const inet::zrp::IARP_LinkDestData *p) {return any_ptr(p);}
 template<> inline inet::zrp::IARP_LinkDestData *fromAnyPtr(any_ptr ptr) { return ptr.get<inet::zrp::IARP_LinkDestData>(); }
 template<> inline inet::zrp::IARP_LinkStateUpdate *fromAnyPtr(any_ptr ptr) { return check_and_cast<inet::zrp::IARP_LinkStateUpdate*>(ptr.get<cObject>()); }
+template<> inline inet::zrp::IERP_RouteData *fromAnyPtr(any_ptr ptr) { return check_and_cast<inet::zrp::IERP_RouteData*>(ptr.get<cObject>()); }
+template<> inline inet::zrp::BRP_Data *fromAnyPtr(any_ptr ptr) { return check_and_cast<inet::zrp::BRP_Data*>(ptr.get<cObject>()); }
 
 }  // namespace omnetpp
 

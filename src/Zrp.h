@@ -31,6 +31,7 @@
 #include "inet/networklayer/contract/IRoutingTable.h"
 #include "inet/routing/base/RoutingProtocolBase.h"
 #include "ZrpControlPackets_m.h"
+#include "ZrpRouteData.h"
 #include "inet/transportlayer/contract/udp/UdpSocket.h"
 #include "inet/transportlayer/udp/UdpHeader_m.h"
 
@@ -57,6 +58,34 @@ inline bool seqNumIsNewerOrEqual(uint16_t seq1, uint16_t seq2) {
     return seq1 == seq2 || seqNumIsNewer(seq1, seq2);
 }
 
+// Self-message kind constants
+// These identify the purpose of dynamically created self-messages
+// (for timers that carry data, as opposed to the fixed-pointer timers
+// like NDP_helloTimer). This pattern supports a variable number of
+// concurrent timers, each carrying context about which query/packet
+// they correspond to.
+enum ZrpSelfMsgKind {
+    ZRP_SELF_NDP_HELLO    = 0,    // Fixed timer
+    ZRP_SELF_IARP_UPDATE  = 1,    // Fixed timer
+    ZRP_SELF_DEBUG        = 2,    // Fixed timer
+    ZRP_SELF_BRP_JITTER   = 10,   // Variable: BRP jitter delivery to IERP (carries BRP packet data)
+};
+
+// Unique identifier for an IERP route query in the network.
+// Combination of (source address, query ID) is globally unique.
+struct IerpQueryId {
+    L3Address source;
+    uint16_t queryId;
+
+    bool operator==(const IerpQueryId& other) const {
+        return source == other.source && queryId == other.queryId;
+    }
+    bool operator<(const IerpQueryId& other) const {
+        if (source == other.source) return queryId < other.queryId;
+        return source < other.source;
+    }
+};
+
 // Link destination info for the link state table
 struct LinkDestInfo {
     L3Address destAddr;
@@ -70,6 +99,23 @@ struct LinkStateEntry {
     unsigned int seqNum;            // Link state sequence number
     simtime_t insertTime;           // When this entry was inserted/updated
     std::vector<LinkDestInfo> linkDestinations;  // List of neighbors and their metrics
+};
+
+// IERP detected query record - used to detect and discard duplicate queries.
+// Per RFC IERP Section 5.E.3: "if ((EXISTS) IERP_Routing_Table[dest].route)"
+// also implicitly means we've seen this query before if it's in the table.
+struct IerpQueryRecord {
+    IerpQueryId queryId;        // Source + query ID
+    L3Address destination;      // The query destination
+    simtime_t receiveTime;      // When we first saw this query
+    bool replied;               // Whether we sent/forwarded a reply
+};
+
+// Pending jitter timer entry - tracks dynamically created self-messages
+// that carry data (e.g., BRP jitter delays). Stored so they can be
+// cancelled during clearState().
+struct PendingTimerEntry {
+    cMessage *msg;
 };
 
 // Output operator for LinkStateEntry - required for WATCH_MAP to display entries
@@ -102,13 +148,28 @@ class INET_API Zrp : public RoutingProtocolBase,  public NetfilterBase::HookBase
     simtime_t NDP_helloInterval = 3;
     simtime_t debugInterval = 0;  // 0 = disabled
 
-    // state
+    // state - NDP/IARP
     unsigned int NDP_seqNum = 0;  // sequence number for NDP hello messages
     unsigned int IARP_seqNum = 0; // sequence number for IARP link state updates
     std::map<L3Address, simtime_t> neighborTable;  // neighbor address -> last heard time
     std::map<L3Address, LinkStateEntry> linkStateTable;  // source address -> link state entry
 
-    // self messages
+    // state - IERP
+    uint16_t IERP_queryId = 0;  // locally unique query ID counter
+    // Query detection table: tracks queries we've seen to detect duplicates
+    // Key: (source, queryID), Value: record of the query
+    std::map<IerpQueryId, IerpQueryRecord> ierpQueryTable;
+
+    // Buffered datagrams waiting for route discovery to complete
+    std::multimap<L3Address, Packet *> delayedPackets;
+
+    // Pending jitter timers - dynamically created self-messages carrying context data.
+    // BRP will schedule these with random delay so the node can collect coverage
+    // info from other bordercasts before forwarding. We track them here so
+    // clearState() can cancel them all.
+    std::vector<cMessage*> pendingTimers;
+
+    // self messages (fixed timers - identified by pointer comparison)
     cMessage *NDP_helloTimer = nullptr;
     cMessage *IARP_updateTimer = nullptr;
     cMessage *debugTimer = nullptr;
@@ -162,6 +223,49 @@ class INET_API Zrp : public RoutingProtocolBase,  public NetfilterBase::HookBase
     void IARP_purgeRoutingTable();
     void IARP_computeRoutes();
     IRoute *IARP_createRoute(const L3Address& dest, const L3Address& nextHop, unsigned int hops);
+
+    // IERP Functions
+    // Route discovery initiation (called when no route exists for outgoing data)
+    void IERP_initiateRouteDiscovery(const L3Address& dest);
+
+    // Packet creation
+    const Ptr<inet::zrp::IERP_RouteData> IERP_createRouteRequest(const L3Address& dest);
+    const Ptr<inet::zrp::IERP_RouteData> IERP_createRouteReply(const Ptr<inet::zrp::IERP_RouteData>& request);
+
+    // Packet handling - called when IERP packets arrive (via BRP delivery or direct IP)
+    void IERP_handleRouteRequest(const Ptr<inet::zrp::IERP_RouteData>& request, const L3Address& sourceAddr);
+    void IERP_handleRouteReply(const Ptr<inet::zrp::IERP_RouteData>& reply, const L3Address& sourceAddr);
+
+    // Route maintenance - called when IARP detects a topology change
+    void IERP_routeMaintenance();
+
+    // Route table helpers
+    IRoute *IERP_createRoute(const L3Address& dest, const L3Address& nextHop, unsigned int hops,
+                             const std::vector<L3Address>& fullRoute);
+    void IERP_purgeRoutingTable();
+    bool IERP_hasRouteToDestination(const L3Address& dest) const;
+    IRoute *IERP_findRoute(const L3Address& dest) const;
+    bool IERP_hasOngoingDiscovery(const L3Address& dest) const;
+    void IERP_delayDatagram(Packet *datagram);
+    void IERP_completeRouteDiscovery(const L3Address& dest);
+
+    // Query tracking
+    bool IERP_isQuerySeen(const IerpQueryId& qid) const;
+    void IERP_recordQuery(const IerpQueryId& qid, const L3Address& dest);
+    void IERP_cleanQueryTable();  // Remove old query records
+
+    // Packet field helpers (extract/load per RFC pseudocode)
+    // extract() populates local variables from an IERP packet
+    // load() writes local variables back into an IERP packet (handled by setters)
+
+    // BRP interface stubs (to be implemented with BRP later)
+    // bordercast() replaces traditional broadcast() per RFC IERP Section 4
+    void BRP_bordercast(const Ptr<inet::zrp::IERP_RouteData>& packet, int brpCacheId);
+
+    // Pending timer management
+    void schedulePendingTimer(cMessage *msg, simtime_t delay);
+    void cancelPendingTimer(cMessage *msg);
+    void cancelAllPendingTimers();
 
 
   public:
