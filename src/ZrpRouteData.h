@@ -21,8 +21,7 @@
 
 #include "inet/networklayer/common/L3Address.h"
 
-using namespace inet;
-
+namespace inet {
 namespace zrp {
 
 // Identifies which ZRP sub-protocol owns a given route
@@ -104,5 +103,6 @@ class INET_API ZrpRouteData : public cObject
 };
 
 } // namespace zrp
+} // namespace inet
 
 #endif // ZRP_ROUTE_DATA_H_

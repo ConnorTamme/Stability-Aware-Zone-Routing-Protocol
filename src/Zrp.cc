@@ -25,6 +25,7 @@
 #include "inet/common/IProtocolRegistrationListener.h"
 #include "inet/common/ModuleAccess.h"
 #include "inet/common/ProtocolTag_m.h"
+#include "inet/common/Simsignals.h"
 #include "inet/common/packet/Packet.h"
 #include "inet/common/stlutils.h"
 #include "inet/linklayer/common/InterfaceTag_m.h"
@@ -38,8 +39,7 @@
 #include "inet/transportlayer/common/L4PortTag_m.h"
 #include "inet/transportlayer/contract/udp/UdpControlInfo.h"
 
-using namespace inet;
-
+namespace inet {
 namespace zrp {
 
 Define_Module(Zrp);
@@ -52,17 +52,19 @@ Zrp::Zrp() {
 }
 
 Zrp::~Zrp() {
-    // TODO Auto-generated destructor stub
-    //need to clear state info and clear self messages according to AODV
+    clearState();
 }
 
 void Zrp::initialize(int stage)
 {
-    if (stage == INITSTAGE_ROUTING_PROTOCOLS){
-        //addressType = getSelfIPAddress().getAddressType();
-    }
-
     RoutingProtocolBase::initialize(stage);
+
+    if (stage == INITSTAGE_ROUTING_PROTOCOLS) {
+        // Register netfilter hooks so datagramLocalOutHook/ForwardHook etc. are invoked
+        networkProtocol->registerHook(0, this);
+        // Subscribe to link break signals for RERR / route maintenance
+        host->subscribe(linkBrokenSignal, this);
+    }
 
     if (stage == INITSTAGE_LOCAL) {
         host = getContainingNode(this);
@@ -85,6 +87,8 @@ void Zrp::initialize(int stage)
         debugInterval = par("debugInterval");
         brpJitterMax = par("brpJitterMax");
         brpCoverageLifetime = par("brpCoverageLifetime");
+        ierpRetryInterval = par("ierpRetryInterval");
+        ierpMaxRetries = par("ierpMaxRetries");
 
         // WATCH variables for GUI inspection
         // In Qtenv, double-click on a node's app[0] to see these values
@@ -117,6 +121,58 @@ void Zrp::handleMessageWhenUp(cMessage *msg)
             if (debugInterval > 0)
                 scheduleAfter(debugInterval, debugTimer);
         }
+        else if (msg->getKind() == ZRP_SELF_IERP_RETRY) {
+            // Route request retry timer fired
+            L3Address dest = L3Address(Ipv4Address(msg->par("destAddr").longValue()));
+            EV_INFO << "IERP retry timer for " << dest << endl;
+
+            // Check if we still need a route (no route yet, packets still buffered)
+            if (!routingTable->findBestMatchingRoute(dest) && delayedPackets.count(dest) > 0) {
+                auto retryIt = ierpRetryCounters.find(dest);
+                int retryCount = (retryIt != ierpRetryCounters.end()) ? retryIt->second : 0;
+
+                if (retryCount < (int)ierpMaxRetries) {
+                    ierpRetryCounters[dest] = retryCount + 1;
+                    EV_INFO << "IERP: Retrying route discovery for " << dest
+                            << " (attempt " << (retryCount + 1) << "/" << ierpMaxRetries << ")" << endl;
+
+                    // Clear old query record so we can re-issue
+                    L3Address self = getSelfIPAddress();
+                    for (auto it = ierpQueryTable.begin(); it != ierpQueryTable.end(); ) {
+                        if (it->first.source == self && it->second.destination == dest && !it->second.replied) {
+                            it = ierpQueryTable.erase(it);
+                        } else {
+                            ++it;
+                        }
+                    }
+
+                    IERP_initiateRouteDiscovery(dest);
+                }
+                else {
+                    EV_WARN << "IERP: Max retries (" << ierpMaxRetries << ") exhausted for " << dest
+                            << ", dropping " << delayedPackets.count(dest) << " buffered packets" << endl;
+                    // Drop buffered packets — must use dropQueuedDatagram so the
+                    // network layer releases them from its hook queue.
+                    auto lt = delayedPackets.lower_bound(dest);
+                    auto ut = delayedPackets.upper_bound(dest);
+                    for (auto it = lt; it != ut; it++) {
+                        networkProtocol->dropQueuedDatagram(it->second);
+                    }
+                    delayedPackets.erase(lt, ut);
+                    ierpRetryCounters.erase(dest);
+                }
+            } else {
+                // Route was found or no more packets, clean up
+                ierpRetryCounters.erase(dest);
+            }
+
+            // Remove from retry timers map
+            auto tmrIt = ierpRetryTimers.find(dest);
+            if (tmrIt != ierpRetryTimers.end() && tmrIt->second == msg) {
+                ierpRetryTimers.erase(tmrIt);
+            }
+            delete msg;
+        }
         else if (msg->getKind() == ZRP_SELF_BRP_JITTER) {
             // BRP jitter timer expired - deliver the encapsulated IERP packet to IERP.
             // RFC BRP Section 4.D.3: "schedules (with a random delay) delivery of
@@ -125,12 +181,12 @@ void Zrp::handleMessageWhenUp(cMessage *msg)
             // The cMessage carries a cMsgPar with the BRP cache ID, and the
             // context pointer holds a copy of the BRP_Data packet.
             int brpCacheId = (int)msg->par("brpCacheId").longValue();
-            auto *brpDataRaw = static_cast<inet::zrp::BRP_Data *>(msg->getContextPointer());
+            auto *brpDataRaw = static_cast<BRP_Data *>(msg->getContextPointer());
 
             if (brpDataRaw) {
                 // Extract encapsulated IERP packet
                 const auto& encapIerp = brpDataRaw->getEncapsulatedPacket();
-                auto ierpCopy = makeShared<inet::zrp::IERP_RouteData>();
+                auto ierpCopy = makeShared<IERP_RouteData>();
                 ierpCopy->setType(encapIerp.getType());
                 ierpCopy->setLength(encapIerp.getLength());
                 ierpCopy->setNodePtr(encapIerp.getNodePtr());
@@ -150,10 +206,10 @@ void Zrp::handleMessageWhenUp(cMessage *msg)
 
                 // Deliver to IERP - this is the equivalent of IERP's Deliver(encap_packet, BRP_cache_ID)
                 uint8_t type = ierpCopy->getType();
-                if (type == inet::zrp::IERP_QUERY) {
+                if (type == IERP_QUERY) {
                     IERP_handleRouteRequest(ierpCopy, sourceAddr);
                 }
-                else if (type == inet::zrp::IERP_REPLY) {
+                else if (type == IERP_REPLY) {
                     IERP_handleRouteReply(ierpCopy, sourceAddr);
                 }
 
@@ -227,6 +283,12 @@ void Zrp::clearState()
     }
     delayedPackets.clear();
     
+    // Cancel and clean up IERP retry timers
+    for (auto& entry : ierpRetryTimers) {
+        cancelAndDelete(entry.second);
+    }
+    ierpRetryTimers.clear();
+    
     // Clear state tables
     neighborTable.clear();
     linkStateTable.clear();
@@ -240,8 +302,10 @@ void Zrp::clearState()
     BRP_bordercastId = 0;
 
     //Clear routing tables (both IARP and IERP routes)
-    IARP_purgeRoutingTable();
-    IERP_purgeRoutingTable();
+    if (routingTable.get() != nullptr) {
+        IARP_purgeRoutingTable();
+        IERP_purgeRoutingTable();
+    }
 }
 
 void Zrp::printDebugTables()
@@ -396,17 +460,34 @@ INetfilter::IHook::Result Zrp::datagramPreRoutingHook(Packet *datagram)
 INetfilter::IHook::Result Zrp::datagramForwardHook(Packet *datagram)
 {
     Enter_Method("datagramForwardHook");
-    // TODO: Handle forwarding, check routes
+    // When forwarding a packet for which we have no route, trigger IERP route discovery
+    // This ensures intermediate nodes can also discover interzone routes
+    const auto& networkHeader = getNetworkProtocolHeader(datagram);
+    L3Address destAddr = networkHeader->getDestinationAddress();
+
+    if (!destAddr.isBroadcast() && !destAddr.isMulticast()) {
+        IRoute *route = routingTable->findBestMatchingRoute(destAddr);
+        if (!route) {
+            EV_INFO << "Forward hook: No route to " << destAddr << ", buffering and initiating IERP discovery" << endl;
+            IERP_delayDatagram(datagram);
+            if (!IERP_hasOngoingDiscovery(destAddr)) {
+                IERP_initiateRouteDiscovery(destAddr);
+            }
+            return QUEUE;
+        }
+    }
     return ACCEPT;
 }
 
 INetfilter::IHook::Result Zrp::datagramPostRoutingHook(Packet *datagram)
 {
+    Enter_Method("datagramPostRoutingHook");
     return ACCEPT;
 }
 
 INetfilter::IHook::Result Zrp::datagramLocalInHook(Packet *datagram)
 {
+    Enter_Method("datagramLocalInHook");
     return ACCEPT;
 }
 
@@ -460,7 +541,38 @@ void Zrp::socketClosed(UdpSocket *socket)
 void Zrp::receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj, cObject *details)
 {
     Enter_Method("receiveSignal");
-    // TODO: Handle link breakage signals
+    if (signalID == linkBrokenSignal) {
+        // A link-layer transmission failed, indicating a neighbor is unreachable.
+        // Per IERP RFC Section 3: use routing zone knowledge to bypass link failures.
+        // We remove the broken neighbor and trigger route maintenance.
+        Packet *datagram = check_and_cast<Packet *>(obj);
+        const auto& networkHeader = findNetworkProtocolHeader(datagram);
+        if (networkHeader != nullptr) {
+            L3Address unreachableNextHop = networkHeader->getDestinationAddress();
+            EV_WARN << "Link break detected to " << unreachableNextHop << endl;
+
+            // Remove from neighbor table immediately
+            auto it = neighborTable.find(unreachableNextHop);
+            if (it != neighborTable.end()) {
+                neighborTable.erase(it);
+                EV_INFO << "Removed broken neighbor " << unreachableNextHop << " from neighbor table" << endl;
+            }
+
+            // Invalidate any IERP routes using this next hop
+            for (int i = routingTable->getNumRoutes() - 1; i >= 0; i--) {
+                IRoute *route = routingTable->getRoute(i);
+                if (route->getSource() == this && route->getNextHopAsGeneric() == unreachableNextHop) {
+                    L3Address dest = route->getDestinationAsGeneric();
+                    EV_WARN << "Removing broken route to " << dest << " via " << unreachableNextHop << endl;
+                    routingTable->deleteRoute(route);
+                }
+            }
+
+            // Recompute IARP routes and run IERP maintenance to repair/shorten remaining routes
+            IARP_updateRoutingTable();
+            IERP_routeMaintenance();
+        }
+    }
 }
 
 // Visual display update - shows neighbor/zone info on node icon
@@ -517,28 +629,28 @@ void Zrp::processPacket(Packet *packet)
     auto chunk = packet->peekAtFront<FieldsChunk>();
     
     // Try to cast to various packet types
-    if (auto ndpHello = dynamicPtrCast<const inet::zrp::NDP_Hello>(chunk)) {
-        handleNDPHello(CHK(dynamicPtrCast<inet::zrp::NDP_Hello>(chunk->dupShared())), sourceAddr);
+    if (auto ndpHello = dynamicPtrCast<const NDP_Hello>(chunk)) {
+        handleNDPHello(CHK(dynamicPtrCast<NDP_Hello>(chunk->dupShared())), sourceAddr);
     }
-    else if (auto iarpUpdate = dynamicPtrCast<const inet::zrp::IARP_LinkStateUpdate>(chunk)) {
-        handleIARPUpdate(CHK(dynamicPtrCast<inet::zrp::IARP_LinkStateUpdate>(chunk->dupShared())), sourceAddr);
+    else if (auto iarpUpdate = dynamicPtrCast<const IARP_LinkStateUpdate>(chunk)) {
+        handleIARPUpdate(CHK(dynamicPtrCast<IARP_LinkStateUpdate>(chunk->dupShared())), sourceAddr);
     }
-    else if (auto ierpPacket = dynamicPtrCast<const inet::zrp::IERP_RouteData>(chunk)) {
-        auto mutableIerp = CHK(dynamicPtrCast<inet::zrp::IERP_RouteData>(chunk->dupShared()));
+    else if (auto ierpPacket = dynamicPtrCast<const IERP_RouteData>(chunk)) {
+        auto mutableIerp = CHK(dynamicPtrCast<IERP_RouteData>(chunk->dupShared()));
         uint8_t type = mutableIerp->getType();
-        if (type == inet::zrp::IERP_QUERY) {
+        if (type == IERP_QUERY) {
             IERP_handleRouteRequest(mutableIerp, sourceAddr);
         }
-        else if (type == inet::zrp::IERP_REPLY) {
+        else if (type == IERP_REPLY) {
             IERP_handleRouteReply(mutableIerp, sourceAddr);
         }
         else {
             EV_WARN << "Unknown IERP packet type: " << (int)type << endl;
         }
     }
-    else if (auto brpPacket = dynamicPtrCast<const inet::zrp::BRP_Data>(chunk)) {
+    else if (auto brpPacket = dynamicPtrCast<const BRP_Data>(chunk)) {
         // RFC BRP Section 4.E.2: Deliver(packet) - BRP packet received from IP
-        auto mutableBrp = CHK(dynamicPtrCast<inet::zrp::BRP_Data>(chunk->dupShared()));
+        auto mutableBrp = CHK(dynamicPtrCast<BRP_Data>(chunk->dupShared()));
         BRP_deliver(mutableBrp, sourceAddr);
     }
     else {
@@ -568,9 +680,9 @@ void Zrp::sendZrpPacket(const Ptr<FieldsChunk>& payload, const L3Address& destAd
 }
 
 // NDP Functions
-const Ptr<inet::zrp::NDP_Hello> Zrp::createNDPHello()
+const Ptr<NDP_Hello> Zrp::createNDPHello()
 {
-    auto hello = makeShared<inet::zrp::NDP_Hello>();
+    auto hello = makeShared<NDP_Hello>();
     
     // Set packet fields
     hello->setNodeAddress(getSelfIPAddress());
@@ -594,16 +706,27 @@ void Zrp::sendNDPHello()
     scheduleAfter(NDP_helloInterval, NDP_helloTimer);
 }
 
-void Zrp::handleNDPHello(const Ptr<inet::zrp::NDP_Hello>& hello, const L3Address& sourceAddr)
+void Zrp::handleNDPHello(const Ptr<NDP_Hello>& hello, const L3Address& sourceAddr)
 {
     EV_INFO << "Received NDP Hello from " << sourceAddr 
             << " (node address: " << hello->getNodeAddress() 
             << ", seq: " << hello->getSeqNum() << ")" << endl;
     
+    // Check if this is a new neighbor
+    bool isNew = (neighborTable.find(sourceAddr) == neighborTable.end());
+
     // Update neighbor table with current time
     neighborTable[sourceAddr] = simTime();
     
     EV_DETAIL << "Neighbor table now has " << neighborTable.size() << " entries" << endl;
+
+    // When a new neighbor appears, recompute IARP routes immediately.
+    // This is essential when zoneRadius == 1 (no IARP link-state updates)
+    // because the only way to learn about reachable nodes is through NDP.
+    if (isNew) {
+        EV_INFO << "New neighbor " << sourceAddr << " discovered, recomputing IARP routes" << endl;
+        IARP_updateRoutingTable();
+    }
 }
 
 void Zrp::NDP_refreshNeighborTable()
@@ -630,13 +753,13 @@ void Zrp::NDP_refreshNeighborTable()
 }
 
 // IARP Functions
-const Ptr<inet::zrp::IARP_LinkStateUpdate> Zrp::createIARPUpdate()
+const Ptr<IARP_LinkStateUpdate> Zrp::createIARPUpdate()
 {
-    auto update = makeShared<inet::zrp::IARP_LinkStateUpdate>();
+    auto update = makeShared<IARP_LinkStateUpdate>();
     
     // Set packet fields per RFC
     update->setSourceAddr(getSelfIPAddress());
-    update->setSeqNum(IARP_seqNum++); // TODO: Potentially an issue when seq nums wrap around
+    update->setSeqNum(IARP_seqNum++);
     update->setRadius(zoneRadius);
     update->setTTL(zoneRadius - 1);  // Making TTL equal zoneRadius - 1 really threw me off so I
         // will explain it in detail. Essentially these packets are meant to tell other nodes
@@ -659,7 +782,7 @@ const Ptr<inet::zrp::IARP_LinkStateUpdate> Zrp::createIARPUpdate()
     
     size_t idx = 0;
     for (const auto& neighbor : neighborTable) {
-        inet::zrp::IARP_LinkDestData destData;
+        IARP_LinkDestData destData;
         destData.addr = neighbor.first;
         
         // Set metrics - for now just hop count = 1 for direct neighbors
@@ -691,7 +814,15 @@ void Zrp::sendIARPUpdate()
         scheduleAfter(IARP_updateInterval, IARP_updateTimer);
         return;
     }
-    
+
+    // RFC IARP: TTL = r - 1.  With zoneRadius == 1 the zone consists only of
+    // direct neighbors, which NDP already discovers — no link-state flood needed.
+    if (zoneRadius <= 1) {
+        EV_DETAIL << "zoneRadius=1, IARP link-state flooding not needed (NDP suffices)" << endl;
+        scheduleAfter(IARP_updateInterval, IARP_updateTimer);
+        return;
+    }
+
     auto update = createIARPUpdate();
     sendZrpPacket(update, Ipv4Address::ALLONES_ADDRESS, zoneRadius - 1);
     
@@ -699,10 +830,10 @@ void Zrp::sendIARPUpdate()
     scheduleAfter(IARP_updateInterval, IARP_updateTimer);
 }
 
-void Zrp::handleIARPUpdate(const Ptr<inet::zrp::IARP_LinkStateUpdate>& update, const L3Address& sourceAddr)
+void Zrp::handleIARPUpdate(const Ptr<IARP_LinkStateUpdate>& update, const L3Address& sourceAddr)
 {
     L3Address originatorAddr = update->getSourceAddr();
-    unsigned int seqNum = update->getSeqNum();
+    uint16_t seqNum = update->getSeqNum();
     
     EV_INFO << "Received IARP Link State Update from " << sourceAddr 
             << " originated by " << originatorAddr
@@ -758,7 +889,7 @@ void Zrp::handleIARPUpdate(const Ptr<inet::zrp::IARP_LinkStateUpdate>& update, c
     if (ttl > 1) {
         // Create a copy with decremented TTL for rebroadcast
         auto fwdUpdate = update->dupShared();
-        auto mutableUpdate = CHK(dynamicPtrCast<inet::zrp::IARP_LinkStateUpdate>(fwdUpdate));
+        auto mutableUpdate = CHK(dynamicPtrCast<IARP_LinkStateUpdate>(fwdUpdate));
         mutableUpdate->setTTL(ttl - 1);
         
         EV_INFO << "Rebroadcasting IARP update with TTL=" << (int)(ttl - 1) << endl;
@@ -953,6 +1084,8 @@ void Zrp::IARP_updateRoutingTable()
 void Zrp::IERP_initiateRouteDiscovery(const L3Address& dest)
 {
     // RFC IERP Section 5.E.2: Initiate_Route_Discovery(dest)
+    // Note: Per RFC IERP Section 4, flood control is delegated to BRP's
+    // bordercast mechanism, so IERP does NOT apply its own rate limiting.
     EV_INFO << "Initiating IERP route discovery for " << dest << endl;
 
     auto request = IERP_createRouteRequest(dest);
@@ -966,14 +1099,22 @@ void Zrp::IERP_initiateRouteDiscovery(const L3Address& dest)
     // Per RFC IERP Section 4: "broadcast() should be replaced with bordercast()"
     // Call BRP to bordercast the route request
     BRP_bordercast(request);
+
+    // Schedule retry timer in case the route request is lost
+    if (ierpRetryTimers.find(dest) == ierpRetryTimers.end()) {
+        cMessage *retryMsg = new cMessage("IERP_retryTimer", ZRP_SELF_IERP_RETRY);
+        retryMsg->addPar("destAddr") = (long)dest.toIpv4().getInt();
+        ierpRetryTimers[dest] = retryMsg;
+        scheduleAfter(ierpRetryInterval, retryMsg);
+    }
 }
 
-const Ptr<inet::zrp::IERP_RouteData> Zrp::IERP_createRouteRequest(const L3Address& dest)
+const Ptr<IERP_RouteData> Zrp::IERP_createRouteRequest(const L3Address& dest)
 {
     // RFC IERP Section 5.E.2: Build ROUTE_REQUEST packet
-    auto request = makeShared<inet::zrp::IERP_RouteData>();
+    auto request = makeShared<IERP_RouteData>();
 
-    request->setType(inet::zrp::IERP_QUERY);
+    request->setType(IERP_QUERY);
     request->setNodePtr(0);     // Points to current position in route (starts at 0)
     request->setQueryID(IERP_queryId++);
     request->setSourceAddr(getSelfIPAddress());
@@ -991,15 +1132,15 @@ const Ptr<inet::zrp::IERP_RouteData> Zrp::IERP_createRouteRequest(const L3Addres
     return request;
 }
 
-const Ptr<inet::zrp::IERP_RouteData> Zrp::IERP_createRouteReply(const Ptr<inet::zrp::IERP_RouteData>& request)
+const Ptr<IERP_RouteData> Zrp::IERP_createRouteReply(const Ptr<IERP_RouteData>& request)
 {
     // RFC IERP Section 5.E.3: Copy ROUTE_REQUEST to ROUTE_REPLY
     // The route accumulated in the request is the path from source to here.
     // We also append any known route to the destination from our IERP/IARP tables.
 
-    auto reply = makeShared<inet::zrp::IERP_RouteData>();
+    auto reply = makeShared<IERP_RouteData>();
 
-    reply->setType(inet::zrp::IERP_REPLY);
+    reply->setType(IERP_REPLY);
     reply->setQueryID(request->getQueryID());
     reply->setSourceAddr(request->getSourceAddr());
     reply->setDestAddr(request->getDestAddr());
@@ -1029,7 +1170,7 @@ const Ptr<inet::zrp::IERP_RouteData> Zrp::IERP_createRouteReply(const Ptr<inet::
     return reply;
 }
 
-void Zrp::IERP_handleRouteRequest(const Ptr<inet::zrp::IERP_RouteData>& request, const L3Address& sourceAddr)
+void Zrp::IERP_handleRouteRequest(const Ptr<IERP_RouteData>& request, const L3Address& sourceAddr)
 {
     // RFC IERP Section 5.E.3: Deliver(packet, BRP_cache_ID) - case ROUTE_REQUEST
     L3Address self = getSelfIPAddress();
@@ -1117,7 +1258,7 @@ void Zrp::IERP_handleRouteRequest(const Ptr<inet::zrp::IERP_RouteData>& request,
 
         // Append our address to the route before creating reply
         auto mutableRequest = request->dupShared();
-        auto editableRequest = CHK(dynamicPtrCast<inet::zrp::IERP_RouteData>(mutableRequest));
+        auto editableRequest = CHK(dynamicPtrCast<IERP_RouteData>(mutableRequest));
 
         // Add our address to intermediate nodes
         size_t currentSize = editableRequest->getIntermediateNodesArraySize();
@@ -1169,7 +1310,7 @@ void Zrp::IERP_handleRouteRequest(const Ptr<inet::zrp::IERP_RouteData>& request,
         EV_INFO << "IERP: No route to " << queryDest << ", forwarding ROUTE_REQUEST" << endl;
 
         auto mutableRequest = request->dupShared();
-        auto editableRequest = CHK(dynamicPtrCast<inet::zrp::IERP_RouteData>(mutableRequest));
+        auto editableRequest = CHK(dynamicPtrCast<IERP_RouteData>(mutableRequest));
 
         // Add our address to the accumulated route
         size_t currentSize = editableRequest->getIntermediateNodesArraySize();
@@ -1188,7 +1329,7 @@ void Zrp::IERP_handleRouteRequest(const Ptr<inet::zrp::IERP_RouteData>& request,
     }
 }
 
-void Zrp::IERP_handleRouteReply(const Ptr<inet::zrp::IERP_RouteData>& reply, const L3Address& sourceAddr)
+void Zrp::IERP_handleRouteReply(const Ptr<IERP_RouteData>& reply, const L3Address& sourceAddr)
 {
     // RFC IERP Section 5.E.3: Deliver(packet) - case ROUTE_REPLY
     L3Address self = getSelfIPAddress();
@@ -1256,7 +1397,7 @@ void Zrp::IERP_handleRouteReply(const Ptr<inet::zrp::IERP_RouteData>& reply, con
     if (self != routeSource) {
         // Decrement node pointer and forward to previous hop (toward source)
         auto fwdReply = reply->dupShared();
-        auto editableReply = CHK(dynamicPtrCast<inet::zrp::IERP_RouteData>(fwdReply));
+        auto editableReply = CHK(dynamicPtrCast<IERP_RouteData>(fwdReply));
 
         uint8_t nodePtr = editableReply->getNodePtr();
         if (nodePtr > 0) {
@@ -1513,6 +1654,14 @@ void Zrp::IERP_completeRouteDiscovery(const L3Address& dest)
             entry.second.replied = true;
         }
     }
+
+    // Cancel retry timer for this destination
+    auto retryIt = ierpRetryTimers.find(dest);
+    if (retryIt != ierpRetryTimers.end()) {
+        cancelAndDelete(retryIt->second);
+        ierpRetryTimers.erase(retryIt);
+    }
+    ierpRetryCounters.erase(dest);
 }
 
 bool Zrp::IERP_isQuerySeen(const IerpQueryId& qid) const
@@ -1555,7 +1704,7 @@ void Zrp::IERP_cleanQueryTable()
 // RFC BRP E.1: Send(encap_packet, BRP_cache_ID)
 // Called by IERP to bordercast a route query.
 // brpCacheId == -1 means new query (we are the originator), otherwise existing relay.
-void Zrp::BRP_bordercast(const Ptr<inet::zrp::IERP_RouteData>& packet)
+void Zrp::BRP_bordercast(const Ptr<IERP_RouteData>& packet)
 {
     L3Address self = getSelfIPAddress();
     L3Address queryDest = packet->getDestAddr();
@@ -1627,7 +1776,7 @@ void Zrp::BRP_bordercast(const Ptr<inet::zrp::IERP_RouteData>& packet)
 
         // Build BRP packet wrapping the IERP packet
         for (const auto& neighbor : outNeighbors) {
-            auto brpPacket = makeShared<inet::zrp::BRP_Data>();
+            auto brpPacket = makeShared<BRP_Data>();
             brpPacket->setSourceAddr(qid.source);
             brpPacket->setDestAddr(queryDest);
             brpPacket->setQueryID(qid.queryId);
@@ -1635,7 +1784,7 @@ void Zrp::BRP_bordercast(const Ptr<inet::zrp::IERP_RouteData>& packet)
             brpPacket->setPrevBordercastAddr(self);
 
             // Encapsulate the IERP packet
-            inet::zrp::IERP_RouteData encapCopy;
+            IERP_RouteData encapCopy;
             encapCopy.setType(packet->getType());
             encapCopy.setLength(packet->getLength());
             encapCopy.setNodePtr(packet->getNodePtr());
@@ -1664,7 +1813,7 @@ void Zrp::BRP_bordercast(const Ptr<inet::zrp::IERP_RouteData>& packet)
 
 // RFC BRP E.2: Deliver(packet)
 // Called when a BRP packet arrives from IP (via processPacket).
-void Zrp::BRP_deliver(const Ptr<inet::zrp::BRP_Data>& brpPacket, const L3Address& sourceAddr)
+void Zrp::BRP_deliver(const Ptr<BRP_Data>& brpPacket, const L3Address& sourceAddr)
 {
     L3Address self = getSelfIPAddress();
     L3Address prevBordercaster = brpPacket->getPrevBordercastAddr();
@@ -1710,7 +1859,7 @@ void Zrp::BRP_deliver(const Ptr<inet::zrp::BRP_Data>& brpPacket, const L3Address
         jitterMsg->addPar("brpCacheId") = cacheId;
 
         // Attach BRP packet data via context pointer
-        auto *brpCopy = new inet::zrp::BRP_Data();
+        auto *brpCopy = new BRP_Data();
         brpCopy->setSourceAddr(querySource);
         brpCopy->setDestAddr(queryDest);
         brpCopy->setQueryID(queryID);
@@ -1838,7 +1987,12 @@ bool Zrp::BRP_isOutNeighbor(const L3Address& prevBordercaster, const L3Address& 
             continue;  // Don't expand beyond peripherals
         }
 
-        // Get neighbors of u from link state table
+        // Get neighbors of u from the best available source.
+        // For ourselves we use NDP; for other nodes we use their link-state
+        // advertisement.  Additionally, if u is one of our NDP neighbors we
+        // know by symmetry that *we* are a neighbor of u, so we inject that
+        // edge even when no link-state entry exists for u (important when
+        // zoneRadius == 1 and no IARP updates are exchanged).
         std::vector<std::pair<L3Address, unsigned int>> neighbors;
         if (u == self) {
             for (const auto& entry : neighborTable)
@@ -1849,6 +2003,16 @@ bool Zrp::BRP_isOutNeighbor(const L3Address& prevBordercaster, const L3Address& 
             if (it != linkStateTable.end()) {
                 for (const auto& linkDest : it->second.linkDestinations)
                     neighbors.push_back({linkDest.destAddr, linkDest.metrics[0]});
+            }
+            // Ensure the symmetric link self<->u is always present when u
+            // is our NDP neighbor, even if u's link-state is missing/stale.
+            if (neighborTable.find(u) != neighborTable.end()) {
+                bool selfAlreadyListed = false;
+                for (const auto& n : neighbors) {
+                    if (n.first == self) { selfAlreadyListed = true; break; }
+                }
+                if (!selfAlreadyListed)
+                    neighbors.push_back({self, 1});
             }
         }
 
@@ -1947,7 +2111,7 @@ void Zrp::cancelAllPendingTimers()
     for (auto *msg : pendingTimers) {
         // Free any BRP_Data attached via context pointer
         if (msg->getKind() == ZRP_SELF_BRP_JITTER && msg->getContextPointer()) {
-            delete static_cast<inet::zrp::BRP_Data *>(msg->getContextPointer());
+            delete static_cast<BRP_Data *>(msg->getContextPointer());
         }
         cancelAndDelete(msg);
     }
@@ -1956,5 +2120,6 @@ void Zrp::cancelAllPendingTimers()
 
 
 } // namespace zrp
+} // namespace inet
 
 
