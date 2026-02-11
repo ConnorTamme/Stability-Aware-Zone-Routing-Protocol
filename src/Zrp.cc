@@ -52,7 +52,7 @@ Zrp::Zrp() {
 }
 
 Zrp::~Zrp() {
-    clearState();
+    //clearState();
 }
 
 void Zrp::initialize(int stage)
@@ -254,13 +254,11 @@ void Zrp::handleStartOperation(LifecycleOperation *operation)
 
 void Zrp::handleStopOperation(LifecycleOperation *operation)
 {
-    // TODO: Clean up state
     clearState();
 }
 
 void Zrp::handleCrashOperation(LifecycleOperation *operation)
 {
-    // TODO: Clean up state
     clearState();
 }
 
@@ -302,7 +300,7 @@ void Zrp::clearState()
     BRP_bordercastId = 0;
 
     //Clear routing tables (both IARP and IERP routes)
-    if (routingTable.get() != nullptr) {
+    if (routingTable != nullptr && routingTable.getNullable() != nullptr) {
         IARP_purgeRoutingTable();
         IERP_purgeRoutingTable();
     }
