@@ -20,7 +20,7 @@ import inet.applications.contract.IApp;
 simple Zrp like IApp
 {
 	parameters:
-	    @class("zrp::Zrp");
+	    @class("inet::zrp::Zrp");
 	    //All stuff straight from Aodv.ned
 	    string routingTableModule = default("^.ipv4.routingTable");
 	    string interfaceTableModule = default("^.interfaceTable");
@@ -35,6 +35,8 @@ simple Zrp like IApp
 	    double debugInterval @unit(s) = default(0s);      // Debug output interval (0 = disabled)
 	    double brpJitterMax @unit(s) = default(0.1s);     // Max random jitter before BRP relays query to IERP (RFC BRP Section 4: RELAY_JITTER)
 	    double brpCoverageLifetime @unit(s) = default(30s); // How long to keep BRP query coverage entries (RFC: MAX_QUERY_LIFETIME)
+	    double ierpRetryInterval @unit(s) = default(3s);    // Interval between IERP route request retries
+	    int ierpMaxRetries = default(3);                    // Max number of IERP route request retries before dropping packets
 	
 	gates:
 	    input socketIn;

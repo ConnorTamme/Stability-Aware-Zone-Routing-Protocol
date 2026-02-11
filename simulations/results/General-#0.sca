@@ -1,23 +1,22 @@
 version 3
-run Stationary-0-20260210-22:28:48-10005
-attr configname Stationary
-attr datetime 20260210-22:28:48
-attr datetimef 20260210-222848
-attr experiment Stationary
+run General-0-20260210-22:38:23-10638
+attr configname General
+attr datetime 20260210-22:38:23
+attr datetimef 20260210-223823
+attr experiment General
 attr inifile omnetpp.ini
 attr iterationvars ""
 attr iterationvarsd ""
 attr iterationvarsf ""
 attr measurement ""
 attr network ZrpTestNetwork
-attr processid 10005
+attr processid 10638
 attr repetition 0
 attr replication #0
 attr resultdir results
 attr runnumber 0
 attr seedset 0
 config image-path ../../inet-4.5.4/images
-config description "Static nodes - basic ZRP functionality test"
 config network ZrpTestNetwork
 config sim-time-limit 100s
 config *.configurator.addStaticRoutes false
@@ -73,7 +72,7 @@ attr unit mps
 par ZrpTestNetwork.radioMedium.propagation ignoreMovementDuringTransmission true
 par ZrpTestNetwork.radioMedium.propagation ignoreMovementDuringPropagation true
 par ZrpTestNetwork.radioMedium.propagation ignoreMovementDuringReception true
-scalar ZrpTestNetwork.radioMedium.propagation "Arrival computation count" 1127
+scalar ZrpTestNetwork.radioMedium.propagation "Arrival computation count" 4333
 par ZrpTestNetwork.radioMedium.analogModel typename "\"inet.physicallayer.wireless.common.analogmodel.packetlevel.ScalarAnalogModel\""
 par ZrpTestNetwork.radioMedium.analogModel ignorePartialInterference false
 par ZrpTestNetwork.radioMedium.backgroundNoise typename "\"inet.physicallayer.wireless.common.backgroundnoise.IsotropicScalarBackgroundNoise\""
@@ -117,13 +116,13 @@ par ZrpTestNetwork.radioMedium listeningFilter false
 par ZrpTestNetwork.radioMedium macAddressFilter false
 par ZrpTestNetwork.radioMedium recordTransmissionLog false
 par ZrpTestNetwork.radioMedium recordReceptionLog false
-scalar ZrpTestNetwork.radioMedium "transmission count" 161
-scalar ZrpTestNetwork.radioMedium "signal send count" 1127
-scalar ZrpTestNetwork.radioMedium "reception computation count" 1127
-scalar ZrpTestNetwork.radioMedium "interference computation count" 3555
-scalar ZrpTestNetwork.radioMedium "reception decision computation count" 604
-scalar ZrpTestNetwork.radioMedium "listening decision computation count" 1824
-scalar ZrpTestNetwork.radioMedium "reception cache hit" 82.167721518987
+scalar ZrpTestNetwork.radioMedium "transmission count" 619
+scalar ZrpTestNetwork.radioMedium "signal send count" 4333
+scalar ZrpTestNetwork.radioMedium "reception computation count" 4333
+scalar ZrpTestNetwork.radioMedium "interference computation count" 13634
+scalar ZrpTestNetwork.radioMedium "reception decision computation count" 2325
+scalar ZrpTestNetwork.radioMedium "listening decision computation count" 6976
+scalar ZrpTestNetwork.radioMedium "reception cache hit" 82.173859382071
 attr unit %
 scalar ZrpTestNetwork.radioMedium "interference cache hit" 66.666666666667
 attr unit %
@@ -1065,7 +1064,7 @@ attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetP
 attr title "queue bit length, timeavg"
 attr unit b
 statistic ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.pendingQueue queueingTime:histogram
-field count 20
+field count 77
 field mean 0
 field stddev 0
 field min 0
@@ -1103,7 +1102,7 @@ bin	-0.08	0
 bin	-0.06	0
 bin	-0.04	0
 bin	-0.02	0
-bin	0	20
+bin	0	77
 bin	0.02	0
 bin	0.04	0
 bin	0.06	0
@@ -1129,25 +1128,25 @@ bin	0.44	0
 bin	0.46	0
 bin	0.48	0
 bin	0.5	0
-scalar ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPackets:count 20
+scalar ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPackets:count 77
 attr recordingmode count
 attr source packetPulled
 attr title "outgoing packets, count"
 attr unit pk
-scalar ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPacketLengths:sum 11200
+scalar ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPacketLengths:sum 43120
 attr interpolationmode none
 attr recordingmode sum
 attr source packetLength(packetPulled)
 attr title "outgoing packet lengths, sum"
 attr unit b
 statistic ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPacketLengths:histogram
-field count 20
+field count 77
 field mean 560
 field stddev 0
 field min 560
 field max 560
-field sum 11200
-field sqrsum 6272000
+field sum 43120
+field sqrsum 24147200
 attr interpolationmode none
 attr recordingmode histogram
 attr source packetLength(packetPulled)
@@ -1155,7 +1154,7 @@ attr title "outgoing packet lengths"
 attr unit b
 bin	-inf	0
 bin	559	0
-bin	560	20
+bin	560	77
 bin	561	0
 statistic ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.pendingQueue flowQueueingTime:histogram
 field count 0
@@ -1173,25 +1172,25 @@ attr unit s
 bin	-inf	0
 bin	0	0
 bin	1	0
-scalar ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPackets:count 20
+scalar ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPackets:count 77
 attr recordingmode count
 attr source packetPushStarted
 attr title "incoming packets, count"
 attr unit pk
-scalar ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPacketLengths:sum 11200
+scalar ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPacketLengths:sum 43120
 attr interpolationmode none
 attr recordingmode sum
 attr source packetLength(packetPushStarted)
 attr title "incoming packet lengths, sum"
 attr unit b
 statistic ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPacketLengths:histogram
-field count 20
+field count 77
 field mean 560
 field stddev 0
 field min 560
 field max 560
-field sum 11200
-field sqrsum 6272000
+field sum 43120
+field sqrsum 24147200
 attr interpolationmode none
 attr recordingmode histogram
 attr source packetLength(packetPushStarted)
@@ -1199,7 +1198,7 @@ attr title "incoming packet lengths"
 attr unit b
 bin	-inf	0
 bin	559	0
-bin	560	20
+bin	560	77
 bin	561	0
 scalar ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.pendingQueue droppedPacketsQueueOverflow:count 0
 attr interpolationmode none
@@ -1218,19 +1217,19 @@ par ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.inProgressFrames pending
 par ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.inProgressFrames originatorMacDataServiceModule "\"^.^.originatorMacDataService\""
 par ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.inProgressFrames ackHandlerModule "\"^.^.ackHandler\""
 statistic ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.inProgressFrames queueingTime:histogram
-field count 20
+field count 77
 field mean 5.4e-05
 field stddev 0
 field min 5.4e-05
 field max 5.4e-05
-field sum 0.00108
-field sqrsum 5.832e-08
+field sum 0.004158
+field sqrsum 2.24532e-07
 attr interpolationmode none
 attr recordingmode histogram
 attr source queueingTime(packetDequeued)
 attr title "queueing times"
 bin	-inf	0
-bin	0	20
+bin	0	77
 bin	0.01	0
 bin	0.02	0
 bin	0.03	0
@@ -1288,7 +1287,7 @@ attr interpolationmode sample-hold
 attr recordingmode max
 attr source "warmup(count(packetEnqueued) - count(packetDequeued))"
 attr title "queue length, max"
-scalar ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.inProgressFrames queueLength:timeavg 5.3994394456327e-05
+scalar ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.inProgressFrames queueLength:timeavg 5.3960192475331e-05
 attr autoWarmupFilter false
 attr interpolationmode sample-hold
 attr recordingmode timeavg
@@ -1297,10 +1296,10 @@ attr title "queue length, timeavg"
 par ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.contention typename "\"inet.linklayer.ieee80211.mac.contention.Contention\""
 par ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.contention initialChannelBusy true
 par ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.contention backoffOptimization true
-scalar ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.contention channelAccessGranted:count 20
+scalar ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.contention channelAccessGranted:count 77
 attr recordingmode count
 attr title "channel access granted, count"
-scalar ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.contention stateChanged:count 326
+scalar ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess.contention stateChanged:count 1242
 attr enum IDLE,DEFER,IFS_AND_BACKOFF
 attr interpolationmode none
 attr recordingmode count
@@ -1311,7 +1310,7 @@ par ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess difsn -1
 par ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess cwMin -1
 par ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess cwMax -1
 par ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess rxModule "\"^.^.rx\""
-scalar ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess channelOwnershipChanged:count 40
+scalar ZrpTestNetwork.source.wlan[0].mac.dcf.channelAccess channelOwnershipChanged:count 154
 attr interpolationmode sample-hold
 attr recordingmode count
 attr title "channel ownership, count"
@@ -1329,7 +1328,7 @@ par ZrpTestNetwork.source.wlan[0].mac.dcf.recipientMacDataService typename "\"in
 scalar ZrpTestNetwork.source.wlan[0].mac.dcf.recipientMacDataService packetDeaggregated:count 0
 attr recordingmode count
 attr title "packets deaggregated, count"
-scalar ZrpTestNetwork.source.wlan[0].mac.dcf.recipientMacDataService packetDefragmented:count 41
+scalar ZrpTestNetwork.source.wlan[0].mac.dcf.recipientMacDataService packetDefragmented:count 156
 attr recordingmode count
 attr title "packets defragmented, count"
 scalar ZrpTestNetwork.source.wlan[0].mac.dcf.recipientMacDataService packetDropDuplicateDetected:count 0
@@ -1388,22 +1387,22 @@ par ZrpTestNetwork.source.wlan[0].mac.dcf.ctsPolicy rateSelectionModule "\"^.rat
 par ZrpTestNetwork.source.wlan[0].mac.dcf typename "\"inet.linklayer.ieee80211.mac.coordinationfunction.Dcf\""
 par ZrpTestNetwork.source.wlan[0].mac.dcf rxModule "\"^.rx\""
 par ZrpTestNetwork.source.wlan[0].mac.dcf txModule "\"^.tx\""
-scalar ZrpTestNetwork.source.wlan[0].mac.dcf frameSequenceFinished:count 20
+scalar ZrpTestNetwork.source.wlan[0].mac.dcf frameSequenceFinished:count 77
 attr recordingmode count
 attr title "finished frame sequences, count"
 statistic ZrpTestNetwork.source.wlan[0].mac.dcf frameSequenceDuration:histogram
-field count 20
+field count 77
 field mean 5.4e-05
 field stddev 0
 field min 5.4e-05
 field max 5.4e-05
-field sum 0.00108
-field sqrsum 5.832e-08
+field sum 0.004158
+field sqrsum 2.24532e-07
 attr recordingmode histogram
 attr source frameSequenceDuration(frameSequenceFinished)
 attr title "frame sequence durations"
 bin	-inf	0
-bin	0	20
+bin	0	77
 bin	0.01	0
 bin	0.02	0
 bin	0.03	0
@@ -1456,25 +1455,25 @@ bin	0.49	0
 bin	0.5	0
 bin	0.51	0
 statistic ZrpTestNetwork.source.wlan[0].mac.dcf frameSequenceNumPackets:histogram
-field count 20
+field count 77
 field mean 1
 field stddev 0
 field min 1
 field max 1
-field sum 20
-field sqrsum 20
+field sum 77
+field sqrsum 77
 attr recordingmode histogram
 attr source frameSequenceNumPackets(frameSequenceFinished)
 attr title "frame sequences: number of packets"
 bin	-inf	0
 bin	0	0
-bin	1	20
+bin	1	77
 bin	2	0
-scalar ZrpTestNetwork.source.wlan[0].mac.dcf packetReceivedFromPeer:count 41
+scalar ZrpTestNetwork.source.wlan[0].mac.dcf packetReceivedFromPeer:count 156
 attr interpolationmode none
 attr recordingmode count
 attr title "packets received, count"
-scalar ZrpTestNetwork.source.wlan[0].mac.dcf packetReceivedFromPeer:sum(packetBytes) 2870
+scalar ZrpTestNetwork.source.wlan[0].mac.dcf packetReceivedFromPeer:sum(packetBytes) 10920
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets received, sum(packetBytes)"
@@ -1488,22 +1487,22 @@ attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Unicast(packetReceivedFromPeer)
 attr title "packets received: unicast, sum(packetBytes)"
-scalar ZrpTestNetwork.source.wlan[0].mac.dcf packetReceivedFromPeerMulticast:count 41
+scalar ZrpTestNetwork.source.wlan[0].mac.dcf packetReceivedFromPeerMulticast:count 156
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211Multicast(packetReceivedFromPeer)
 attr title "packets received: multicast, count"
-scalar ZrpTestNetwork.source.wlan[0].mac.dcf packetReceivedFromPeerMulticast:sum(packetBytes) 2870
+scalar ZrpTestNetwork.source.wlan[0].mac.dcf packetReceivedFromPeerMulticast:sum(packetBytes) 10920
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Multicast(packetReceivedFromPeer)
 attr title "packets received: multicast, sum(packetBytes)"
-scalar ZrpTestNetwork.source.wlan[0].mac.dcf packetReceivedFromPeerBroadcast:count 41
+scalar ZrpTestNetwork.source.wlan[0].mac.dcf packetReceivedFromPeerBroadcast:count 156
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211Broadcast(packetReceivedFromPeer)
 attr title "packets received: broadcast, count"
-scalar ZrpTestNetwork.source.wlan[0].mac.dcf packetReceivedFromPeerBroadcast:sum(packetBytes) 2870
+scalar ZrpTestNetwork.source.wlan[0].mac.dcf packetReceivedFromPeerBroadcast:sum(packetBytes) 10920
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Broadcast(packetReceivedFromPeer)
@@ -1518,21 +1517,21 @@ attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Retry(packetReceivedFromPeer)
 attr title "packets received: with retry, sum(packetBytes)"
-scalar ZrpTestNetwork.source.wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:count 41
+scalar ZrpTestNetwork.source.wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:count 156
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211NotRetry(packetReceivedFromPeer)
 attr title "packets received: without retry, count"
-scalar ZrpTestNetwork.source.wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:sum(packetBytes) 2870
+scalar ZrpTestNetwork.source.wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:sum(packetBytes) 10920
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211NotRetry(packetReceivedFromPeer)
 attr title "packets received: without retry, sum(packetBytes)"
-scalar ZrpTestNetwork.source.wlan[0].mac.dcf packetSentToPeer:count 20
+scalar ZrpTestNetwork.source.wlan[0].mac.dcf packetSentToPeer:count 77
 attr interpolationmode none
 attr recordingmode count
 attr title "packets sent, count"
-scalar ZrpTestNetwork.source.wlan[0].mac.dcf packetSentToPeer:sum(packetBytes) 1400
+scalar ZrpTestNetwork.source.wlan[0].mac.dcf packetSentToPeer:sum(packetBytes) 5390
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets sent, sum(packetBytes)"
@@ -1546,22 +1545,22 @@ attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Unicast(packetSentToPeer)
 attr title "packets sent: unicast, sum(packetBytes)"
-scalar ZrpTestNetwork.source.wlan[0].mac.dcf packetSentToPeerMulticast:count 20
+scalar ZrpTestNetwork.source.wlan[0].mac.dcf packetSentToPeerMulticast:count 77
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211Multicast(packetSentToPeer)
 attr title "packets sent: multicast, count"
-scalar ZrpTestNetwork.source.wlan[0].mac.dcf packetSentToPeerMulticast:sum(packetBytes) 1400
+scalar ZrpTestNetwork.source.wlan[0].mac.dcf packetSentToPeerMulticast:sum(packetBytes) 5390
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Multicast(packetSentToPeer)
 attr title "packets sent: multicast, sum(packetBytes)"
-scalar ZrpTestNetwork.source.wlan[0].mac.dcf packetSentToPeerBroadcast:count 20
+scalar ZrpTestNetwork.source.wlan[0].mac.dcf packetSentToPeerBroadcast:count 77
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211Broadcast(packetSentToPeer)
 attr title "packets sent: broadcast , count"
-scalar ZrpTestNetwork.source.wlan[0].mac.dcf packetSentToPeerBroadcast:sum(packetBytes) 1400
+scalar ZrpTestNetwork.source.wlan[0].mac.dcf packetSentToPeerBroadcast:sum(packetBytes) 5390
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Broadcast(packetSentToPeer)
@@ -1576,12 +1575,12 @@ attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Retry(packetSentToPeer)
 attr title "packets sent: with retry, sum(packetBytes)"
-scalar ZrpTestNetwork.source.wlan[0].mac.dcf packetSentToPeerWithoutRetry:count 20
+scalar ZrpTestNetwork.source.wlan[0].mac.dcf packetSentToPeerWithoutRetry:count 77
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211NotRetry(packetSentToPeer)
 attr title "packets sent: without retry, count"
-scalar ZrpTestNetwork.source.wlan[0].mac.dcf packetSentToPeerWithoutRetry:sum(packetBytes) 1400
+scalar ZrpTestNetwork.source.wlan[0].mac.dcf packetSentToPeerWithoutRetry:sum(packetBytes) 5390
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211NotRetry(packetSentToPeer)
@@ -1647,35 +1646,35 @@ attr enum off,sleep,receiver,transmitter,transceiver
 par ZrpTestNetwork.source.wlan[0].mac mtu 2304B
 attr unit B
 par ZrpTestNetwork.source.wlan[0].mac qosStation false
-scalar ZrpTestNetwork.source.wlan[0].mac packetReceivedFromLower:count 41
+scalar ZrpTestNetwork.source.wlan[0].mac packetReceivedFromLower:count 156
 attr interpolationmode none
 attr recordingmode count
 attr title "packets received from lower layer, count"
-scalar ZrpTestNetwork.source.wlan[0].mac packetReceivedFromLower:sum(packetBytes) 2870
+scalar ZrpTestNetwork.source.wlan[0].mac packetReceivedFromLower:sum(packetBytes) 10920
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets received from lower layer, sum(packetBytes)"
-scalar ZrpTestNetwork.source.wlan[0].mac packetSentToLower:count 20
+scalar ZrpTestNetwork.source.wlan[0].mac packetSentToLower:count 77
 attr interpolationmode none
 attr recordingmode count
 attr title "packets sent to lower layer, count"
-scalar ZrpTestNetwork.source.wlan[0].mac packetSentToLower:sum(packetBytes) 1400
+scalar ZrpTestNetwork.source.wlan[0].mac packetSentToLower:sum(packetBytes) 5390
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets sent to lower layer, sum(packetBytes)"
-scalar ZrpTestNetwork.source.wlan[0].mac packetReceivedFromUpper:count 20
+scalar ZrpTestNetwork.source.wlan[0].mac packetReceivedFromUpper:count 77
 attr interpolationmode none
 attr recordingmode count
 attr title "packets received from upper layer, count"
-scalar ZrpTestNetwork.source.wlan[0].mac packetReceivedFromUpper:sum(packetBytes) 840
+scalar ZrpTestNetwork.source.wlan[0].mac packetReceivedFromUpper:sum(packetBytes) 3234
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets received from upper layer, sum(packetBytes)"
-scalar ZrpTestNetwork.source.wlan[0].mac packetSentToUpper:count 41
+scalar ZrpTestNetwork.source.wlan[0].mac packetSentToUpper:count 156
 attr interpolationmode none
 attr recordingmode count
 attr title "packets sent to upper layer, count"
-scalar ZrpTestNetwork.source.wlan[0].mac packetSentToUpper:sum(packetBytes) 1722
+scalar ZrpTestNetwork.source.wlan[0].mac packetSentToUpper:sum(packetBytes) 6552
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets sent to upper layer, sum(packetBytes)"
@@ -1890,29 +1889,29 @@ bin	0.44	0
 bin	0.46	0
 bin	0.48	0
 bin	0.5	0
-scalar ZrpTestNetwork.source.wlan[0].radio radioMode:count 43
+scalar ZrpTestNetwork.source.wlan[0].radio radioMode:count 157
 attr interpolationmode sample-hold
 attr recordingmode count
 attr source radioModeChanged
 attr title "Radio mode, count"
-scalar ZrpTestNetwork.source.wlan[0].radio receptionState:count 123
+scalar ZrpTestNetwork.source.wlan[0].radio receptionState:count 467
 attr interpolationmode sample-hold
 attr recordingmode count
 attr source receptionStateChanged
 attr title "Radio reception state, count"
-scalar ZrpTestNetwork.source.wlan[0].radio transmissionState:count 80
+scalar ZrpTestNetwork.source.wlan[0].radio transmissionState:count 308
 attr interpolationmode sample-hold
 attr recordingmode count
 attr source transmissionStateChanged
 attr title "Radio transmission state, count"
 statistic ZrpTestNetwork.source.wlan[0].radio minSnir:histogram
-field count 41
-field mean 635.40444682059
-field stddev 185.75004570593
+field count 156
+field mean 639.88067643058
+field stddev 184.11647967508
 field min 456.35526242101
 field max 823.40609044014
-field sum 26051.582319644
-field sqrsum 17933414.431805
+field sum 99821.38552317
+field sqrsum 69128101.794435
 attr recordingmode histogram
 attr source minimumSnir(packetSentToUpper)
 attr title "Min SNIR"
@@ -1926,7 +1925,7 @@ bin	410	0
 bin	420	0
 bin	430	0
 bin	440	0
-bin	450	21
+bin	450	78
 bin	460	0
 bin	470	0
 bin	480	0
@@ -1963,7 +1962,7 @@ bin	780	0
 bin	790	0
 bin	800	0
 bin	810	0
-bin	820	20
+bin	820	78
 bin	830	0
 bin	840	0
 bin	850	0
@@ -1975,7 +1974,7 @@ bin	900	0
 bin	910	0
 bin	920	0
 statistic ZrpTestNetwork.source.wlan[0].radio packetErrorRate:histogram
-field count 41
+field count 156
 field mean 0
 field stddev 0
 field min 0
@@ -2011,7 +2010,7 @@ bin	-0.08	0
 bin	-0.06	0
 bin	-0.04	0
 bin	-0.02	0
-bin	0	41
+bin	0	156
 bin	0.02	0
 bin	0.04	0
 bin	0.06	0
@@ -2255,27 +2254,27 @@ par ZrpTestNetwork.source.udp icmpv6Module "\"^.ipv6.icmpv6\""
 par ZrpTestNetwork.source.udp crcMode "\"declared\""
 attr enum disabled,declared,computed
 par ZrpTestNetwork.source.udp defaultMulticastLoop true
-scalar ZrpTestNetwork.source.udp packetReceived:count 41
+scalar ZrpTestNetwork.source.udp packetReceived:count 156
 attr interpolationmode none
 attr recordingmode count
 attr source packetReceived
 attr title "packets received, count"
-scalar ZrpTestNetwork.source.udp packetReceived:sum(packetBytes) 574
+scalar ZrpTestNetwork.source.udp packetReceived:sum(packetBytes) 2184
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source packetReceived
 attr title "packets received, sum(packetBytes)"
-scalar ZrpTestNetwork.source.udp packetSent:count 20
+scalar ZrpTestNetwork.source.udp packetSent:count 77
 attr interpolationmode none
 attr recordingmode count
 attr source packetSent
 attr title "packets sent, count"
-scalar ZrpTestNetwork.source.udp packetSent:sum(packetBytes) 280
+scalar ZrpTestNetwork.source.udp packetSent:sum(packetBytes) 1078
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source packetSent
 attr title "packets sent, sum(packetBytes)"
-scalar ZrpTestNetwork.source.udp passedUpPk:count 41
+scalar ZrpTestNetwork.source.udp passedUpPk:count 156
 attr interpolationmode none
 attr recordingmode count
 attr source packetSentToUpper
@@ -2535,7 +2534,7 @@ attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetP
 attr title "queue bit length, timeavg"
 attr unit b
 statistic ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.pendingQueue queueingTime:histogram
-field count 20
+field count 77
 field mean 0
 field stddev 0
 field min 0
@@ -2573,7 +2572,7 @@ bin	-0.08	0
 bin	-0.06	0
 bin	-0.04	0
 bin	-0.02	0
-bin	0	20
+bin	0	77
 bin	0.02	0
 bin	0.04	0
 bin	0.06	0
@@ -2599,25 +2598,25 @@ bin	0.44	0
 bin	0.46	0
 bin	0.48	0
 bin	0.5	0
-scalar ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPackets:count 20
+scalar ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPackets:count 77
 attr recordingmode count
 attr source packetPulled
 attr title "outgoing packets, count"
 attr unit pk
-scalar ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPacketLengths:sum 11200
+scalar ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPacketLengths:sum 43120
 attr interpolationmode none
 attr recordingmode sum
 attr source packetLength(packetPulled)
 attr title "outgoing packet lengths, sum"
 attr unit b
 statistic ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPacketLengths:histogram
-field count 20
+field count 77
 field mean 560
 field stddev 0
 field min 560
 field max 560
-field sum 11200
-field sqrsum 6272000
+field sum 43120
+field sqrsum 24147200
 attr interpolationmode none
 attr recordingmode histogram
 attr source packetLength(packetPulled)
@@ -2625,7 +2624,7 @@ attr title "outgoing packet lengths"
 attr unit b
 bin	-inf	0
 bin	559	0
-bin	560	20
+bin	560	77
 bin	561	0
 statistic ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.pendingQueue flowQueueingTime:histogram
 field count 0
@@ -2643,25 +2642,25 @@ attr unit s
 bin	-inf	0
 bin	0	0
 bin	1	0
-scalar ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPackets:count 20
+scalar ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPackets:count 77
 attr recordingmode count
 attr source packetPushStarted
 attr title "incoming packets, count"
 attr unit pk
-scalar ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPacketLengths:sum 11200
+scalar ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPacketLengths:sum 43120
 attr interpolationmode none
 attr recordingmode sum
 attr source packetLength(packetPushStarted)
 attr title "incoming packet lengths, sum"
 attr unit b
 statistic ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPacketLengths:histogram
-field count 20
+field count 77
 field mean 560
 field stddev 0
 field min 560
 field max 560
-field sum 11200
-field sqrsum 6272000
+field sum 43120
+field sqrsum 24147200
 attr interpolationmode none
 attr recordingmode histogram
 attr source packetLength(packetPushStarted)
@@ -2669,7 +2668,7 @@ attr title "incoming packet lengths"
 attr unit b
 bin	-inf	0
 bin	559	0
-bin	560	20
+bin	560	77
 bin	561	0
 scalar ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.pendingQueue droppedPacketsQueueOverflow:count 0
 attr interpolationmode none
@@ -2688,19 +2687,19 @@ par ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.inProgressFrames pe
 par ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.inProgressFrames originatorMacDataServiceModule "\"^.^.originatorMacDataService\""
 par ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.inProgressFrames ackHandlerModule "\"^.^.ackHandler\""
 statistic ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.inProgressFrames queueingTime:histogram
-field count 20
+field count 77
 field mean 5.4e-05
 field stddev 0
 field min 5.4e-05
 field max 5.4e-05
-field sum 0.00108
-field sqrsum 5.832e-08
+field sum 0.004158
+field sqrsum 2.24532e-07
 attr interpolationmode none
 attr recordingmode histogram
 attr source queueingTime(packetDequeued)
 attr title "queueing times"
 bin	-inf	0
-bin	0	20
+bin	0	77
 bin	0.01	0
 bin	0.02	0
 bin	0.03	0
@@ -2758,7 +2757,7 @@ attr interpolationmode sample-hold
 attr recordingmode max
 attr source "warmup(count(packetEnqueued) - count(packetDequeued))"
 attr title "queue length, max"
-scalar ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.inProgressFrames queueLength:timeavg 5.3994394456327e-05
+scalar ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.inProgressFrames queueLength:timeavg 5.3960192475331e-05
 attr autoWarmupFilter false
 attr interpolationmode sample-hold
 attr recordingmode timeavg
@@ -2767,10 +2766,10 @@ attr title "queue length, timeavg"
 par ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.contention typename "\"inet.linklayer.ieee80211.mac.contention.Contention\""
 par ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.contention initialChannelBusy true
 par ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.contention backoffOptimization true
-scalar ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.contention channelAccessGranted:count 20
+scalar ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.contention channelAccessGranted:count 77
 attr recordingmode count
 attr title "channel access granted, count"
-scalar ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.contention stateChanged:count 402
+scalar ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess.contention stateChanged:count 1546
 attr enum IDLE,DEFER,IFS_AND_BACKOFF
 attr interpolationmode none
 attr recordingmode count
@@ -2781,7 +2780,7 @@ par ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess difsn -1
 par ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess cwMin -1
 par ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess cwMax -1
 par ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess rxModule "\"^.^.rx\""
-scalar ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess channelOwnershipChanged:count 40
+scalar ZrpTestNetwork.destination.wlan[0].mac.dcf.channelAccess channelOwnershipChanged:count 154
 attr interpolationmode sample-hold
 attr recordingmode count
 attr title "channel ownership, count"
@@ -2799,7 +2798,7 @@ par ZrpTestNetwork.destination.wlan[0].mac.dcf.recipientMacDataService typename 
 scalar ZrpTestNetwork.destination.wlan[0].mac.dcf.recipientMacDataService packetDeaggregated:count 0
 attr recordingmode count
 attr title "packets deaggregated, count"
-scalar ZrpTestNetwork.destination.wlan[0].mac.dcf.recipientMacDataService packetDefragmented:count 60
+scalar ZrpTestNetwork.destination.wlan[0].mac.dcf.recipientMacDataService packetDefragmented:count 232
 attr recordingmode count
 attr title "packets defragmented, count"
 scalar ZrpTestNetwork.destination.wlan[0].mac.dcf.recipientMacDataService packetDropDuplicateDetected:count 0
@@ -2858,22 +2857,22 @@ par ZrpTestNetwork.destination.wlan[0].mac.dcf.ctsPolicy rateSelectionModule "\"
 par ZrpTestNetwork.destination.wlan[0].mac.dcf typename "\"inet.linklayer.ieee80211.mac.coordinationfunction.Dcf\""
 par ZrpTestNetwork.destination.wlan[0].mac.dcf rxModule "\"^.rx\""
 par ZrpTestNetwork.destination.wlan[0].mac.dcf txModule "\"^.tx\""
-scalar ZrpTestNetwork.destination.wlan[0].mac.dcf frameSequenceFinished:count 20
+scalar ZrpTestNetwork.destination.wlan[0].mac.dcf frameSequenceFinished:count 77
 attr recordingmode count
 attr title "finished frame sequences, count"
 statistic ZrpTestNetwork.destination.wlan[0].mac.dcf frameSequenceDuration:histogram
-field count 20
+field count 77
 field mean 5.4e-05
 field stddev 0
 field min 5.4e-05
 field max 5.4e-05
-field sum 0.00108
-field sqrsum 5.832e-08
+field sum 0.004158
+field sqrsum 2.24532e-07
 attr recordingmode histogram
 attr source frameSequenceDuration(frameSequenceFinished)
 attr title "frame sequence durations"
 bin	-inf	0
-bin	0	20
+bin	0	77
 bin	0.01	0
 bin	0.02	0
 bin	0.03	0
@@ -2926,25 +2925,25 @@ bin	0.49	0
 bin	0.5	0
 bin	0.51	0
 statistic ZrpTestNetwork.destination.wlan[0].mac.dcf frameSequenceNumPackets:histogram
-field count 20
+field count 77
 field mean 1
 field stddev 0
 field min 1
 field max 1
-field sum 20
-field sqrsum 20
+field sum 77
+field sqrsum 77
 attr recordingmode histogram
 attr source frameSequenceNumPackets(frameSequenceFinished)
 attr title "frame sequences: number of packets"
 bin	-inf	0
 bin	0	0
-bin	1	20
+bin	1	77
 bin	2	0
-scalar ZrpTestNetwork.destination.wlan[0].mac.dcf packetReceivedFromPeer:count 60
+scalar ZrpTestNetwork.destination.wlan[0].mac.dcf packetReceivedFromPeer:count 232
 attr interpolationmode none
 attr recordingmode count
 attr title "packets received, count"
-scalar ZrpTestNetwork.destination.wlan[0].mac.dcf packetReceivedFromPeer:sum(packetBytes) 4200
+scalar ZrpTestNetwork.destination.wlan[0].mac.dcf packetReceivedFromPeer:sum(packetBytes) 16240
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets received, sum(packetBytes)"
@@ -2958,22 +2957,22 @@ attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Unicast(packetReceivedFromPeer)
 attr title "packets received: unicast, sum(packetBytes)"
-scalar ZrpTestNetwork.destination.wlan[0].mac.dcf packetReceivedFromPeerMulticast:count 60
+scalar ZrpTestNetwork.destination.wlan[0].mac.dcf packetReceivedFromPeerMulticast:count 232
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211Multicast(packetReceivedFromPeer)
 attr title "packets received: multicast, count"
-scalar ZrpTestNetwork.destination.wlan[0].mac.dcf packetReceivedFromPeerMulticast:sum(packetBytes) 4200
+scalar ZrpTestNetwork.destination.wlan[0].mac.dcf packetReceivedFromPeerMulticast:sum(packetBytes) 16240
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Multicast(packetReceivedFromPeer)
 attr title "packets received: multicast, sum(packetBytes)"
-scalar ZrpTestNetwork.destination.wlan[0].mac.dcf packetReceivedFromPeerBroadcast:count 60
+scalar ZrpTestNetwork.destination.wlan[0].mac.dcf packetReceivedFromPeerBroadcast:count 232
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211Broadcast(packetReceivedFromPeer)
 attr title "packets received: broadcast, count"
-scalar ZrpTestNetwork.destination.wlan[0].mac.dcf packetReceivedFromPeerBroadcast:sum(packetBytes) 4200
+scalar ZrpTestNetwork.destination.wlan[0].mac.dcf packetReceivedFromPeerBroadcast:sum(packetBytes) 16240
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Broadcast(packetReceivedFromPeer)
@@ -2988,21 +2987,21 @@ attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Retry(packetReceivedFromPeer)
 attr title "packets received: with retry, sum(packetBytes)"
-scalar ZrpTestNetwork.destination.wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:count 60
+scalar ZrpTestNetwork.destination.wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:count 232
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211NotRetry(packetReceivedFromPeer)
 attr title "packets received: without retry, count"
-scalar ZrpTestNetwork.destination.wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:sum(packetBytes) 4200
+scalar ZrpTestNetwork.destination.wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:sum(packetBytes) 16240
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211NotRetry(packetReceivedFromPeer)
 attr title "packets received: without retry, sum(packetBytes)"
-scalar ZrpTestNetwork.destination.wlan[0].mac.dcf packetSentToPeer:count 20
+scalar ZrpTestNetwork.destination.wlan[0].mac.dcf packetSentToPeer:count 77
 attr interpolationmode none
 attr recordingmode count
 attr title "packets sent, count"
-scalar ZrpTestNetwork.destination.wlan[0].mac.dcf packetSentToPeer:sum(packetBytes) 1400
+scalar ZrpTestNetwork.destination.wlan[0].mac.dcf packetSentToPeer:sum(packetBytes) 5390
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets sent, sum(packetBytes)"
@@ -3016,22 +3015,22 @@ attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Unicast(packetSentToPeer)
 attr title "packets sent: unicast, sum(packetBytes)"
-scalar ZrpTestNetwork.destination.wlan[0].mac.dcf packetSentToPeerMulticast:count 20
+scalar ZrpTestNetwork.destination.wlan[0].mac.dcf packetSentToPeerMulticast:count 77
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211Multicast(packetSentToPeer)
 attr title "packets sent: multicast, count"
-scalar ZrpTestNetwork.destination.wlan[0].mac.dcf packetSentToPeerMulticast:sum(packetBytes) 1400
+scalar ZrpTestNetwork.destination.wlan[0].mac.dcf packetSentToPeerMulticast:sum(packetBytes) 5390
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Multicast(packetSentToPeer)
 attr title "packets sent: multicast, sum(packetBytes)"
-scalar ZrpTestNetwork.destination.wlan[0].mac.dcf packetSentToPeerBroadcast:count 20
+scalar ZrpTestNetwork.destination.wlan[0].mac.dcf packetSentToPeerBroadcast:count 77
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211Broadcast(packetSentToPeer)
 attr title "packets sent: broadcast , count"
-scalar ZrpTestNetwork.destination.wlan[0].mac.dcf packetSentToPeerBroadcast:sum(packetBytes) 1400
+scalar ZrpTestNetwork.destination.wlan[0].mac.dcf packetSentToPeerBroadcast:sum(packetBytes) 5390
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Broadcast(packetSentToPeer)
@@ -3046,12 +3045,12 @@ attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Retry(packetSentToPeer)
 attr title "packets sent: with retry, sum(packetBytes)"
-scalar ZrpTestNetwork.destination.wlan[0].mac.dcf packetSentToPeerWithoutRetry:count 20
+scalar ZrpTestNetwork.destination.wlan[0].mac.dcf packetSentToPeerWithoutRetry:count 77
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211NotRetry(packetSentToPeer)
 attr title "packets sent: without retry, count"
-scalar ZrpTestNetwork.destination.wlan[0].mac.dcf packetSentToPeerWithoutRetry:sum(packetBytes) 1400
+scalar ZrpTestNetwork.destination.wlan[0].mac.dcf packetSentToPeerWithoutRetry:sum(packetBytes) 5390
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211NotRetry(packetSentToPeer)
@@ -3117,35 +3116,35 @@ attr enum off,sleep,receiver,transmitter,transceiver
 par ZrpTestNetwork.destination.wlan[0].mac mtu 2304B
 attr unit B
 par ZrpTestNetwork.destination.wlan[0].mac qosStation false
-scalar ZrpTestNetwork.destination.wlan[0].mac packetReceivedFromLower:count 60
+scalar ZrpTestNetwork.destination.wlan[0].mac packetReceivedFromLower:count 232
 attr interpolationmode none
 attr recordingmode count
 attr title "packets received from lower layer, count"
-scalar ZrpTestNetwork.destination.wlan[0].mac packetReceivedFromLower:sum(packetBytes) 4200
+scalar ZrpTestNetwork.destination.wlan[0].mac packetReceivedFromLower:sum(packetBytes) 16240
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets received from lower layer, sum(packetBytes)"
-scalar ZrpTestNetwork.destination.wlan[0].mac packetSentToLower:count 20
+scalar ZrpTestNetwork.destination.wlan[0].mac packetSentToLower:count 77
 attr interpolationmode none
 attr recordingmode count
 attr title "packets sent to lower layer, count"
-scalar ZrpTestNetwork.destination.wlan[0].mac packetSentToLower:sum(packetBytes) 1400
+scalar ZrpTestNetwork.destination.wlan[0].mac packetSentToLower:sum(packetBytes) 5390
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets sent to lower layer, sum(packetBytes)"
-scalar ZrpTestNetwork.destination.wlan[0].mac packetReceivedFromUpper:count 20
+scalar ZrpTestNetwork.destination.wlan[0].mac packetReceivedFromUpper:count 77
 attr interpolationmode none
 attr recordingmode count
 attr title "packets received from upper layer, count"
-scalar ZrpTestNetwork.destination.wlan[0].mac packetReceivedFromUpper:sum(packetBytes) 840
+scalar ZrpTestNetwork.destination.wlan[0].mac packetReceivedFromUpper:sum(packetBytes) 3234
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets received from upper layer, sum(packetBytes)"
-scalar ZrpTestNetwork.destination.wlan[0].mac packetSentToUpper:count 60
+scalar ZrpTestNetwork.destination.wlan[0].mac packetSentToUpper:count 232
 attr interpolationmode none
 attr recordingmode count
 attr title "packets sent to upper layer, count"
-scalar ZrpTestNetwork.destination.wlan[0].mac packetSentToUpper:sum(packetBytes) 2520
+scalar ZrpTestNetwork.destination.wlan[0].mac packetSentToUpper:sum(packetBytes) 9744
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets sent to upper layer, sum(packetBytes)"
@@ -3360,29 +3359,29 @@ bin	0.44	0
 bin	0.46	0
 bin	0.48	0
 bin	0.5	0
-scalar ZrpTestNetwork.destination.wlan[0].radio radioMode:count 43
+scalar ZrpTestNetwork.destination.wlan[0].radio radioMode:count 157
 attr interpolationmode sample-hold
 attr recordingmode count
 attr source radioModeChanged
 attr title "Radio mode, count"
-scalar ZrpTestNetwork.destination.wlan[0].radio receptionState:count 161
+scalar ZrpTestNetwork.destination.wlan[0].radio receptionState:count 619
 attr interpolationmode sample-hold
 attr recordingmode count
 attr source receptionStateChanged
 attr title "Radio reception state, count"
-scalar ZrpTestNetwork.destination.wlan[0].radio transmissionState:count 80
+scalar ZrpTestNetwork.destination.wlan[0].radio transmissionState:count 308
 attr interpolationmode sample-hold
 attr recordingmode count
 attr source transmissionStateChanged
 attr title "Radio transmission state, count"
 statistic ZrpTestNetwork.destination.wlan[0].radio minSnir:histogram
-field count 60
-field mean 577.82401871378
-field stddev 101.00126027537
+field count 232
+field mean 577.77238340574
+field stddev 100.15913451684
 field min 461.58760783803
 field max 706.03982105364
-field sum 34669.441122827
-field sqrsum 20634709.816208
+field sum 134043.19295013
+field sqrsum 79763812.934588
 attr recordingmode histogram
 attr source minimumSnir(packetSentToUpper)
 attr title "Min SNIR"
@@ -3399,7 +3398,7 @@ bin	440	0
 bin	445	0
 bin	450	0
 bin	455	0
-bin	460	20
+bin	460	77
 bin	465	0
 bin	470	0
 bin	475	0
@@ -3420,7 +3419,7 @@ bin	545	0
 bin	550	0
 bin	555	0
 bin	560	0
-bin	565	20
+bin	565	78
 bin	570	0
 bin	575	0
 bin	580	0
@@ -3448,7 +3447,7 @@ bin	685	0
 bin	690	0
 bin	695	0
 bin	700	0
-bin	705	20
+bin	705	77
 bin	710	0
 bin	715	0
 bin	720	0
@@ -3463,7 +3462,7 @@ bin	760	0
 bin	765	0
 bin	770	0
 statistic ZrpTestNetwork.destination.wlan[0].radio packetErrorRate:histogram
-field count 60
+field count 232
 field mean 0
 field stddev 0
 field min 0
@@ -3499,7 +3498,7 @@ bin	-0.08	0
 bin	-0.06	0
 bin	-0.04	0
 bin	-0.02	0
-bin	0	60
+bin	0	232
 bin	0.02	0
 bin	0.04	0
 bin	0.06	0
@@ -3743,27 +3742,27 @@ par ZrpTestNetwork.destination.udp icmpv6Module "\"^.ipv6.icmpv6\""
 par ZrpTestNetwork.destination.udp crcMode "\"declared\""
 attr enum disabled,declared,computed
 par ZrpTestNetwork.destination.udp defaultMulticastLoop true
-scalar ZrpTestNetwork.destination.udp packetReceived:count 60
+scalar ZrpTestNetwork.destination.udp packetReceived:count 232
 attr interpolationmode none
 attr recordingmode count
 attr source packetReceived
 attr title "packets received, count"
-scalar ZrpTestNetwork.destination.udp packetReceived:sum(packetBytes) 840
+scalar ZrpTestNetwork.destination.udp packetReceived:sum(packetBytes) 3248
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source packetReceived
 attr title "packets received, sum(packetBytes)"
-scalar ZrpTestNetwork.destination.udp packetSent:count 20
+scalar ZrpTestNetwork.destination.udp packetSent:count 77
 attr interpolationmode none
 attr recordingmode count
 attr source packetSent
 attr title "packets sent, count"
-scalar ZrpTestNetwork.destination.udp packetSent:sum(packetBytes) 280
+scalar ZrpTestNetwork.destination.udp packetSent:sum(packetBytes) 1078
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source packetSent
 attr title "packets sent, sum(packetBytes)"
-scalar ZrpTestNetwork.destination.udp passedUpPk:count 60
+scalar ZrpTestNetwork.destination.udp passedUpPk:count 232
 attr interpolationmode none
 attr recordingmode count
 attr source packetSentToUpper
@@ -4023,7 +4022,7 @@ attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetP
 attr title "queue bit length, timeavg"
 attr unit b
 statistic ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.pendingQueue queueingTime:histogram
-field count 20
+field count 78
 field mean 0
 field stddev 0
 field min 0
@@ -4061,7 +4060,7 @@ bin	-0.08	0
 bin	-0.06	0
 bin	-0.04	0
 bin	-0.02	0
-bin	0	20
+bin	0	78
 bin	0.02	0
 bin	0.04	0
 bin	0.06	0
@@ -4087,25 +4086,25 @@ bin	0.44	0
 bin	0.46	0
 bin	0.48	0
 bin	0.5	0
-scalar ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPackets:count 20
+scalar ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPackets:count 78
 attr recordingmode count
 attr source packetPulled
 attr title "outgoing packets, count"
 attr unit pk
-scalar ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPacketLengths:sum 11200
+scalar ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPacketLengths:sum 43680
 attr interpolationmode none
 attr recordingmode sum
 attr source packetLength(packetPulled)
 attr title "outgoing packet lengths, sum"
 attr unit b
 statistic ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPacketLengths:histogram
-field count 20
+field count 78
 field mean 560
 field stddev 0
 field min 560
 field max 560
-field sum 11200
-field sqrsum 6272000
+field sum 43680
+field sqrsum 24460800
 attr interpolationmode none
 attr recordingmode histogram
 attr source packetLength(packetPulled)
@@ -4113,7 +4112,7 @@ attr title "outgoing packet lengths"
 attr unit b
 bin	-inf	0
 bin	559	0
-bin	560	20
+bin	560	78
 bin	561	0
 statistic ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.pendingQueue flowQueueingTime:histogram
 field count 0
@@ -4131,25 +4130,25 @@ attr unit s
 bin	-inf	0
 bin	0	0
 bin	1	0
-scalar ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPackets:count 20
+scalar ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPackets:count 78
 attr recordingmode count
 attr source packetPushStarted
 attr title "incoming packets, count"
 attr unit pk
-scalar ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPacketLengths:sum 11200
+scalar ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPacketLengths:sum 43680
 attr interpolationmode none
 attr recordingmode sum
 attr source packetLength(packetPushStarted)
 attr title "incoming packet lengths, sum"
 attr unit b
 statistic ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPacketLengths:histogram
-field count 20
+field count 78
 field mean 560
 field stddev 0
 field min 560
 field max 560
-field sum 11200
-field sqrsum 6272000
+field sum 43680
+field sqrsum 24460800
 attr interpolationmode none
 attr recordingmode histogram
 attr source packetLength(packetPushStarted)
@@ -4157,7 +4156,7 @@ attr title "incoming packet lengths"
 attr unit b
 bin	-inf	0
 bin	559	0
-bin	560	20
+bin	560	78
 bin	561	0
 scalar ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.pendingQueue droppedPacketsQueueOverflow:count 0
 attr interpolationmode none
@@ -4176,19 +4175,19 @@ par ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.inProgressFrames pendingQ
 par ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.inProgressFrames originatorMacDataServiceModule "\"^.^.originatorMacDataService\""
 par ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.inProgressFrames ackHandlerModule "\"^.^.ackHandler\""
 statistic ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.inProgressFrames queueingTime:histogram
-field count 20
+field count 78
 field mean 5.4e-05
 field stddev 0
 field min 5.4e-05
 field max 5.4e-05
-field sum 0.00108
-field sqrsum 5.832e-08
+field sum 0.004212
+field sqrsum 2.27448e-07
 attr interpolationmode none
 attr recordingmode histogram
 attr source queueingTime(packetDequeued)
 attr title "queueing times"
 bin	-inf	0
-bin	0	20
+bin	0	78
 bin	0.01	0
 bin	0.02	0
 bin	0.03	0
@@ -4246,7 +4245,7 @@ attr interpolationmode sample-hold
 attr recordingmode max
 attr source "warmup(count(packetEnqueued) - count(packetDequeued))"
 attr title "queue length, max"
-scalar ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.inProgressFrames queueLength:timeavg 5.3994394456327e-05
+scalar ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.inProgressFrames queueLength:timeavg 5.466097419579e-05
 attr autoWarmupFilter false
 attr interpolationmode sample-hold
 attr recordingmode timeavg
@@ -4255,10 +4254,10 @@ attr title "queue length, timeavg"
 par ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.contention typename "\"inet.linklayer.ieee80211.mac.contention.Contention\""
 par ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.contention initialChannelBusy true
 par ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.contention backoffOptimization true
-scalar ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.contention channelAccessGranted:count 20
+scalar ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.contention channelAccessGranted:count 78
 attr recordingmode count
 attr title "channel access granted, count"
-scalar ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.contention stateChanged:count 566
+scalar ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess.contention stateChanged:count 2174
 attr enum IDLE,DEFER,IFS_AND_BACKOFF
 attr interpolationmode none
 attr recordingmode count
@@ -4269,7 +4268,7 @@ par ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess difsn -1
 par ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess cwMin -1
 par ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess cwMax -1
 par ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess rxModule "\"^.^.rx\""
-scalar ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess channelOwnershipChanged:count 40
+scalar ZrpTestNetwork.node1.wlan[0].mac.dcf.channelAccess channelOwnershipChanged:count 156
 attr interpolationmode sample-hold
 attr recordingmode count
 attr title "channel ownership, count"
@@ -4287,7 +4286,7 @@ par ZrpTestNetwork.node1.wlan[0].mac.dcf.recipientMacDataService typename "\"ine
 scalar ZrpTestNetwork.node1.wlan[0].mac.dcf.recipientMacDataService packetDeaggregated:count 0
 attr recordingmode count
 attr title "packets deaggregated, count"
-scalar ZrpTestNetwork.node1.wlan[0].mac.dcf.recipientMacDataService packetDefragmented:count 101
+scalar ZrpTestNetwork.node1.wlan[0].mac.dcf.recipientMacDataService packetDefragmented:count 387
 attr recordingmode count
 attr title "packets defragmented, count"
 scalar ZrpTestNetwork.node1.wlan[0].mac.dcf.recipientMacDataService packetDropDuplicateDetected:count 0
@@ -4346,22 +4345,22 @@ par ZrpTestNetwork.node1.wlan[0].mac.dcf.ctsPolicy rateSelectionModule "\"^.rate
 par ZrpTestNetwork.node1.wlan[0].mac.dcf typename "\"inet.linklayer.ieee80211.mac.coordinationfunction.Dcf\""
 par ZrpTestNetwork.node1.wlan[0].mac.dcf rxModule "\"^.rx\""
 par ZrpTestNetwork.node1.wlan[0].mac.dcf txModule "\"^.tx\""
-scalar ZrpTestNetwork.node1.wlan[0].mac.dcf frameSequenceFinished:count 20
+scalar ZrpTestNetwork.node1.wlan[0].mac.dcf frameSequenceFinished:count 78
 attr recordingmode count
 attr title "finished frame sequences, count"
 statistic ZrpTestNetwork.node1.wlan[0].mac.dcf frameSequenceDuration:histogram
-field count 20
+field count 78
 field mean 5.4e-05
 field stddev 0
 field min 5.4e-05
 field max 5.4e-05
-field sum 0.00108
-field sqrsum 5.832e-08
+field sum 0.004212
+field sqrsum 2.27448e-07
 attr recordingmode histogram
 attr source frameSequenceDuration(frameSequenceFinished)
 attr title "frame sequence durations"
 bin	-inf	0
-bin	0	20
+bin	0	78
 bin	0.01	0
 bin	0.02	0
 bin	0.03	0
@@ -4414,25 +4413,25 @@ bin	0.49	0
 bin	0.5	0
 bin	0.51	0
 statistic ZrpTestNetwork.node1.wlan[0].mac.dcf frameSequenceNumPackets:histogram
-field count 20
+field count 78
 field mean 1
 field stddev 0
 field min 1
 field max 1
-field sum 20
-field sqrsum 20
+field sum 78
+field sqrsum 78
 attr recordingmode histogram
 attr source frameSequenceNumPackets(frameSequenceFinished)
 attr title "frame sequences: number of packets"
 bin	-inf	0
 bin	0	0
-bin	1	20
+bin	1	78
 bin	2	0
-scalar ZrpTestNetwork.node1.wlan[0].mac.dcf packetReceivedFromPeer:count 101
+scalar ZrpTestNetwork.node1.wlan[0].mac.dcf packetReceivedFromPeer:count 387
 attr interpolationmode none
 attr recordingmode count
 attr title "packets received, count"
-scalar ZrpTestNetwork.node1.wlan[0].mac.dcf packetReceivedFromPeer:sum(packetBytes) 7070
+scalar ZrpTestNetwork.node1.wlan[0].mac.dcf packetReceivedFromPeer:sum(packetBytes) 27090
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets received, sum(packetBytes)"
@@ -4446,22 +4445,22 @@ attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Unicast(packetReceivedFromPeer)
 attr title "packets received: unicast, sum(packetBytes)"
-scalar ZrpTestNetwork.node1.wlan[0].mac.dcf packetReceivedFromPeerMulticast:count 101
+scalar ZrpTestNetwork.node1.wlan[0].mac.dcf packetReceivedFromPeerMulticast:count 387
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211Multicast(packetReceivedFromPeer)
 attr title "packets received: multicast, count"
-scalar ZrpTestNetwork.node1.wlan[0].mac.dcf packetReceivedFromPeerMulticast:sum(packetBytes) 7070
+scalar ZrpTestNetwork.node1.wlan[0].mac.dcf packetReceivedFromPeerMulticast:sum(packetBytes) 27090
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Multicast(packetReceivedFromPeer)
 attr title "packets received: multicast, sum(packetBytes)"
-scalar ZrpTestNetwork.node1.wlan[0].mac.dcf packetReceivedFromPeerBroadcast:count 101
+scalar ZrpTestNetwork.node1.wlan[0].mac.dcf packetReceivedFromPeerBroadcast:count 387
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211Broadcast(packetReceivedFromPeer)
 attr title "packets received: broadcast, count"
-scalar ZrpTestNetwork.node1.wlan[0].mac.dcf packetReceivedFromPeerBroadcast:sum(packetBytes) 7070
+scalar ZrpTestNetwork.node1.wlan[0].mac.dcf packetReceivedFromPeerBroadcast:sum(packetBytes) 27090
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Broadcast(packetReceivedFromPeer)
@@ -4476,21 +4475,21 @@ attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Retry(packetReceivedFromPeer)
 attr title "packets received: with retry, sum(packetBytes)"
-scalar ZrpTestNetwork.node1.wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:count 101
+scalar ZrpTestNetwork.node1.wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:count 387
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211NotRetry(packetReceivedFromPeer)
 attr title "packets received: without retry, count"
-scalar ZrpTestNetwork.node1.wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:sum(packetBytes) 7070
+scalar ZrpTestNetwork.node1.wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:sum(packetBytes) 27090
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211NotRetry(packetReceivedFromPeer)
 attr title "packets received: without retry, sum(packetBytes)"
-scalar ZrpTestNetwork.node1.wlan[0].mac.dcf packetSentToPeer:count 20
+scalar ZrpTestNetwork.node1.wlan[0].mac.dcf packetSentToPeer:count 78
 attr interpolationmode none
 attr recordingmode count
 attr title "packets sent, count"
-scalar ZrpTestNetwork.node1.wlan[0].mac.dcf packetSentToPeer:sum(packetBytes) 1400
+scalar ZrpTestNetwork.node1.wlan[0].mac.dcf packetSentToPeer:sum(packetBytes) 5460
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets sent, sum(packetBytes)"
@@ -4504,22 +4503,22 @@ attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Unicast(packetSentToPeer)
 attr title "packets sent: unicast, sum(packetBytes)"
-scalar ZrpTestNetwork.node1.wlan[0].mac.dcf packetSentToPeerMulticast:count 20
+scalar ZrpTestNetwork.node1.wlan[0].mac.dcf packetSentToPeerMulticast:count 78
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211Multicast(packetSentToPeer)
 attr title "packets sent: multicast, count"
-scalar ZrpTestNetwork.node1.wlan[0].mac.dcf packetSentToPeerMulticast:sum(packetBytes) 1400
+scalar ZrpTestNetwork.node1.wlan[0].mac.dcf packetSentToPeerMulticast:sum(packetBytes) 5460
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Multicast(packetSentToPeer)
 attr title "packets sent: multicast, sum(packetBytes)"
-scalar ZrpTestNetwork.node1.wlan[0].mac.dcf packetSentToPeerBroadcast:count 20
+scalar ZrpTestNetwork.node1.wlan[0].mac.dcf packetSentToPeerBroadcast:count 78
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211Broadcast(packetSentToPeer)
 attr title "packets sent: broadcast , count"
-scalar ZrpTestNetwork.node1.wlan[0].mac.dcf packetSentToPeerBroadcast:sum(packetBytes) 1400
+scalar ZrpTestNetwork.node1.wlan[0].mac.dcf packetSentToPeerBroadcast:sum(packetBytes) 5460
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Broadcast(packetSentToPeer)
@@ -4534,12 +4533,12 @@ attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Retry(packetSentToPeer)
 attr title "packets sent: with retry, sum(packetBytes)"
-scalar ZrpTestNetwork.node1.wlan[0].mac.dcf packetSentToPeerWithoutRetry:count 20
+scalar ZrpTestNetwork.node1.wlan[0].mac.dcf packetSentToPeerWithoutRetry:count 78
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211NotRetry(packetSentToPeer)
 attr title "packets sent: without retry, count"
-scalar ZrpTestNetwork.node1.wlan[0].mac.dcf packetSentToPeerWithoutRetry:sum(packetBytes) 1400
+scalar ZrpTestNetwork.node1.wlan[0].mac.dcf packetSentToPeerWithoutRetry:sum(packetBytes) 5460
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211NotRetry(packetSentToPeer)
@@ -4605,35 +4604,35 @@ attr enum off,sleep,receiver,transmitter,transceiver
 par ZrpTestNetwork.node1.wlan[0].mac mtu 2304B
 attr unit B
 par ZrpTestNetwork.node1.wlan[0].mac qosStation false
-scalar ZrpTestNetwork.node1.wlan[0].mac packetReceivedFromLower:count 101
+scalar ZrpTestNetwork.node1.wlan[0].mac packetReceivedFromLower:count 387
 attr interpolationmode none
 attr recordingmode count
 attr title "packets received from lower layer, count"
-scalar ZrpTestNetwork.node1.wlan[0].mac packetReceivedFromLower:sum(packetBytes) 7070
+scalar ZrpTestNetwork.node1.wlan[0].mac packetReceivedFromLower:sum(packetBytes) 27090
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets received from lower layer, sum(packetBytes)"
-scalar ZrpTestNetwork.node1.wlan[0].mac packetSentToLower:count 20
+scalar ZrpTestNetwork.node1.wlan[0].mac packetSentToLower:count 78
 attr interpolationmode none
 attr recordingmode count
 attr title "packets sent to lower layer, count"
-scalar ZrpTestNetwork.node1.wlan[0].mac packetSentToLower:sum(packetBytes) 1400
+scalar ZrpTestNetwork.node1.wlan[0].mac packetSentToLower:sum(packetBytes) 5460
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets sent to lower layer, sum(packetBytes)"
-scalar ZrpTestNetwork.node1.wlan[0].mac packetReceivedFromUpper:count 20
+scalar ZrpTestNetwork.node1.wlan[0].mac packetReceivedFromUpper:count 78
 attr interpolationmode none
 attr recordingmode count
 attr title "packets received from upper layer, count"
-scalar ZrpTestNetwork.node1.wlan[0].mac packetReceivedFromUpper:sum(packetBytes) 840
+scalar ZrpTestNetwork.node1.wlan[0].mac packetReceivedFromUpper:sum(packetBytes) 3276
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets received from upper layer, sum(packetBytes)"
-scalar ZrpTestNetwork.node1.wlan[0].mac packetSentToUpper:count 101
+scalar ZrpTestNetwork.node1.wlan[0].mac packetSentToUpper:count 387
 attr interpolationmode none
 attr recordingmode count
 attr title "packets sent to upper layer, count"
-scalar ZrpTestNetwork.node1.wlan[0].mac packetSentToUpper:sum(packetBytes) 4242
+scalar ZrpTestNetwork.node1.wlan[0].mac packetSentToUpper:sum(packetBytes) 16254
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets sent to upper layer, sum(packetBytes)"
@@ -4848,29 +4847,29 @@ bin	0.44	0
 bin	0.46	0
 bin	0.48	0
 bin	0.5	0
-scalar ZrpTestNetwork.node1.wlan[0].radio radioMode:count 43
+scalar ZrpTestNetwork.node1.wlan[0].radio radioMode:count 159
 attr interpolationmode sample-hold
 attr recordingmode count
 attr source radioModeChanged
 attr title "Radio mode, count"
-scalar ZrpTestNetwork.node1.wlan[0].radio receptionState:count 243
+scalar ZrpTestNetwork.node1.wlan[0].radio receptionState:count 931
 attr interpolationmode sample-hold
 attr recordingmode count
 attr source receptionStateChanged
 attr title "Radio reception state, count"
-scalar ZrpTestNetwork.node1.wlan[0].radio transmissionState:count 80
+scalar ZrpTestNetwork.node1.wlan[0].radio transmissionState:count 312
 attr interpolationmode sample-hold
 attr recordingmode count
 attr source transmissionStateChanged
 attr title "Radio transmission state, count"
 statistic ZrpTestNetwork.node1.wlan[0].radio minSnir:histogram
-field count 101
-field mean 649.26444460862
-field stddev 193.80714326595
+field count 387
+field mean 650.87878374714
+field stddev 193.11703105469
 field min 360.59298785548
 field max 823.40609044014
-field sum 65575.708905471
-field sqrsum 46332097.100418
+field sum 251890.08931014
+field sqrsum 178345471.41393
 attr recordingmode histogram
 attr source minimumSnir(packetSentToUpper)
 attr title "Min SNIR"
@@ -4887,7 +4886,7 @@ bin	320	0
 bin	330	0
 bin	340	0
 bin	350	0
-bin	360	20
+bin	360	77
 bin	370	0
 bin	380	0
 bin	390	0
@@ -4898,7 +4897,7 @@ bin	430	0
 bin	440	0
 bin	450	0
 bin	460	0
-bin	470	21
+bin	470	78
 bin	480	0
 bin	490	0
 bin	500	0
@@ -4929,11 +4928,11 @@ bin	740	0
 bin	750	0
 bin	760	0
 bin	770	0
-bin	780	20
+bin	780	78
 bin	790	0
-bin	800	20
+bin	800	77
 bin	810	0
-bin	820	20
+bin	820	77
 bin	830	0
 bin	840	0
 bin	850	0
@@ -4947,7 +4946,7 @@ bin	920	0
 bin	930	0
 bin	940	0
 statistic ZrpTestNetwork.node1.wlan[0].radio packetErrorRate:histogram
-field count 101
+field count 387
 field mean 0
 field stddev 0
 field min 0
@@ -4983,7 +4982,7 @@ bin	-0.08	0
 bin	-0.06	0
 bin	-0.04	0
 bin	-0.02	0
-bin	0	101
+bin	0	387
 bin	0.02	0
 bin	0.04	0
 bin	0.06	0
@@ -5227,27 +5226,27 @@ par ZrpTestNetwork.node1.udp icmpv6Module "\"^.ipv6.icmpv6\""
 par ZrpTestNetwork.node1.udp crcMode "\"declared\""
 attr enum disabled,declared,computed
 par ZrpTestNetwork.node1.udp defaultMulticastLoop true
-scalar ZrpTestNetwork.node1.udp packetReceived:count 101
+scalar ZrpTestNetwork.node1.udp packetReceived:count 387
 attr interpolationmode none
 attr recordingmode count
 attr source packetReceived
 attr title "packets received, count"
-scalar ZrpTestNetwork.node1.udp packetReceived:sum(packetBytes) 1414
+scalar ZrpTestNetwork.node1.udp packetReceived:sum(packetBytes) 5418
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source packetReceived
 attr title "packets received, sum(packetBytes)"
-scalar ZrpTestNetwork.node1.udp packetSent:count 20
+scalar ZrpTestNetwork.node1.udp packetSent:count 78
 attr interpolationmode none
 attr recordingmode count
 attr source packetSent
 attr title "packets sent, count"
-scalar ZrpTestNetwork.node1.udp packetSent:sum(packetBytes) 280
+scalar ZrpTestNetwork.node1.udp packetSent:sum(packetBytes) 1092
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source packetSent
 attr title "packets sent, sum(packetBytes)"
-scalar ZrpTestNetwork.node1.udp passedUpPk:count 101
+scalar ZrpTestNetwork.node1.udp passedUpPk:count 387
 attr interpolationmode none
 attr recordingmode count
 attr source packetSentToUpper
@@ -5507,7 +5506,7 @@ attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetP
 attr title "queue bit length, timeavg"
 attr unit b
 statistic ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.pendingQueue queueingTime:histogram
-field count 20
+field count 78
 field mean 0
 field stddev 0
 field min 0
@@ -5545,7 +5544,7 @@ bin	-0.08	0
 bin	-0.06	0
 bin	-0.04	0
 bin	-0.02	0
-bin	0	20
+bin	0	78
 bin	0.02	0
 bin	0.04	0
 bin	0.06	0
@@ -5571,25 +5570,25 @@ bin	0.44	0
 bin	0.46	0
 bin	0.48	0
 bin	0.5	0
-scalar ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPackets:count 20
+scalar ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPackets:count 78
 attr recordingmode count
 attr source packetPulled
 attr title "outgoing packets, count"
 attr unit pk
-scalar ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPacketLengths:sum 11200
+scalar ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPacketLengths:sum 43680
 attr interpolationmode none
 attr recordingmode sum
 attr source packetLength(packetPulled)
 attr title "outgoing packet lengths, sum"
 attr unit b
 statistic ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPacketLengths:histogram
-field count 20
+field count 78
 field mean 560
 field stddev 0
 field min 560
 field max 560
-field sum 11200
-field sqrsum 6272000
+field sum 43680
+field sqrsum 24460800
 attr interpolationmode none
 attr recordingmode histogram
 attr source packetLength(packetPulled)
@@ -5597,7 +5596,7 @@ attr title "outgoing packet lengths"
 attr unit b
 bin	-inf	0
 bin	559	0
-bin	560	20
+bin	560	78
 bin	561	0
 statistic ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.pendingQueue flowQueueingTime:histogram
 field count 0
@@ -5615,25 +5614,25 @@ attr unit s
 bin	-inf	0
 bin	0	0
 bin	1	0
-scalar ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPackets:count 20
+scalar ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPackets:count 78
 attr recordingmode count
 attr source packetPushStarted
 attr title "incoming packets, count"
 attr unit pk
-scalar ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPacketLengths:sum 11200
+scalar ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPacketLengths:sum 43680
 attr interpolationmode none
 attr recordingmode sum
 attr source packetLength(packetPushStarted)
 attr title "incoming packet lengths, sum"
 attr unit b
 statistic ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPacketLengths:histogram
-field count 20
+field count 78
 field mean 560
 field stddev 0
 field min 560
 field max 560
-field sum 11200
-field sqrsum 6272000
+field sum 43680
+field sqrsum 24460800
 attr interpolationmode none
 attr recordingmode histogram
 attr source packetLength(packetPushStarted)
@@ -5641,7 +5640,7 @@ attr title "incoming packet lengths"
 attr unit b
 bin	-inf	0
 bin	559	0
-bin	560	20
+bin	560	78
 bin	561	0
 scalar ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.pendingQueue droppedPacketsQueueOverflow:count 0
 attr interpolationmode none
@@ -5660,19 +5659,19 @@ par ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.inProgressFrames pendingQ
 par ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.inProgressFrames originatorMacDataServiceModule "\"^.^.originatorMacDataService\""
 par ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.inProgressFrames ackHandlerModule "\"^.^.ackHandler\""
 statistic ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.inProgressFrames queueingTime:histogram
-field count 20
+field count 78
 field mean 5.4e-05
 field stddev 0
 field min 5.4e-05
 field max 5.4e-05
-field sum 0.00108
-field sqrsum 5.832e-08
+field sum 0.004212
+field sqrsum 2.27448e-07
 attr interpolationmode none
 attr recordingmode histogram
 attr source queueingTime(packetDequeued)
 attr title "queueing times"
 bin	-inf	0
-bin	0	20
+bin	0	78
 bin	0.01	0
 bin	0.02	0
 bin	0.03	0
@@ -5730,7 +5729,7 @@ attr interpolationmode sample-hold
 attr recordingmode max
 attr source "warmup(count(packetEnqueued) - count(packetDequeued))"
 attr title "queue length, max"
-scalar ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.inProgressFrames queueLength:timeavg 5.3994394456327e-05
+scalar ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.inProgressFrames queueLength:timeavg 5.466097419579e-05
 attr autoWarmupFilter false
 attr interpolationmode sample-hold
 attr recordingmode timeavg
@@ -5739,10 +5738,10 @@ attr title "queue length, timeavg"
 par ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.contention typename "\"inet.linklayer.ieee80211.mac.contention.Contention\""
 par ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.contention initialChannelBusy true
 par ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.contention backoffOptimization true
-scalar ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.contention channelAccessGranted:count 20
+scalar ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.contention channelAccessGranted:count 78
 attr recordingmode count
 attr title "channel access granted, count"
-scalar ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.contention stateChanged:count 646
+scalar ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess.contention stateChanged:count 2482
 attr enum IDLE,DEFER,IFS_AND_BACKOFF
 attr interpolationmode none
 attr recordingmode count
@@ -5753,7 +5752,7 @@ par ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess difsn -1
 par ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess cwMin -1
 par ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess cwMax -1
 par ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess rxModule "\"^.^.rx\""
-scalar ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess channelOwnershipChanged:count 40
+scalar ZrpTestNetwork.node2.wlan[0].mac.dcf.channelAccess channelOwnershipChanged:count 156
 attr interpolationmode sample-hold
 attr recordingmode count
 attr title "channel ownership, count"
@@ -5771,7 +5770,7 @@ par ZrpTestNetwork.node2.wlan[0].mac.dcf.recipientMacDataService typename "\"ine
 scalar ZrpTestNetwork.node2.wlan[0].mac.dcf.recipientMacDataService packetDeaggregated:count 0
 attr recordingmode count
 attr title "packets deaggregated, count"
-scalar ZrpTestNetwork.node2.wlan[0].mac.dcf.recipientMacDataService packetDefragmented:count 121
+scalar ZrpTestNetwork.node2.wlan[0].mac.dcf.recipientMacDataService packetDefragmented:count 464
 attr recordingmode count
 attr title "packets defragmented, count"
 scalar ZrpTestNetwork.node2.wlan[0].mac.dcf.recipientMacDataService packetDropDuplicateDetected:count 0
@@ -5830,22 +5829,22 @@ par ZrpTestNetwork.node2.wlan[0].mac.dcf.ctsPolicy rateSelectionModule "\"^.rate
 par ZrpTestNetwork.node2.wlan[0].mac.dcf typename "\"inet.linklayer.ieee80211.mac.coordinationfunction.Dcf\""
 par ZrpTestNetwork.node2.wlan[0].mac.dcf rxModule "\"^.rx\""
 par ZrpTestNetwork.node2.wlan[0].mac.dcf txModule "\"^.tx\""
-scalar ZrpTestNetwork.node2.wlan[0].mac.dcf frameSequenceFinished:count 20
+scalar ZrpTestNetwork.node2.wlan[0].mac.dcf frameSequenceFinished:count 78
 attr recordingmode count
 attr title "finished frame sequences, count"
 statistic ZrpTestNetwork.node2.wlan[0].mac.dcf frameSequenceDuration:histogram
-field count 20
+field count 78
 field mean 5.4e-05
 field stddev 0
 field min 5.4e-05
 field max 5.4e-05
-field sum 0.00108
-field sqrsum 5.832e-08
+field sum 0.004212
+field sqrsum 2.27448e-07
 attr recordingmode histogram
 attr source frameSequenceDuration(frameSequenceFinished)
 attr title "frame sequence durations"
 bin	-inf	0
-bin	0	20
+bin	0	78
 bin	0.01	0
 bin	0.02	0
 bin	0.03	0
@@ -5898,25 +5897,25 @@ bin	0.49	0
 bin	0.5	0
 bin	0.51	0
 statistic ZrpTestNetwork.node2.wlan[0].mac.dcf frameSequenceNumPackets:histogram
-field count 20
+field count 78
 field mean 1
 field stddev 0
 field min 1
 field max 1
-field sum 20
-field sqrsum 20
+field sum 78
+field sqrsum 78
 attr recordingmode histogram
 attr source frameSequenceNumPackets(frameSequenceFinished)
 attr title "frame sequences: number of packets"
 bin	-inf	0
 bin	0	0
-bin	1	20
+bin	1	78
 bin	2	0
-scalar ZrpTestNetwork.node2.wlan[0].mac.dcf packetReceivedFromPeer:count 121
+scalar ZrpTestNetwork.node2.wlan[0].mac.dcf packetReceivedFromPeer:count 464
 attr interpolationmode none
 attr recordingmode count
 attr title "packets received, count"
-scalar ZrpTestNetwork.node2.wlan[0].mac.dcf packetReceivedFromPeer:sum(packetBytes) 8470
+scalar ZrpTestNetwork.node2.wlan[0].mac.dcf packetReceivedFromPeer:sum(packetBytes) 32480
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets received, sum(packetBytes)"
@@ -5930,22 +5929,22 @@ attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Unicast(packetReceivedFromPeer)
 attr title "packets received: unicast, sum(packetBytes)"
-scalar ZrpTestNetwork.node2.wlan[0].mac.dcf packetReceivedFromPeerMulticast:count 121
+scalar ZrpTestNetwork.node2.wlan[0].mac.dcf packetReceivedFromPeerMulticast:count 464
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211Multicast(packetReceivedFromPeer)
 attr title "packets received: multicast, count"
-scalar ZrpTestNetwork.node2.wlan[0].mac.dcf packetReceivedFromPeerMulticast:sum(packetBytes) 8470
+scalar ZrpTestNetwork.node2.wlan[0].mac.dcf packetReceivedFromPeerMulticast:sum(packetBytes) 32480
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Multicast(packetReceivedFromPeer)
 attr title "packets received: multicast, sum(packetBytes)"
-scalar ZrpTestNetwork.node2.wlan[0].mac.dcf packetReceivedFromPeerBroadcast:count 121
+scalar ZrpTestNetwork.node2.wlan[0].mac.dcf packetReceivedFromPeerBroadcast:count 464
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211Broadcast(packetReceivedFromPeer)
 attr title "packets received: broadcast, count"
-scalar ZrpTestNetwork.node2.wlan[0].mac.dcf packetReceivedFromPeerBroadcast:sum(packetBytes) 8470
+scalar ZrpTestNetwork.node2.wlan[0].mac.dcf packetReceivedFromPeerBroadcast:sum(packetBytes) 32480
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Broadcast(packetReceivedFromPeer)
@@ -5960,21 +5959,21 @@ attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Retry(packetReceivedFromPeer)
 attr title "packets received: with retry, sum(packetBytes)"
-scalar ZrpTestNetwork.node2.wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:count 121
+scalar ZrpTestNetwork.node2.wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:count 464
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211NotRetry(packetReceivedFromPeer)
 attr title "packets received: without retry, count"
-scalar ZrpTestNetwork.node2.wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:sum(packetBytes) 8470
+scalar ZrpTestNetwork.node2.wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:sum(packetBytes) 32480
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211NotRetry(packetReceivedFromPeer)
 attr title "packets received: without retry, sum(packetBytes)"
-scalar ZrpTestNetwork.node2.wlan[0].mac.dcf packetSentToPeer:count 20
+scalar ZrpTestNetwork.node2.wlan[0].mac.dcf packetSentToPeer:count 78
 attr interpolationmode none
 attr recordingmode count
 attr title "packets sent, count"
-scalar ZrpTestNetwork.node2.wlan[0].mac.dcf packetSentToPeer:sum(packetBytes) 1400
+scalar ZrpTestNetwork.node2.wlan[0].mac.dcf packetSentToPeer:sum(packetBytes) 5460
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets sent, sum(packetBytes)"
@@ -5988,22 +5987,22 @@ attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Unicast(packetSentToPeer)
 attr title "packets sent: unicast, sum(packetBytes)"
-scalar ZrpTestNetwork.node2.wlan[0].mac.dcf packetSentToPeerMulticast:count 20
+scalar ZrpTestNetwork.node2.wlan[0].mac.dcf packetSentToPeerMulticast:count 78
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211Multicast(packetSentToPeer)
 attr title "packets sent: multicast, count"
-scalar ZrpTestNetwork.node2.wlan[0].mac.dcf packetSentToPeerMulticast:sum(packetBytes) 1400
+scalar ZrpTestNetwork.node2.wlan[0].mac.dcf packetSentToPeerMulticast:sum(packetBytes) 5460
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Multicast(packetSentToPeer)
 attr title "packets sent: multicast, sum(packetBytes)"
-scalar ZrpTestNetwork.node2.wlan[0].mac.dcf packetSentToPeerBroadcast:count 20
+scalar ZrpTestNetwork.node2.wlan[0].mac.dcf packetSentToPeerBroadcast:count 78
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211Broadcast(packetSentToPeer)
 attr title "packets sent: broadcast , count"
-scalar ZrpTestNetwork.node2.wlan[0].mac.dcf packetSentToPeerBroadcast:sum(packetBytes) 1400
+scalar ZrpTestNetwork.node2.wlan[0].mac.dcf packetSentToPeerBroadcast:sum(packetBytes) 5460
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Broadcast(packetSentToPeer)
@@ -6018,12 +6017,12 @@ attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Retry(packetSentToPeer)
 attr title "packets sent: with retry, sum(packetBytes)"
-scalar ZrpTestNetwork.node2.wlan[0].mac.dcf packetSentToPeerWithoutRetry:count 20
+scalar ZrpTestNetwork.node2.wlan[0].mac.dcf packetSentToPeerWithoutRetry:count 78
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211NotRetry(packetSentToPeer)
 attr title "packets sent: without retry, count"
-scalar ZrpTestNetwork.node2.wlan[0].mac.dcf packetSentToPeerWithoutRetry:sum(packetBytes) 1400
+scalar ZrpTestNetwork.node2.wlan[0].mac.dcf packetSentToPeerWithoutRetry:sum(packetBytes) 5460
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211NotRetry(packetSentToPeer)
@@ -6089,35 +6088,35 @@ attr enum off,sleep,receiver,transmitter,transceiver
 par ZrpTestNetwork.node2.wlan[0].mac mtu 2304B
 attr unit B
 par ZrpTestNetwork.node2.wlan[0].mac qosStation false
-scalar ZrpTestNetwork.node2.wlan[0].mac packetReceivedFromLower:count 121
+scalar ZrpTestNetwork.node2.wlan[0].mac packetReceivedFromLower:count 464
 attr interpolationmode none
 attr recordingmode count
 attr title "packets received from lower layer, count"
-scalar ZrpTestNetwork.node2.wlan[0].mac packetReceivedFromLower:sum(packetBytes) 8470
+scalar ZrpTestNetwork.node2.wlan[0].mac packetReceivedFromLower:sum(packetBytes) 32480
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets received from lower layer, sum(packetBytes)"
-scalar ZrpTestNetwork.node2.wlan[0].mac packetSentToLower:count 20
+scalar ZrpTestNetwork.node2.wlan[0].mac packetSentToLower:count 78
 attr interpolationmode none
 attr recordingmode count
 attr title "packets sent to lower layer, count"
-scalar ZrpTestNetwork.node2.wlan[0].mac packetSentToLower:sum(packetBytes) 1400
+scalar ZrpTestNetwork.node2.wlan[0].mac packetSentToLower:sum(packetBytes) 5460
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets sent to lower layer, sum(packetBytes)"
-scalar ZrpTestNetwork.node2.wlan[0].mac packetReceivedFromUpper:count 20
+scalar ZrpTestNetwork.node2.wlan[0].mac packetReceivedFromUpper:count 78
 attr interpolationmode none
 attr recordingmode count
 attr title "packets received from upper layer, count"
-scalar ZrpTestNetwork.node2.wlan[0].mac packetReceivedFromUpper:sum(packetBytes) 840
+scalar ZrpTestNetwork.node2.wlan[0].mac packetReceivedFromUpper:sum(packetBytes) 3276
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets received from upper layer, sum(packetBytes)"
-scalar ZrpTestNetwork.node2.wlan[0].mac packetSentToUpper:count 121
+scalar ZrpTestNetwork.node2.wlan[0].mac packetSentToUpper:count 464
 attr interpolationmode none
 attr recordingmode count
 attr title "packets sent to upper layer, count"
-scalar ZrpTestNetwork.node2.wlan[0].mac packetSentToUpper:sum(packetBytes) 5082
+scalar ZrpTestNetwork.node2.wlan[0].mac packetSentToUpper:sum(packetBytes) 19488
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets sent to upper layer, sum(packetBytes)"
@@ -6332,29 +6331,29 @@ bin	0.44	0
 bin	0.46	0
 bin	0.48	0
 bin	0.5	0
-scalar ZrpTestNetwork.node2.wlan[0].radio radioMode:count 43
+scalar ZrpTestNetwork.node2.wlan[0].radio radioMode:count 159
 attr interpolationmode sample-hold
 attr recordingmode count
 attr source radioModeChanged
 attr title "Radio mode, count"
-scalar ZrpTestNetwork.node2.wlan[0].radio receptionState:count 283
+scalar ZrpTestNetwork.node2.wlan[0].radio receptionState:count 1085
 attr interpolationmode sample-hold
 attr recordingmode count
 attr source receptionStateChanged
 attr title "Radio reception state, count"
-scalar ZrpTestNetwork.node2.wlan[0].radio transmissionState:count 80
+scalar ZrpTestNetwork.node2.wlan[0].radio transmissionState:count 312
 attr interpolationmode sample-hold
 attr recordingmode count
 attr source transmissionStateChanged
 attr title "Radio transmission state, count"
 statistic ZrpTestNetwork.node2.wlan[0].radio minSnir:histogram
-field count 121
-field mean 757.68349418586
-field stddev 398.83397959811
+field count 464
+field mean 759.72490269631
+field stddev 397.59721715721
 field min 435.47241311014
 field max 1600.3415279763
-field sum 91679.70279649
-field sqrsum 88552422.754614
+field sum 352512.35485109
+field sqrsum 341005096.7917
 attr recordingmode histogram
 attr source minimumSnir(packetSentToUpper)
 attr title "Min SNIR"
@@ -6373,14 +6372,14 @@ bin	340	0
 bin	360	0
 bin	380	0
 bin	400	0
-bin	420	21
-bin	440	20
+bin	420	78
+bin	440	77
 bin	460	0
 bin	480	0
 bin	500	0
 bin	520	0
 bin	540	0
-bin	560	20
+bin	560	77
 bin	580	0
 bin	600	0
 bin	620	0
@@ -6388,10 +6387,10 @@ bin	640	0
 bin	660	0
 bin	680	0
 bin	700	0
-bin	720	20
+bin	720	77
 bin	740	0
 bin	760	0
-bin	780	20
+bin	780	78
 bin	800	0
 bin	820	0
 bin	840	0
@@ -6432,7 +6431,7 @@ bin	1520	0
 bin	1540	0
 bin	1560	0
 bin	1580	0
-bin	1600	20
+bin	1600	77
 bin	1620	0
 bin	1640	0
 bin	1660	0
@@ -6449,7 +6448,7 @@ bin	1860	0
 bin	1880	0
 bin	1900	0
 statistic ZrpTestNetwork.node2.wlan[0].radio packetErrorRate:histogram
-field count 121
+field count 464
 field mean 0
 field stddev 0
 field min 0
@@ -6485,7 +6484,7 @@ bin	-0.08	0
 bin	-0.06	0
 bin	-0.04	0
 bin	-0.02	0
-bin	0	121
+bin	0	464
 bin	0.02	0
 bin	0.04	0
 bin	0.06	0
@@ -6729,27 +6728,27 @@ par ZrpTestNetwork.node2.udp icmpv6Module "\"^.ipv6.icmpv6\""
 par ZrpTestNetwork.node2.udp crcMode "\"declared\""
 attr enum disabled,declared,computed
 par ZrpTestNetwork.node2.udp defaultMulticastLoop true
-scalar ZrpTestNetwork.node2.udp packetReceived:count 121
+scalar ZrpTestNetwork.node2.udp packetReceived:count 464
 attr interpolationmode none
 attr recordingmode count
 attr source packetReceived
 attr title "packets received, count"
-scalar ZrpTestNetwork.node2.udp packetReceived:sum(packetBytes) 1694
+scalar ZrpTestNetwork.node2.udp packetReceived:sum(packetBytes) 6496
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source packetReceived
 attr title "packets received, sum(packetBytes)"
-scalar ZrpTestNetwork.node2.udp packetSent:count 20
+scalar ZrpTestNetwork.node2.udp packetSent:count 78
 attr interpolationmode none
 attr recordingmode count
 attr source packetSent
 attr title "packets sent, count"
-scalar ZrpTestNetwork.node2.udp packetSent:sum(packetBytes) 280
+scalar ZrpTestNetwork.node2.udp packetSent:sum(packetBytes) 1092
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source packetSent
 attr title "packets sent, sum(packetBytes)"
-scalar ZrpTestNetwork.node2.udp passedUpPk:count 121
+scalar ZrpTestNetwork.node2.udp passedUpPk:count 464
 attr interpolationmode none
 attr recordingmode count
 attr source packetSentToUpper
@@ -7009,7 +7008,7 @@ attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetP
 attr title "queue bit length, timeavg"
 attr unit b
 statistic ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.pendingQueue queueingTime:histogram
-field count 21
+field count 78
 field mean 0
 field stddev 0
 field min 0
@@ -7047,7 +7046,7 @@ bin	-0.08	0
 bin	-0.06	0
 bin	-0.04	0
 bin	-0.02	0
-bin	0	21
+bin	0	78
 bin	0.02	0
 bin	0.04	0
 bin	0.06	0
@@ -7073,25 +7072,25 @@ bin	0.44	0
 bin	0.46	0
 bin	0.48	0
 bin	0.5	0
-scalar ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPackets:count 21
+scalar ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPackets:count 78
 attr recordingmode count
 attr source packetPulled
 attr title "outgoing packets, count"
 attr unit pk
-scalar ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPacketLengths:sum 11760
+scalar ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPacketLengths:sum 43680
 attr interpolationmode none
 attr recordingmode sum
 attr source packetLength(packetPulled)
 attr title "outgoing packet lengths, sum"
 attr unit b
 statistic ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPacketLengths:histogram
-field count 21
+field count 78
 field mean 560
 field stddev 0
 field min 560
 field max 560
-field sum 11760
-field sqrsum 6585600
+field sum 43680
+field sqrsum 24460800
 attr interpolationmode none
 attr recordingmode histogram
 attr source packetLength(packetPulled)
@@ -7099,7 +7098,7 @@ attr title "outgoing packet lengths"
 attr unit b
 bin	-inf	0
 bin	559	0
-bin	560	21
+bin	560	78
 bin	561	0
 statistic ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.pendingQueue flowQueueingTime:histogram
 field count 0
@@ -7117,25 +7116,25 @@ attr unit s
 bin	-inf	0
 bin	0	0
 bin	1	0
-scalar ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPackets:count 21
+scalar ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPackets:count 78
 attr recordingmode count
 attr source packetPushStarted
 attr title "incoming packets, count"
 attr unit pk
-scalar ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPacketLengths:sum 11760
+scalar ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPacketLengths:sum 43680
 attr interpolationmode none
 attr recordingmode sum
 attr source packetLength(packetPushStarted)
 attr title "incoming packet lengths, sum"
 attr unit b
 statistic ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPacketLengths:histogram
-field count 21
+field count 78
 field mean 560
 field stddev 0
 field min 560
 field max 560
-field sum 11760
-field sqrsum 6585600
+field sum 43680
+field sqrsum 24460800
 attr interpolationmode none
 attr recordingmode histogram
 attr source packetLength(packetPushStarted)
@@ -7143,7 +7142,7 @@ attr title "incoming packet lengths"
 attr unit b
 bin	-inf	0
 bin	559	0
-bin	560	21
+bin	560	78
 bin	561	0
 scalar ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.pendingQueue droppedPacketsQueueOverflow:count 0
 attr interpolationmode none
@@ -7162,19 +7161,19 @@ par ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.inProgressFrames pendingQ
 par ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.inProgressFrames originatorMacDataServiceModule "\"^.^.originatorMacDataService\""
 par ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.inProgressFrames ackHandlerModule "\"^.^.ackHandler\""
 statistic ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.inProgressFrames queueingTime:histogram
-field count 21
+field count 78
 field mean 5.4e-05
 field stddev 0
 field min 5.4e-05
 field max 5.4e-05
-field sum 0.001134
-field sqrsum 6.1236e-08
+field sum 0.004212
+field sqrsum 2.27448e-07
 attr interpolationmode none
 attr recordingmode histogram
 attr source queueingTime(packetDequeued)
 attr title "queueing times"
 bin	-inf	0
-bin	0	21
+bin	0	78
 bin	0.01	0
 bin	0.02	0
 bin	0.03	0
@@ -7232,7 +7231,7 @@ attr interpolationmode sample-hold
 attr recordingmode max
 attr source "warmup(count(packetEnqueued) - count(packetDequeued))"
 attr title "queue length, max"
-scalar ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.inProgressFrames queueLength:timeavg 5.6694114179143e-05
+scalar ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.inProgressFrames queueLength:timeavg 5.466097419579e-05
 attr autoWarmupFilter false
 attr interpolationmode sample-hold
 attr recordingmode timeavg
@@ -7241,10 +7240,10 @@ attr title "queue length, timeavg"
 par ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.contention typename "\"inet.linklayer.ieee80211.mac.contention.Contention\""
 par ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.contention initialChannelBusy true
 par ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.contention backoffOptimization true
-scalar ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.contention channelAccessGranted:count 21
+scalar ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.contention channelAccessGranted:count 78
 attr recordingmode count
 attr title "channel access granted, count"
-scalar ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.contention stateChanged:count 490
+scalar ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess.contention stateChanged:count 1866
 attr enum IDLE,DEFER,IFS_AND_BACKOFF
 attr interpolationmode none
 attr recordingmode count
@@ -7255,7 +7254,7 @@ par ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess difsn -1
 par ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess cwMin -1
 par ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess cwMax -1
 par ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess rxModule "\"^.^.rx\""
-scalar ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess channelOwnershipChanged:count 42
+scalar ZrpTestNetwork.node3.wlan[0].mac.dcf.channelAccess channelOwnershipChanged:count 156
 attr interpolationmode sample-hold
 attr recordingmode count
 attr title "channel ownership, count"
@@ -7273,7 +7272,7 @@ par ZrpTestNetwork.node3.wlan[0].mac.dcf.recipientMacDataService typename "\"ine
 scalar ZrpTestNetwork.node3.wlan[0].mac.dcf.recipientMacDataService packetDeaggregated:count 0
 attr recordingmode count
 attr title "packets deaggregated, count"
-scalar ZrpTestNetwork.node3.wlan[0].mac.dcf.recipientMacDataService packetDefragmented:count 80
+scalar ZrpTestNetwork.node3.wlan[0].mac.dcf.recipientMacDataService packetDefragmented:count 310
 attr recordingmode count
 attr title "packets defragmented, count"
 scalar ZrpTestNetwork.node3.wlan[0].mac.dcf.recipientMacDataService packetDropDuplicateDetected:count 0
@@ -7332,22 +7331,22 @@ par ZrpTestNetwork.node3.wlan[0].mac.dcf.ctsPolicy rateSelectionModule "\"^.rate
 par ZrpTestNetwork.node3.wlan[0].mac.dcf typename "\"inet.linklayer.ieee80211.mac.coordinationfunction.Dcf\""
 par ZrpTestNetwork.node3.wlan[0].mac.dcf rxModule "\"^.rx\""
 par ZrpTestNetwork.node3.wlan[0].mac.dcf txModule "\"^.tx\""
-scalar ZrpTestNetwork.node3.wlan[0].mac.dcf frameSequenceFinished:count 21
+scalar ZrpTestNetwork.node3.wlan[0].mac.dcf frameSequenceFinished:count 78
 attr recordingmode count
 attr title "finished frame sequences, count"
 statistic ZrpTestNetwork.node3.wlan[0].mac.dcf frameSequenceDuration:histogram
-field count 21
+field count 78
 field mean 5.4e-05
 field stddev 0
 field min 5.4e-05
 field max 5.4e-05
-field sum 0.001134
-field sqrsum 6.1236e-08
+field sum 0.004212
+field sqrsum 2.27448e-07
 attr recordingmode histogram
 attr source frameSequenceDuration(frameSequenceFinished)
 attr title "frame sequence durations"
 bin	-inf	0
-bin	0	21
+bin	0	78
 bin	0.01	0
 bin	0.02	0
 bin	0.03	0
@@ -7400,25 +7399,25 @@ bin	0.49	0
 bin	0.5	0
 bin	0.51	0
 statistic ZrpTestNetwork.node3.wlan[0].mac.dcf frameSequenceNumPackets:histogram
-field count 21
+field count 78
 field mean 1
 field stddev 0
 field min 1
 field max 1
-field sum 21
-field sqrsum 21
+field sum 78
+field sqrsum 78
 attr recordingmode histogram
 attr source frameSequenceNumPackets(frameSequenceFinished)
 attr title "frame sequences: number of packets"
 bin	-inf	0
 bin	0	0
-bin	1	21
+bin	1	78
 bin	2	0
-scalar ZrpTestNetwork.node3.wlan[0].mac.dcf packetReceivedFromPeer:count 80
+scalar ZrpTestNetwork.node3.wlan[0].mac.dcf packetReceivedFromPeer:count 310
 attr interpolationmode none
 attr recordingmode count
 attr title "packets received, count"
-scalar ZrpTestNetwork.node3.wlan[0].mac.dcf packetReceivedFromPeer:sum(packetBytes) 5600
+scalar ZrpTestNetwork.node3.wlan[0].mac.dcf packetReceivedFromPeer:sum(packetBytes) 21700
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets received, sum(packetBytes)"
@@ -7432,22 +7431,22 @@ attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Unicast(packetReceivedFromPeer)
 attr title "packets received: unicast, sum(packetBytes)"
-scalar ZrpTestNetwork.node3.wlan[0].mac.dcf packetReceivedFromPeerMulticast:count 80
+scalar ZrpTestNetwork.node3.wlan[0].mac.dcf packetReceivedFromPeerMulticast:count 310
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211Multicast(packetReceivedFromPeer)
 attr title "packets received: multicast, count"
-scalar ZrpTestNetwork.node3.wlan[0].mac.dcf packetReceivedFromPeerMulticast:sum(packetBytes) 5600
+scalar ZrpTestNetwork.node3.wlan[0].mac.dcf packetReceivedFromPeerMulticast:sum(packetBytes) 21700
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Multicast(packetReceivedFromPeer)
 attr title "packets received: multicast, sum(packetBytes)"
-scalar ZrpTestNetwork.node3.wlan[0].mac.dcf packetReceivedFromPeerBroadcast:count 80
+scalar ZrpTestNetwork.node3.wlan[0].mac.dcf packetReceivedFromPeerBroadcast:count 310
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211Broadcast(packetReceivedFromPeer)
 attr title "packets received: broadcast, count"
-scalar ZrpTestNetwork.node3.wlan[0].mac.dcf packetReceivedFromPeerBroadcast:sum(packetBytes) 5600
+scalar ZrpTestNetwork.node3.wlan[0].mac.dcf packetReceivedFromPeerBroadcast:sum(packetBytes) 21700
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Broadcast(packetReceivedFromPeer)
@@ -7462,21 +7461,21 @@ attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Retry(packetReceivedFromPeer)
 attr title "packets received: with retry, sum(packetBytes)"
-scalar ZrpTestNetwork.node3.wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:count 80
+scalar ZrpTestNetwork.node3.wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:count 310
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211NotRetry(packetReceivedFromPeer)
 attr title "packets received: without retry, count"
-scalar ZrpTestNetwork.node3.wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:sum(packetBytes) 5600
+scalar ZrpTestNetwork.node3.wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:sum(packetBytes) 21700
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211NotRetry(packetReceivedFromPeer)
 attr title "packets received: without retry, sum(packetBytes)"
-scalar ZrpTestNetwork.node3.wlan[0].mac.dcf packetSentToPeer:count 21
+scalar ZrpTestNetwork.node3.wlan[0].mac.dcf packetSentToPeer:count 78
 attr interpolationmode none
 attr recordingmode count
 attr title "packets sent, count"
-scalar ZrpTestNetwork.node3.wlan[0].mac.dcf packetSentToPeer:sum(packetBytes) 1470
+scalar ZrpTestNetwork.node3.wlan[0].mac.dcf packetSentToPeer:sum(packetBytes) 5460
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets sent, sum(packetBytes)"
@@ -7490,22 +7489,22 @@ attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Unicast(packetSentToPeer)
 attr title "packets sent: unicast, sum(packetBytes)"
-scalar ZrpTestNetwork.node3.wlan[0].mac.dcf packetSentToPeerMulticast:count 21
+scalar ZrpTestNetwork.node3.wlan[0].mac.dcf packetSentToPeerMulticast:count 78
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211Multicast(packetSentToPeer)
 attr title "packets sent: multicast, count"
-scalar ZrpTestNetwork.node3.wlan[0].mac.dcf packetSentToPeerMulticast:sum(packetBytes) 1470
+scalar ZrpTestNetwork.node3.wlan[0].mac.dcf packetSentToPeerMulticast:sum(packetBytes) 5460
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Multicast(packetSentToPeer)
 attr title "packets sent: multicast, sum(packetBytes)"
-scalar ZrpTestNetwork.node3.wlan[0].mac.dcf packetSentToPeerBroadcast:count 21
+scalar ZrpTestNetwork.node3.wlan[0].mac.dcf packetSentToPeerBroadcast:count 78
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211Broadcast(packetSentToPeer)
 attr title "packets sent: broadcast , count"
-scalar ZrpTestNetwork.node3.wlan[0].mac.dcf packetSentToPeerBroadcast:sum(packetBytes) 1470
+scalar ZrpTestNetwork.node3.wlan[0].mac.dcf packetSentToPeerBroadcast:sum(packetBytes) 5460
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Broadcast(packetSentToPeer)
@@ -7520,12 +7519,12 @@ attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Retry(packetSentToPeer)
 attr title "packets sent: with retry, sum(packetBytes)"
-scalar ZrpTestNetwork.node3.wlan[0].mac.dcf packetSentToPeerWithoutRetry:count 21
+scalar ZrpTestNetwork.node3.wlan[0].mac.dcf packetSentToPeerWithoutRetry:count 78
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211NotRetry(packetSentToPeer)
 attr title "packets sent: without retry, count"
-scalar ZrpTestNetwork.node3.wlan[0].mac.dcf packetSentToPeerWithoutRetry:sum(packetBytes) 1470
+scalar ZrpTestNetwork.node3.wlan[0].mac.dcf packetSentToPeerWithoutRetry:sum(packetBytes) 5460
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211NotRetry(packetSentToPeer)
@@ -7591,35 +7590,35 @@ attr enum off,sleep,receiver,transmitter,transceiver
 par ZrpTestNetwork.node3.wlan[0].mac mtu 2304B
 attr unit B
 par ZrpTestNetwork.node3.wlan[0].mac qosStation false
-scalar ZrpTestNetwork.node3.wlan[0].mac packetReceivedFromLower:count 80
+scalar ZrpTestNetwork.node3.wlan[0].mac packetReceivedFromLower:count 310
 attr interpolationmode none
 attr recordingmode count
 attr title "packets received from lower layer, count"
-scalar ZrpTestNetwork.node3.wlan[0].mac packetReceivedFromLower:sum(packetBytes) 5600
+scalar ZrpTestNetwork.node3.wlan[0].mac packetReceivedFromLower:sum(packetBytes) 21700
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets received from lower layer, sum(packetBytes)"
-scalar ZrpTestNetwork.node3.wlan[0].mac packetSentToLower:count 21
+scalar ZrpTestNetwork.node3.wlan[0].mac packetSentToLower:count 78
 attr interpolationmode none
 attr recordingmode count
 attr title "packets sent to lower layer, count"
-scalar ZrpTestNetwork.node3.wlan[0].mac packetSentToLower:sum(packetBytes) 1470
+scalar ZrpTestNetwork.node3.wlan[0].mac packetSentToLower:sum(packetBytes) 5460
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets sent to lower layer, sum(packetBytes)"
-scalar ZrpTestNetwork.node3.wlan[0].mac packetReceivedFromUpper:count 21
+scalar ZrpTestNetwork.node3.wlan[0].mac packetReceivedFromUpper:count 78
 attr interpolationmode none
 attr recordingmode count
 attr title "packets received from upper layer, count"
-scalar ZrpTestNetwork.node3.wlan[0].mac packetReceivedFromUpper:sum(packetBytes) 882
+scalar ZrpTestNetwork.node3.wlan[0].mac packetReceivedFromUpper:sum(packetBytes) 3276
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets received from upper layer, sum(packetBytes)"
-scalar ZrpTestNetwork.node3.wlan[0].mac packetSentToUpper:count 80
+scalar ZrpTestNetwork.node3.wlan[0].mac packetSentToUpper:count 310
 attr interpolationmode none
 attr recordingmode count
 attr title "packets sent to upper layer, count"
-scalar ZrpTestNetwork.node3.wlan[0].mac packetSentToUpper:sum(packetBytes) 3360
+scalar ZrpTestNetwork.node3.wlan[0].mac packetSentToUpper:sum(packetBytes) 13020
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets sent to upper layer, sum(packetBytes)"
@@ -7834,29 +7833,29 @@ bin	0.44	0
 bin	0.46	0
 bin	0.48	0
 bin	0.5	0
-scalar ZrpTestNetwork.node3.wlan[0].radio radioMode:count 45
+scalar ZrpTestNetwork.node3.wlan[0].radio radioMode:count 159
 attr interpolationmode sample-hold
 attr recordingmode count
 attr source radioModeChanged
 attr title "Radio mode, count"
-scalar ZrpTestNetwork.node3.wlan[0].radio receptionState:count 203
+scalar ZrpTestNetwork.node3.wlan[0].radio receptionState:count 777
 attr interpolationmode sample-hold
 attr recordingmode count
 attr source receptionStateChanged
 attr title "Radio reception state, count"
-scalar ZrpTestNetwork.node3.wlan[0].radio transmissionState:count 84
+scalar ZrpTestNetwork.node3.wlan[0].radio transmissionState:count 312
 attr interpolationmode sample-hold
 attr recordingmode count
 attr source transmissionStateChanged
 attr title "Radio transmission state, count"
 statistic ZrpTestNetwork.node3.wlan[0].radio minSnir:histogram
-field count 80
-field mean 548.45523465057
-field stddev 160.66819164773
+field count 310
+field mean 547.86427480648
+field stddev 159.58072611455
 field min 435.47241311014
 field max 823.75275854827
-field sum 43876.418772045
-field sqrsum 26103578.710029
+field sum 169837.92519001
+field sqrsum 100917128.23636
 attr recordingmode histogram
 attr source minimumSnir(packetSentToUpper)
 attr title "Min SNIR"
@@ -7871,11 +7870,11 @@ bin	390	0
 bin	400	0
 bin	410	0
 bin	420	0
-bin	430	20
+bin	430	78
 bin	440	0
-bin	450	20
+bin	450	77
 bin	460	0
-bin	470	20
+bin	470	78
 bin	480	0
 bin	490	0
 bin	500	0
@@ -7910,7 +7909,7 @@ bin	780	0
 bin	790	0
 bin	800	0
 bin	810	0
-bin	820	20
+bin	820	77
 bin	830	0
 bin	840	0
 bin	850	0
@@ -7923,7 +7922,7 @@ bin	910	0
 bin	920	0
 bin	930	0
 statistic ZrpTestNetwork.node3.wlan[0].radio packetErrorRate:histogram
-field count 80
+field count 310
 field mean 0
 field stddev 0
 field min 0
@@ -7959,7 +7958,7 @@ bin	-0.08	0
 bin	-0.06	0
 bin	-0.04	0
 bin	-0.02	0
-bin	0	80
+bin	0	310
 bin	0.02	0
 bin	0.04	0
 bin	0.06	0
@@ -8203,27 +8202,27 @@ par ZrpTestNetwork.node3.udp icmpv6Module "\"^.ipv6.icmpv6\""
 par ZrpTestNetwork.node3.udp crcMode "\"declared\""
 attr enum disabled,declared,computed
 par ZrpTestNetwork.node3.udp defaultMulticastLoop true
-scalar ZrpTestNetwork.node3.udp packetReceived:count 80
+scalar ZrpTestNetwork.node3.udp packetReceived:count 310
 attr interpolationmode none
 attr recordingmode count
 attr source packetReceived
 attr title "packets received, count"
-scalar ZrpTestNetwork.node3.udp packetReceived:sum(packetBytes) 1120
+scalar ZrpTestNetwork.node3.udp packetReceived:sum(packetBytes) 4340
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source packetReceived
 attr title "packets received, sum(packetBytes)"
-scalar ZrpTestNetwork.node3.udp packetSent:count 21
+scalar ZrpTestNetwork.node3.udp packetSent:count 78
 attr interpolationmode none
 attr recordingmode count
 attr source packetSent
 attr title "packets sent, count"
-scalar ZrpTestNetwork.node3.udp packetSent:sum(packetBytes) 294
+scalar ZrpTestNetwork.node3.udp packetSent:sum(packetBytes) 1092
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source packetSent
 attr title "packets sent, sum(packetBytes)"
-scalar ZrpTestNetwork.node3.udp passedUpPk:count 80
+scalar ZrpTestNetwork.node3.udp passedUpPk:count 310
 attr interpolationmode none
 attr recordingmode count
 attr source packetSentToUpper
@@ -8483,7 +8482,7 @@ attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetP
 attr title "queue bit length, timeavg"
 attr unit b
 statistic ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.pendingQueue queueingTime:histogram
-field count 20
+field count 77
 field mean 0
 field stddev 0
 field min 0
@@ -8521,7 +8520,7 @@ bin	-0.08	0
 bin	-0.06	0
 bin	-0.04	0
 bin	-0.02	0
-bin	0	20
+bin	0	77
 bin	0.02	0
 bin	0.04	0
 bin	0.06	0
@@ -8547,25 +8546,25 @@ bin	0.44	0
 bin	0.46	0
 bin	0.48	0
 bin	0.5	0
-scalar ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPackets:count 20
+scalar ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPackets:count 77
 attr recordingmode count
 attr source packetPulled
 attr title "outgoing packets, count"
 attr unit pk
-scalar ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPacketLengths:sum 11200
+scalar ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPacketLengths:sum 43120
 attr interpolationmode none
 attr recordingmode sum
 attr source packetLength(packetPulled)
 attr title "outgoing packet lengths, sum"
 attr unit b
 statistic ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPacketLengths:histogram
-field count 20
+field count 77
 field mean 560
 field stddev 0
 field min 560
 field max 560
-field sum 11200
-field sqrsum 6272000
+field sum 43120
+field sqrsum 24147200
 attr interpolationmode none
 attr recordingmode histogram
 attr source packetLength(packetPulled)
@@ -8573,7 +8572,7 @@ attr title "outgoing packet lengths"
 attr unit b
 bin	-inf	0
 bin	559	0
-bin	560	20
+bin	560	77
 bin	561	0
 statistic ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.pendingQueue flowQueueingTime:histogram
 field count 0
@@ -8591,25 +8590,25 @@ attr unit s
 bin	-inf	0
 bin	0	0
 bin	1	0
-scalar ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPackets:count 20
+scalar ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPackets:count 77
 attr recordingmode count
 attr source packetPushStarted
 attr title "incoming packets, count"
 attr unit pk
-scalar ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPacketLengths:sum 11200
+scalar ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPacketLengths:sum 43120
 attr interpolationmode none
 attr recordingmode sum
 attr source packetLength(packetPushStarted)
 attr title "incoming packet lengths, sum"
 attr unit b
 statistic ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPacketLengths:histogram
-field count 20
+field count 77
 field mean 560
 field stddev 0
 field min 560
 field max 560
-field sum 11200
-field sqrsum 6272000
+field sum 43120
+field sqrsum 24147200
 attr interpolationmode none
 attr recordingmode histogram
 attr source packetLength(packetPushStarted)
@@ -8617,7 +8616,7 @@ attr title "incoming packet lengths"
 attr unit b
 bin	-inf	0
 bin	559	0
-bin	560	20
+bin	560	77
 bin	561	0
 scalar ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.pendingQueue droppedPacketsQueueOverflow:count 0
 attr interpolationmode none
@@ -8636,19 +8635,19 @@ par ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.inProgressFrames pendingQ
 par ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.inProgressFrames originatorMacDataServiceModule "\"^.^.originatorMacDataService\""
 par ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.inProgressFrames ackHandlerModule "\"^.^.ackHandler\""
 statistic ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.inProgressFrames queueingTime:histogram
-field count 20
+field count 77
 field mean 5.4e-05
 field stddev 0
 field min 5.4e-05
 field max 5.4e-05
-field sum 0.00108
-field sqrsum 5.832e-08
+field sum 0.004158
+field sqrsum 2.24532e-07
 attr interpolationmode none
 attr recordingmode histogram
 attr source queueingTime(packetDequeued)
 attr title "queueing times"
 bin	-inf	0
-bin	0	20
+bin	0	77
 bin	0.01	0
 bin	0.02	0
 bin	0.03	0
@@ -8706,7 +8705,7 @@ attr interpolationmode sample-hold
 attr recordingmode max
 attr source "warmup(count(packetEnqueued) - count(packetDequeued))"
 attr title "queue length, max"
-scalar ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.inProgressFrames queueLength:timeavg 5.3994394456327e-05
+scalar ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.inProgressFrames queueLength:timeavg 5.3960192475331e-05
 attr autoWarmupFilter false
 attr interpolationmode sample-hold
 attr recordingmode timeavg
@@ -8715,10 +8714,10 @@ attr title "queue length, timeavg"
 par ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.contention typename "\"inet.linklayer.ieee80211.mac.contention.Contention\""
 par ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.contention initialChannelBusy true
 par ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.contention backoffOptimization true
-scalar ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.contention channelAccessGranted:count 20
+scalar ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.contention channelAccessGranted:count 77
 attr recordingmode count
 attr title "channel access granted, count"
-scalar ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.contention stateChanged:count 406
+scalar ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess.contention stateChanged:count 1550
 attr enum IDLE,DEFER,IFS_AND_BACKOFF
 attr interpolationmode none
 attr recordingmode count
@@ -8729,7 +8728,7 @@ par ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess difsn -1
 par ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess cwMin -1
 par ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess cwMax -1
 par ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess rxModule "\"^.^.rx\""
-scalar ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess channelOwnershipChanged:count 40
+scalar ZrpTestNetwork.node4.wlan[0].mac.dcf.channelAccess channelOwnershipChanged:count 154
 attr interpolationmode sample-hold
 attr recordingmode count
 attr title "channel ownership, count"
@@ -8747,7 +8746,7 @@ par ZrpTestNetwork.node4.wlan[0].mac.dcf.recipientMacDataService typename "\"ine
 scalar ZrpTestNetwork.node4.wlan[0].mac.dcf.recipientMacDataService packetDeaggregated:count 0
 attr recordingmode count
 attr title "packets deaggregated, count"
-scalar ZrpTestNetwork.node4.wlan[0].mac.dcf.recipientMacDataService packetDefragmented:count 61
+scalar ZrpTestNetwork.node4.wlan[0].mac.dcf.recipientMacDataService packetDefragmented:count 233
 attr recordingmode count
 attr title "packets defragmented, count"
 scalar ZrpTestNetwork.node4.wlan[0].mac.dcf.recipientMacDataService packetDropDuplicateDetected:count 0
@@ -8806,22 +8805,22 @@ par ZrpTestNetwork.node4.wlan[0].mac.dcf.ctsPolicy rateSelectionModule "\"^.rate
 par ZrpTestNetwork.node4.wlan[0].mac.dcf typename "\"inet.linklayer.ieee80211.mac.coordinationfunction.Dcf\""
 par ZrpTestNetwork.node4.wlan[0].mac.dcf rxModule "\"^.rx\""
 par ZrpTestNetwork.node4.wlan[0].mac.dcf txModule "\"^.tx\""
-scalar ZrpTestNetwork.node4.wlan[0].mac.dcf frameSequenceFinished:count 20
+scalar ZrpTestNetwork.node4.wlan[0].mac.dcf frameSequenceFinished:count 77
 attr recordingmode count
 attr title "finished frame sequences, count"
 statistic ZrpTestNetwork.node4.wlan[0].mac.dcf frameSequenceDuration:histogram
-field count 20
+field count 77
 field mean 5.4e-05
 field stddev 0
 field min 5.4e-05
 field max 5.4e-05
-field sum 0.00108
-field sqrsum 5.832e-08
+field sum 0.004158
+field sqrsum 2.24532e-07
 attr recordingmode histogram
 attr source frameSequenceDuration(frameSequenceFinished)
 attr title "frame sequence durations"
 bin	-inf	0
-bin	0	20
+bin	0	77
 bin	0.01	0
 bin	0.02	0
 bin	0.03	0
@@ -8874,25 +8873,25 @@ bin	0.49	0
 bin	0.5	0
 bin	0.51	0
 statistic ZrpTestNetwork.node4.wlan[0].mac.dcf frameSequenceNumPackets:histogram
-field count 20
+field count 77
 field mean 1
 field stddev 0
 field min 1
 field max 1
-field sum 20
-field sqrsum 20
+field sum 77
+field sqrsum 77
 attr recordingmode histogram
 attr source frameSequenceNumPackets(frameSequenceFinished)
 attr title "frame sequences: number of packets"
 bin	-inf	0
 bin	0	0
-bin	1	20
+bin	1	77
 bin	2	0
-scalar ZrpTestNetwork.node4.wlan[0].mac.dcf packetReceivedFromPeer:count 61
+scalar ZrpTestNetwork.node4.wlan[0].mac.dcf packetReceivedFromPeer:count 233
 attr interpolationmode none
 attr recordingmode count
 attr title "packets received, count"
-scalar ZrpTestNetwork.node4.wlan[0].mac.dcf packetReceivedFromPeer:sum(packetBytes) 4270
+scalar ZrpTestNetwork.node4.wlan[0].mac.dcf packetReceivedFromPeer:sum(packetBytes) 16310
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets received, sum(packetBytes)"
@@ -8906,22 +8905,22 @@ attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Unicast(packetReceivedFromPeer)
 attr title "packets received: unicast, sum(packetBytes)"
-scalar ZrpTestNetwork.node4.wlan[0].mac.dcf packetReceivedFromPeerMulticast:count 61
+scalar ZrpTestNetwork.node4.wlan[0].mac.dcf packetReceivedFromPeerMulticast:count 233
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211Multicast(packetReceivedFromPeer)
 attr title "packets received: multicast, count"
-scalar ZrpTestNetwork.node4.wlan[0].mac.dcf packetReceivedFromPeerMulticast:sum(packetBytes) 4270
+scalar ZrpTestNetwork.node4.wlan[0].mac.dcf packetReceivedFromPeerMulticast:sum(packetBytes) 16310
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Multicast(packetReceivedFromPeer)
 attr title "packets received: multicast, sum(packetBytes)"
-scalar ZrpTestNetwork.node4.wlan[0].mac.dcf packetReceivedFromPeerBroadcast:count 61
+scalar ZrpTestNetwork.node4.wlan[0].mac.dcf packetReceivedFromPeerBroadcast:count 233
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211Broadcast(packetReceivedFromPeer)
 attr title "packets received: broadcast, count"
-scalar ZrpTestNetwork.node4.wlan[0].mac.dcf packetReceivedFromPeerBroadcast:sum(packetBytes) 4270
+scalar ZrpTestNetwork.node4.wlan[0].mac.dcf packetReceivedFromPeerBroadcast:sum(packetBytes) 16310
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Broadcast(packetReceivedFromPeer)
@@ -8936,21 +8935,21 @@ attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Retry(packetReceivedFromPeer)
 attr title "packets received: with retry, sum(packetBytes)"
-scalar ZrpTestNetwork.node4.wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:count 61
+scalar ZrpTestNetwork.node4.wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:count 233
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211NotRetry(packetReceivedFromPeer)
 attr title "packets received: without retry, count"
-scalar ZrpTestNetwork.node4.wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:sum(packetBytes) 4270
+scalar ZrpTestNetwork.node4.wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:sum(packetBytes) 16310
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211NotRetry(packetReceivedFromPeer)
 attr title "packets received: without retry, sum(packetBytes)"
-scalar ZrpTestNetwork.node4.wlan[0].mac.dcf packetSentToPeer:count 20
+scalar ZrpTestNetwork.node4.wlan[0].mac.dcf packetSentToPeer:count 77
 attr interpolationmode none
 attr recordingmode count
 attr title "packets sent, count"
-scalar ZrpTestNetwork.node4.wlan[0].mac.dcf packetSentToPeer:sum(packetBytes) 1400
+scalar ZrpTestNetwork.node4.wlan[0].mac.dcf packetSentToPeer:sum(packetBytes) 5390
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets sent, sum(packetBytes)"
@@ -8964,22 +8963,22 @@ attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Unicast(packetSentToPeer)
 attr title "packets sent: unicast, sum(packetBytes)"
-scalar ZrpTestNetwork.node4.wlan[0].mac.dcf packetSentToPeerMulticast:count 20
+scalar ZrpTestNetwork.node4.wlan[0].mac.dcf packetSentToPeerMulticast:count 77
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211Multicast(packetSentToPeer)
 attr title "packets sent: multicast, count"
-scalar ZrpTestNetwork.node4.wlan[0].mac.dcf packetSentToPeerMulticast:sum(packetBytes) 1400
+scalar ZrpTestNetwork.node4.wlan[0].mac.dcf packetSentToPeerMulticast:sum(packetBytes) 5390
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Multicast(packetSentToPeer)
 attr title "packets sent: multicast, sum(packetBytes)"
-scalar ZrpTestNetwork.node4.wlan[0].mac.dcf packetSentToPeerBroadcast:count 20
+scalar ZrpTestNetwork.node4.wlan[0].mac.dcf packetSentToPeerBroadcast:count 77
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211Broadcast(packetSentToPeer)
 attr title "packets sent: broadcast , count"
-scalar ZrpTestNetwork.node4.wlan[0].mac.dcf packetSentToPeerBroadcast:sum(packetBytes) 1400
+scalar ZrpTestNetwork.node4.wlan[0].mac.dcf packetSentToPeerBroadcast:sum(packetBytes) 5390
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Broadcast(packetSentToPeer)
@@ -8994,12 +8993,12 @@ attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Retry(packetSentToPeer)
 attr title "packets sent: with retry, sum(packetBytes)"
-scalar ZrpTestNetwork.node4.wlan[0].mac.dcf packetSentToPeerWithoutRetry:count 20
+scalar ZrpTestNetwork.node4.wlan[0].mac.dcf packetSentToPeerWithoutRetry:count 77
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211NotRetry(packetSentToPeer)
 attr title "packets sent: without retry, count"
-scalar ZrpTestNetwork.node4.wlan[0].mac.dcf packetSentToPeerWithoutRetry:sum(packetBytes) 1400
+scalar ZrpTestNetwork.node4.wlan[0].mac.dcf packetSentToPeerWithoutRetry:sum(packetBytes) 5390
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211NotRetry(packetSentToPeer)
@@ -9065,35 +9064,35 @@ attr enum off,sleep,receiver,transmitter,transceiver
 par ZrpTestNetwork.node4.wlan[0].mac mtu 2304B
 attr unit B
 par ZrpTestNetwork.node4.wlan[0].mac qosStation false
-scalar ZrpTestNetwork.node4.wlan[0].mac packetReceivedFromLower:count 61
+scalar ZrpTestNetwork.node4.wlan[0].mac packetReceivedFromLower:count 233
 attr interpolationmode none
 attr recordingmode count
 attr title "packets received from lower layer, count"
-scalar ZrpTestNetwork.node4.wlan[0].mac packetReceivedFromLower:sum(packetBytes) 4270
+scalar ZrpTestNetwork.node4.wlan[0].mac packetReceivedFromLower:sum(packetBytes) 16310
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets received from lower layer, sum(packetBytes)"
-scalar ZrpTestNetwork.node4.wlan[0].mac packetSentToLower:count 20
+scalar ZrpTestNetwork.node4.wlan[0].mac packetSentToLower:count 77
 attr interpolationmode none
 attr recordingmode count
 attr title "packets sent to lower layer, count"
-scalar ZrpTestNetwork.node4.wlan[0].mac packetSentToLower:sum(packetBytes) 1400
+scalar ZrpTestNetwork.node4.wlan[0].mac packetSentToLower:sum(packetBytes) 5390
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets sent to lower layer, sum(packetBytes)"
-scalar ZrpTestNetwork.node4.wlan[0].mac packetReceivedFromUpper:count 20
+scalar ZrpTestNetwork.node4.wlan[0].mac packetReceivedFromUpper:count 77
 attr interpolationmode none
 attr recordingmode count
 attr title "packets received from upper layer, count"
-scalar ZrpTestNetwork.node4.wlan[0].mac packetReceivedFromUpper:sum(packetBytes) 840
+scalar ZrpTestNetwork.node4.wlan[0].mac packetReceivedFromUpper:sum(packetBytes) 3234
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets received from upper layer, sum(packetBytes)"
-scalar ZrpTestNetwork.node4.wlan[0].mac packetSentToUpper:count 61
+scalar ZrpTestNetwork.node4.wlan[0].mac packetSentToUpper:count 233
 attr interpolationmode none
 attr recordingmode count
 attr title "packets sent to upper layer, count"
-scalar ZrpTestNetwork.node4.wlan[0].mac packetSentToUpper:sum(packetBytes) 2562
+scalar ZrpTestNetwork.node4.wlan[0].mac packetSentToUpper:sum(packetBytes) 9786
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets sent to upper layer, sum(packetBytes)"
@@ -9308,29 +9307,29 @@ bin	0.44	0
 bin	0.46	0
 bin	0.48	0
 bin	0.5	0
-scalar ZrpTestNetwork.node4.wlan[0].radio radioMode:count 43
+scalar ZrpTestNetwork.node4.wlan[0].radio radioMode:count 157
 attr interpolationmode sample-hold
 attr recordingmode count
 attr source radioModeChanged
 attr title "Radio mode, count"
-scalar ZrpTestNetwork.node4.wlan[0].radio receptionState:count 163
+scalar ZrpTestNetwork.node4.wlan[0].radio receptionState:count 621
 attr interpolationmode sample-hold
 attr recordingmode count
 attr source receptionStateChanged
 attr title "Radio reception state, count"
-scalar ZrpTestNetwork.node4.wlan[0].radio transmissionState:count 80
+scalar ZrpTestNetwork.node4.wlan[0].radio transmissionState:count 308
 attr interpolationmode sample-hold
 attr recordingmode count
 attr source transmissionStateChanged
 attr title "Radio transmission state, count"
 statistic ZrpTestNetwork.node4.wlan[0].radio minSnir:histogram
-field count 61
-field mean 661.50342837363
-field stddev 158.96101142926
+field count 233
+field mean 658.59652373689
+field stddev 158.19883113231
 field min 446.60523901024
 field max 823.75275854827
-field sum 40351.709130791
-field sqrsum 28208910.120031
+field sum 153452.99003069
+field sqrsum 106869839.67106
 attr recordingmode histogram
 attr source minimumSnir(packetSentToUpper)
 attr title "Min SNIR"
@@ -9344,7 +9343,7 @@ bin	400	0
 bin	410	0
 bin	420	0
 bin	430	0
-bin	440	20
+bin	440	78
 bin	450	0
 bin	460	0
 bin	470	0
@@ -9370,7 +9369,7 @@ bin	660	0
 bin	670	0
 bin	680	0
 bin	690	0
-bin	700	20
+bin	700	77
 bin	710	0
 bin	720	0
 bin	730	0
@@ -9382,7 +9381,7 @@ bin	780	0
 bin	790	0
 bin	800	0
 bin	810	0
-bin	820	21
+bin	820	78
 bin	830	0
 bin	840	0
 bin	850	0
@@ -9394,7 +9393,7 @@ bin	900	0
 bin	910	0
 bin	920	0
 statistic ZrpTestNetwork.node4.wlan[0].radio packetErrorRate:histogram
-field count 61
+field count 233
 field mean 0
 field stddev 0
 field min 0
@@ -9430,7 +9429,7 @@ bin	-0.08	0
 bin	-0.06	0
 bin	-0.04	0
 bin	-0.02	0
-bin	0	61
+bin	0	233
 bin	0.02	0
 bin	0.04	0
 bin	0.06	0
@@ -9674,27 +9673,27 @@ par ZrpTestNetwork.node4.udp icmpv6Module "\"^.ipv6.icmpv6\""
 par ZrpTestNetwork.node4.udp crcMode "\"declared\""
 attr enum disabled,declared,computed
 par ZrpTestNetwork.node4.udp defaultMulticastLoop true
-scalar ZrpTestNetwork.node4.udp packetReceived:count 61
+scalar ZrpTestNetwork.node4.udp packetReceived:count 233
 attr interpolationmode none
 attr recordingmode count
 attr source packetReceived
 attr title "packets received, count"
-scalar ZrpTestNetwork.node4.udp packetReceived:sum(packetBytes) 854
+scalar ZrpTestNetwork.node4.udp packetReceived:sum(packetBytes) 3262
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source packetReceived
 attr title "packets received, sum(packetBytes)"
-scalar ZrpTestNetwork.node4.udp packetSent:count 20
+scalar ZrpTestNetwork.node4.udp packetSent:count 77
 attr interpolationmode none
 attr recordingmode count
 attr source packetSent
 attr title "packets sent, count"
-scalar ZrpTestNetwork.node4.udp packetSent:sum(packetBytes) 280
+scalar ZrpTestNetwork.node4.udp packetSent:sum(packetBytes) 1078
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source packetSent
 attr title "packets sent, sum(packetBytes)"
-scalar ZrpTestNetwork.node4.udp passedUpPk:count 61
+scalar ZrpTestNetwork.node4.udp passedUpPk:count 233
 attr interpolationmode none
 attr recordingmode count
 attr source packetSentToUpper
@@ -9954,7 +9953,7 @@ attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetP
 attr title "queue bit length, timeavg"
 attr unit b
 statistic ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.pendingQueue queueingTime:histogram
-field count 20
+field count 77
 field mean 0
 field stddev 0
 field min 0
@@ -9992,7 +9991,7 @@ bin	-0.08	0
 bin	-0.06	0
 bin	-0.04	0
 bin	-0.02	0
-bin	0	20
+bin	0	77
 bin	0.02	0
 bin	0.04	0
 bin	0.06	0
@@ -10018,25 +10017,25 @@ bin	0.44	0
 bin	0.46	0
 bin	0.48	0
 bin	0.5	0
-scalar ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPackets:count 20
+scalar ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPackets:count 77
 attr recordingmode count
 attr source packetPulled
 attr title "outgoing packets, count"
 attr unit pk
-scalar ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPacketLengths:sum 11200
+scalar ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPacketLengths:sum 43120
 attr interpolationmode none
 attr recordingmode sum
 attr source packetLength(packetPulled)
 attr title "outgoing packet lengths, sum"
 attr unit b
 statistic ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPacketLengths:histogram
-field count 20
+field count 77
 field mean 560
 field stddev 0
 field min 560
 field max 560
-field sum 11200
-field sqrsum 6272000
+field sum 43120
+field sqrsum 24147200
 attr interpolationmode none
 attr recordingmode histogram
 attr source packetLength(packetPulled)
@@ -10044,7 +10043,7 @@ attr title "outgoing packet lengths"
 attr unit b
 bin	-inf	0
 bin	559	0
-bin	560	20
+bin	560	77
 bin	561	0
 statistic ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.pendingQueue flowQueueingTime:histogram
 field count 0
@@ -10062,25 +10061,25 @@ attr unit s
 bin	-inf	0
 bin	0	0
 bin	1	0
-scalar ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPackets:count 20
+scalar ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPackets:count 77
 attr recordingmode count
 attr source packetPushStarted
 attr title "incoming packets, count"
 attr unit pk
-scalar ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPacketLengths:sum 11200
+scalar ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPacketLengths:sum 43120
 attr interpolationmode none
 attr recordingmode sum
 attr source packetLength(packetPushStarted)
 attr title "incoming packet lengths, sum"
 attr unit b
 statistic ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPacketLengths:histogram
-field count 20
+field count 77
 field mean 560
 field stddev 0
 field min 560
 field max 560
-field sum 11200
-field sqrsum 6272000
+field sum 43120
+field sqrsum 24147200
 attr interpolationmode none
 attr recordingmode histogram
 attr source packetLength(packetPushStarted)
@@ -10088,7 +10087,7 @@ attr title "incoming packet lengths"
 attr unit b
 bin	-inf	0
 bin	559	0
-bin	560	20
+bin	560	77
 bin	561	0
 scalar ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.pendingQueue droppedPacketsQueueOverflow:count 0
 attr interpolationmode none
@@ -10107,19 +10106,19 @@ par ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.inProgressFrames pendingQ
 par ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.inProgressFrames originatorMacDataServiceModule "\"^.^.originatorMacDataService\""
 par ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.inProgressFrames ackHandlerModule "\"^.^.ackHandler\""
 statistic ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.inProgressFrames queueingTime:histogram
-field count 20
+field count 77
 field mean 5.4e-05
 field stddev 0
 field min 5.4e-05
 field max 5.4e-05
-field sum 0.00108
-field sqrsum 5.832e-08
+field sum 0.004158
+field sqrsum 2.24532e-07
 attr interpolationmode none
 attr recordingmode histogram
 attr source queueingTime(packetDequeued)
 attr title "queueing times"
 bin	-inf	0
-bin	0	20
+bin	0	77
 bin	0.01	0
 bin	0.02	0
 bin	0.03	0
@@ -10177,7 +10176,7 @@ attr interpolationmode sample-hold
 attr recordingmode max
 attr source "warmup(count(packetEnqueued) - count(packetDequeued))"
 attr title "queue length, max"
-scalar ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.inProgressFrames queueLength:timeavg 5.3994394456327e-05
+scalar ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.inProgressFrames queueLength:timeavg 5.3960192475331e-05
 attr autoWarmupFilter false
 attr interpolationmode sample-hold
 attr recordingmode timeavg
@@ -10186,10 +10185,10 @@ attr title "queue length, timeavg"
 par ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.contention typename "\"inet.linklayer.ieee80211.mac.contention.Contention\""
 par ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.contention initialChannelBusy true
 par ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.contention backoffOptimization true
-scalar ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.contention channelAccessGranted:count 20
+scalar ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.contention channelAccessGranted:count 77
 attr recordingmode count
 attr title "channel access granted, count"
-scalar ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.contention stateChanged:count 482
+scalar ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess.contention stateChanged:count 1858
 attr enum IDLE,DEFER,IFS_AND_BACKOFF
 attr interpolationmode none
 attr recordingmode count
@@ -10200,7 +10199,7 @@ par ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess difsn -1
 par ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess cwMin -1
 par ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess cwMax -1
 par ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess rxModule "\"^.^.rx\""
-scalar ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess channelOwnershipChanged:count 40
+scalar ZrpTestNetwork.node5.wlan[0].mac.dcf.channelAccess channelOwnershipChanged:count 154
 attr interpolationmode sample-hold
 attr recordingmode count
 attr title "channel ownership, count"
@@ -10218,7 +10217,7 @@ par ZrpTestNetwork.node5.wlan[0].mac.dcf.recipientMacDataService typename "\"ine
 scalar ZrpTestNetwork.node5.wlan[0].mac.dcf.recipientMacDataService packetDeaggregated:count 0
 attr recordingmode count
 attr title "packets deaggregated, count"
-scalar ZrpTestNetwork.node5.wlan[0].mac.dcf.recipientMacDataService packetDefragmented:count 80
+scalar ZrpTestNetwork.node5.wlan[0].mac.dcf.recipientMacDataService packetDefragmented:count 310
 attr recordingmode count
 attr title "packets defragmented, count"
 scalar ZrpTestNetwork.node5.wlan[0].mac.dcf.recipientMacDataService packetDropDuplicateDetected:count 0
@@ -10277,22 +10276,22 @@ par ZrpTestNetwork.node5.wlan[0].mac.dcf.ctsPolicy rateSelectionModule "\"^.rate
 par ZrpTestNetwork.node5.wlan[0].mac.dcf typename "\"inet.linklayer.ieee80211.mac.coordinationfunction.Dcf\""
 par ZrpTestNetwork.node5.wlan[0].mac.dcf rxModule "\"^.rx\""
 par ZrpTestNetwork.node5.wlan[0].mac.dcf txModule "\"^.tx\""
-scalar ZrpTestNetwork.node5.wlan[0].mac.dcf frameSequenceFinished:count 20
+scalar ZrpTestNetwork.node5.wlan[0].mac.dcf frameSequenceFinished:count 77
 attr recordingmode count
 attr title "finished frame sequences, count"
 statistic ZrpTestNetwork.node5.wlan[0].mac.dcf frameSequenceDuration:histogram
-field count 20
+field count 77
 field mean 5.4e-05
 field stddev 0
 field min 5.4e-05
 field max 5.4e-05
-field sum 0.00108
-field sqrsum 5.832e-08
+field sum 0.004158
+field sqrsum 2.24532e-07
 attr recordingmode histogram
 attr source frameSequenceDuration(frameSequenceFinished)
 attr title "frame sequence durations"
 bin	-inf	0
-bin	0	20
+bin	0	77
 bin	0.01	0
 bin	0.02	0
 bin	0.03	0
@@ -10345,25 +10344,25 @@ bin	0.49	0
 bin	0.5	0
 bin	0.51	0
 statistic ZrpTestNetwork.node5.wlan[0].mac.dcf frameSequenceNumPackets:histogram
-field count 20
+field count 77
 field mean 1
 field stddev 0
 field min 1
 field max 1
-field sum 20
-field sqrsum 20
+field sum 77
+field sqrsum 77
 attr recordingmode histogram
 attr source frameSequenceNumPackets(frameSequenceFinished)
 attr title "frame sequences: number of packets"
 bin	-inf	0
 bin	0	0
-bin	1	20
+bin	1	77
 bin	2	0
-scalar ZrpTestNetwork.node5.wlan[0].mac.dcf packetReceivedFromPeer:count 80
+scalar ZrpTestNetwork.node5.wlan[0].mac.dcf packetReceivedFromPeer:count 310
 attr interpolationmode none
 attr recordingmode count
 attr title "packets received, count"
-scalar ZrpTestNetwork.node5.wlan[0].mac.dcf packetReceivedFromPeer:sum(packetBytes) 5600
+scalar ZrpTestNetwork.node5.wlan[0].mac.dcf packetReceivedFromPeer:sum(packetBytes) 21700
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets received, sum(packetBytes)"
@@ -10377,22 +10376,22 @@ attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Unicast(packetReceivedFromPeer)
 attr title "packets received: unicast, sum(packetBytes)"
-scalar ZrpTestNetwork.node5.wlan[0].mac.dcf packetReceivedFromPeerMulticast:count 80
+scalar ZrpTestNetwork.node5.wlan[0].mac.dcf packetReceivedFromPeerMulticast:count 310
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211Multicast(packetReceivedFromPeer)
 attr title "packets received: multicast, count"
-scalar ZrpTestNetwork.node5.wlan[0].mac.dcf packetReceivedFromPeerMulticast:sum(packetBytes) 5600
+scalar ZrpTestNetwork.node5.wlan[0].mac.dcf packetReceivedFromPeerMulticast:sum(packetBytes) 21700
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Multicast(packetReceivedFromPeer)
 attr title "packets received: multicast, sum(packetBytes)"
-scalar ZrpTestNetwork.node5.wlan[0].mac.dcf packetReceivedFromPeerBroadcast:count 80
+scalar ZrpTestNetwork.node5.wlan[0].mac.dcf packetReceivedFromPeerBroadcast:count 310
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211Broadcast(packetReceivedFromPeer)
 attr title "packets received: broadcast, count"
-scalar ZrpTestNetwork.node5.wlan[0].mac.dcf packetReceivedFromPeerBroadcast:sum(packetBytes) 5600
+scalar ZrpTestNetwork.node5.wlan[0].mac.dcf packetReceivedFromPeerBroadcast:sum(packetBytes) 21700
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Broadcast(packetReceivedFromPeer)
@@ -10407,21 +10406,21 @@ attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Retry(packetReceivedFromPeer)
 attr title "packets received: with retry, sum(packetBytes)"
-scalar ZrpTestNetwork.node5.wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:count 80
+scalar ZrpTestNetwork.node5.wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:count 310
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211NotRetry(packetReceivedFromPeer)
 attr title "packets received: without retry, count"
-scalar ZrpTestNetwork.node5.wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:sum(packetBytes) 5600
+scalar ZrpTestNetwork.node5.wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:sum(packetBytes) 21700
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211NotRetry(packetReceivedFromPeer)
 attr title "packets received: without retry, sum(packetBytes)"
-scalar ZrpTestNetwork.node5.wlan[0].mac.dcf packetSentToPeer:count 20
+scalar ZrpTestNetwork.node5.wlan[0].mac.dcf packetSentToPeer:count 77
 attr interpolationmode none
 attr recordingmode count
 attr title "packets sent, count"
-scalar ZrpTestNetwork.node5.wlan[0].mac.dcf packetSentToPeer:sum(packetBytes) 1400
+scalar ZrpTestNetwork.node5.wlan[0].mac.dcf packetSentToPeer:sum(packetBytes) 5390
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets sent, sum(packetBytes)"
@@ -10435,22 +10434,22 @@ attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Unicast(packetSentToPeer)
 attr title "packets sent: unicast, sum(packetBytes)"
-scalar ZrpTestNetwork.node5.wlan[0].mac.dcf packetSentToPeerMulticast:count 20
+scalar ZrpTestNetwork.node5.wlan[0].mac.dcf packetSentToPeerMulticast:count 77
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211Multicast(packetSentToPeer)
 attr title "packets sent: multicast, count"
-scalar ZrpTestNetwork.node5.wlan[0].mac.dcf packetSentToPeerMulticast:sum(packetBytes) 1400
+scalar ZrpTestNetwork.node5.wlan[0].mac.dcf packetSentToPeerMulticast:sum(packetBytes) 5390
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Multicast(packetSentToPeer)
 attr title "packets sent: multicast, sum(packetBytes)"
-scalar ZrpTestNetwork.node5.wlan[0].mac.dcf packetSentToPeerBroadcast:count 20
+scalar ZrpTestNetwork.node5.wlan[0].mac.dcf packetSentToPeerBroadcast:count 77
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211Broadcast(packetSentToPeer)
 attr title "packets sent: broadcast , count"
-scalar ZrpTestNetwork.node5.wlan[0].mac.dcf packetSentToPeerBroadcast:sum(packetBytes) 1400
+scalar ZrpTestNetwork.node5.wlan[0].mac.dcf packetSentToPeerBroadcast:sum(packetBytes) 5390
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Broadcast(packetSentToPeer)
@@ -10465,12 +10464,12 @@ attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Retry(packetSentToPeer)
 attr title "packets sent: with retry, sum(packetBytes)"
-scalar ZrpTestNetwork.node5.wlan[0].mac.dcf packetSentToPeerWithoutRetry:count 20
+scalar ZrpTestNetwork.node5.wlan[0].mac.dcf packetSentToPeerWithoutRetry:count 77
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211NotRetry(packetSentToPeer)
 attr title "packets sent: without retry, count"
-scalar ZrpTestNetwork.node5.wlan[0].mac.dcf packetSentToPeerWithoutRetry:sum(packetBytes) 1400
+scalar ZrpTestNetwork.node5.wlan[0].mac.dcf packetSentToPeerWithoutRetry:sum(packetBytes) 5390
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211NotRetry(packetSentToPeer)
@@ -10536,35 +10535,35 @@ attr enum off,sleep,receiver,transmitter,transceiver
 par ZrpTestNetwork.node5.wlan[0].mac mtu 2304B
 attr unit B
 par ZrpTestNetwork.node5.wlan[0].mac qosStation false
-scalar ZrpTestNetwork.node5.wlan[0].mac packetReceivedFromLower:count 80
+scalar ZrpTestNetwork.node5.wlan[0].mac packetReceivedFromLower:count 310
 attr interpolationmode none
 attr recordingmode count
 attr title "packets received from lower layer, count"
-scalar ZrpTestNetwork.node5.wlan[0].mac packetReceivedFromLower:sum(packetBytes) 5600
+scalar ZrpTestNetwork.node5.wlan[0].mac packetReceivedFromLower:sum(packetBytes) 21700
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets received from lower layer, sum(packetBytes)"
-scalar ZrpTestNetwork.node5.wlan[0].mac packetSentToLower:count 20
+scalar ZrpTestNetwork.node5.wlan[0].mac packetSentToLower:count 77
 attr interpolationmode none
 attr recordingmode count
 attr title "packets sent to lower layer, count"
-scalar ZrpTestNetwork.node5.wlan[0].mac packetSentToLower:sum(packetBytes) 1400
+scalar ZrpTestNetwork.node5.wlan[0].mac packetSentToLower:sum(packetBytes) 5390
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets sent to lower layer, sum(packetBytes)"
-scalar ZrpTestNetwork.node5.wlan[0].mac packetReceivedFromUpper:count 20
+scalar ZrpTestNetwork.node5.wlan[0].mac packetReceivedFromUpper:count 77
 attr interpolationmode none
 attr recordingmode count
 attr title "packets received from upper layer, count"
-scalar ZrpTestNetwork.node5.wlan[0].mac packetReceivedFromUpper:sum(packetBytes) 840
+scalar ZrpTestNetwork.node5.wlan[0].mac packetReceivedFromUpper:sum(packetBytes) 3234
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets received from upper layer, sum(packetBytes)"
-scalar ZrpTestNetwork.node5.wlan[0].mac packetSentToUpper:count 80
+scalar ZrpTestNetwork.node5.wlan[0].mac packetSentToUpper:count 310
 attr interpolationmode none
 attr recordingmode count
 attr title "packets sent to upper layer, count"
-scalar ZrpTestNetwork.node5.wlan[0].mac packetSentToUpper:sum(packetBytes) 3360
+scalar ZrpTestNetwork.node5.wlan[0].mac packetSentToUpper:sum(packetBytes) 13020
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets sent to upper layer, sum(packetBytes)"
@@ -10779,29 +10778,29 @@ bin	0.44	0
 bin	0.46	0
 bin	0.48	0
 bin	0.5	0
-scalar ZrpTestNetwork.node5.wlan[0].radio radioMode:count 43
+scalar ZrpTestNetwork.node5.wlan[0].radio radioMode:count 157
 attr interpolationmode sample-hold
 attr recordingmode count
 attr source radioModeChanged
 attr title "Radio mode, count"
-scalar ZrpTestNetwork.node5.wlan[0].radio receptionState:count 201
+scalar ZrpTestNetwork.node5.wlan[0].radio receptionState:count 775
 attr interpolationmode sample-hold
 attr recordingmode count
 attr source receptionStateChanged
 attr title "Radio reception state, count"
-scalar ZrpTestNetwork.node5.wlan[0].radio transmissionState:count 80
+scalar ZrpTestNetwork.node5.wlan[0].radio transmissionState:count 308
 attr interpolationmode sample-hold
 attr recordingmode count
 attr source transmissionStateChanged
 attr title "Radio transmission state, count"
 statistic ZrpTestNetwork.node5.wlan[0].radio minSnir:histogram
-field count 80
-field mean 829.33143095678
-field stddev 491.36709887357
+field count 310
+field mean 830.30650080813
+field stddev 490.18967356546
 field min 360.59298785548
 field max 1600.3415279763
-field sum 66346.514476542
-field sqrsum 74097138.232404
+field sum 257395.01525052
+field sqrsum 287965102.50381
 attr recordingmode histogram
 attr source minimumSnir(packetSentToUpper)
 attr title "Min SNIR"
@@ -10822,12 +10821,12 @@ bin	280	0
 bin	300	0
 bin	320	0
 bin	340	0
-bin	360	20
+bin	360	78
 bin	380	0
 bin	400	0
 bin	420	0
 bin	440	0
-bin	460	20
+bin	460	77
 bin	480	0
 bin	500	0
 bin	520	0
@@ -10848,7 +10847,7 @@ bin	800	0
 bin	820	0
 bin	840	0
 bin	860	0
-bin	880	20
+bin	880	77
 bin	900	0
 bin	920	0
 bin	940	0
@@ -10884,7 +10883,7 @@ bin	1520	0
 bin	1540	0
 bin	1560	0
 bin	1580	0
-bin	1600	20
+bin	1600	78
 bin	1620	0
 bin	1640	0
 bin	1660	0
@@ -10902,7 +10901,7 @@ bin	1880	0
 bin	1900	0
 bin	1920	0
 statistic ZrpTestNetwork.node5.wlan[0].radio packetErrorRate:histogram
-field count 80
+field count 310
 field mean 0
 field stddev 0
 field min 0
@@ -10938,7 +10937,7 @@ bin	-0.08	0
 bin	-0.06	0
 bin	-0.04	0
 bin	-0.02	0
-bin	0	80
+bin	0	310
 bin	0.02	0
 bin	0.04	0
 bin	0.06	0
@@ -11182,27 +11181,27 @@ par ZrpTestNetwork.node5.udp icmpv6Module "\"^.ipv6.icmpv6\""
 par ZrpTestNetwork.node5.udp crcMode "\"declared\""
 attr enum disabled,declared,computed
 par ZrpTestNetwork.node5.udp defaultMulticastLoop true
-scalar ZrpTestNetwork.node5.udp packetReceived:count 80
+scalar ZrpTestNetwork.node5.udp packetReceived:count 310
 attr interpolationmode none
 attr recordingmode count
 attr source packetReceived
 attr title "packets received, count"
-scalar ZrpTestNetwork.node5.udp packetReceived:sum(packetBytes) 1120
+scalar ZrpTestNetwork.node5.udp packetReceived:sum(packetBytes) 4340
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source packetReceived
 attr title "packets received, sum(packetBytes)"
-scalar ZrpTestNetwork.node5.udp packetSent:count 20
+scalar ZrpTestNetwork.node5.udp packetSent:count 77
 attr interpolationmode none
 attr recordingmode count
 attr source packetSent
 attr title "packets sent, count"
-scalar ZrpTestNetwork.node5.udp packetSent:sum(packetBytes) 280
+scalar ZrpTestNetwork.node5.udp packetSent:sum(packetBytes) 1078
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source packetSent
 attr title "packets sent, sum(packetBytes)"
-scalar ZrpTestNetwork.node5.udp passedUpPk:count 80
+scalar ZrpTestNetwork.node5.udp passedUpPk:count 310
 attr interpolationmode none
 attr recordingmode count
 attr source packetSentToUpper
@@ -11462,7 +11461,7 @@ attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetP
 attr title "queue bit length, timeavg"
 attr unit b
 statistic ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.pendingQueue queueingTime:histogram
-field count 20
+field count 77
 field mean 0
 field stddev 0
 field min 0
@@ -11500,7 +11499,7 @@ bin	-0.08	0
 bin	-0.06	0
 bin	-0.04	0
 bin	-0.02	0
-bin	0	20
+bin	0	77
 bin	0.02	0
 bin	0.04	0
 bin	0.06	0
@@ -11526,25 +11525,25 @@ bin	0.44	0
 bin	0.46	0
 bin	0.48	0
 bin	0.5	0
-scalar ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPackets:count 20
+scalar ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPackets:count 77
 attr recordingmode count
 attr source packetPulled
 attr title "outgoing packets, count"
 attr unit pk
-scalar ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPacketLengths:sum 11200
+scalar ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPacketLengths:sum 43120
 attr interpolationmode none
 attr recordingmode sum
 attr source packetLength(packetPulled)
 attr title "outgoing packet lengths, sum"
 attr unit b
 statistic ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPacketLengths:histogram
-field count 20
+field count 77
 field mean 560
 field stddev 0
 field min 560
 field max 560
-field sum 11200
-field sqrsum 6272000
+field sum 43120
+field sqrsum 24147200
 attr interpolationmode none
 attr recordingmode histogram
 attr source packetLength(packetPulled)
@@ -11552,7 +11551,7 @@ attr title "outgoing packet lengths"
 attr unit b
 bin	-inf	0
 bin	559	0
-bin	560	20
+bin	560	77
 bin	561	0
 statistic ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.pendingQueue flowQueueingTime:histogram
 field count 0
@@ -11570,25 +11569,25 @@ attr unit s
 bin	-inf	0
 bin	0	0
 bin	1	0
-scalar ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPackets:count 20
+scalar ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPackets:count 77
 attr recordingmode count
 attr source packetPushStarted
 attr title "incoming packets, count"
 attr unit pk
-scalar ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPacketLengths:sum 11200
+scalar ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPacketLengths:sum 43120
 attr interpolationmode none
 attr recordingmode sum
 attr source packetLength(packetPushStarted)
 attr title "incoming packet lengths, sum"
 attr unit b
 statistic ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.pendingQueue incomingPacketLengths:histogram
-field count 20
+field count 77
 field mean 560
 field stddev 0
 field min 560
 field max 560
-field sum 11200
-field sqrsum 6272000
+field sum 43120
+field sqrsum 24147200
 attr interpolationmode none
 attr recordingmode histogram
 attr source packetLength(packetPushStarted)
@@ -11596,7 +11595,7 @@ attr title "incoming packet lengths"
 attr unit b
 bin	-inf	0
 bin	559	0
-bin	560	20
+bin	560	77
 bin	561	0
 scalar ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.pendingQueue droppedPacketsQueueOverflow:count 0
 attr interpolationmode none
@@ -11615,19 +11614,19 @@ par ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.inProgressFrames pendingQ
 par ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.inProgressFrames originatorMacDataServiceModule "\"^.^.originatorMacDataService\""
 par ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.inProgressFrames ackHandlerModule "\"^.^.ackHandler\""
 statistic ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.inProgressFrames queueingTime:histogram
-field count 20
+field count 77
 field mean 5.4e-05
 field stddev 0
 field min 5.4e-05
 field max 5.4e-05
-field sum 0.00108
-field sqrsum 5.832e-08
+field sum 0.004158
+field sqrsum 2.24532e-07
 attr interpolationmode none
 attr recordingmode histogram
 attr source queueingTime(packetDequeued)
 attr title "queueing times"
 bin	-inf	0
-bin	0	20
+bin	0	77
 bin	0.01	0
 bin	0.02	0
 bin	0.03	0
@@ -11685,7 +11684,7 @@ attr interpolationmode sample-hold
 attr recordingmode max
 attr source "warmup(count(packetEnqueued) - count(packetDequeued))"
 attr title "queue length, max"
-scalar ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.inProgressFrames queueLength:timeavg 5.3994394456327e-05
+scalar ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.inProgressFrames queueLength:timeavg 5.3960192475331e-05
 attr autoWarmupFilter false
 attr interpolationmode sample-hold
 attr recordingmode timeavg
@@ -11694,10 +11693,10 @@ attr title "queue length, timeavg"
 par ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.contention typename "\"inet.linklayer.ieee80211.mac.contention.Contention\""
 par ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.contention initialChannelBusy true
 par ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.contention backoffOptimization true
-scalar ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.contention channelAccessGranted:count 20
+scalar ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.contention channelAccessGranted:count 77
 attr recordingmode count
 attr title "channel access granted, count"
-scalar ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.contention stateChanged:count 402
+scalar ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess.contention stateChanged:count 1550
 attr enum IDLE,DEFER,IFS_AND_BACKOFF
 attr interpolationmode none
 attr recordingmode count
@@ -11708,7 +11707,7 @@ par ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess difsn -1
 par ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess cwMin -1
 par ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess cwMax -1
 par ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess rxModule "\"^.^.rx\""
-scalar ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess channelOwnershipChanged:count 40
+scalar ZrpTestNetwork.node6.wlan[0].mac.dcf.channelAccess channelOwnershipChanged:count 154
 attr interpolationmode sample-hold
 attr recordingmode count
 attr title "channel ownership, count"
@@ -11726,7 +11725,7 @@ par ZrpTestNetwork.node6.wlan[0].mac.dcf.recipientMacDataService typename "\"ine
 scalar ZrpTestNetwork.node6.wlan[0].mac.dcf.recipientMacDataService packetDeaggregated:count 0
 attr recordingmode count
 attr title "packets deaggregated, count"
-scalar ZrpTestNetwork.node6.wlan[0].mac.dcf.recipientMacDataService packetDefragmented:count 60
+scalar ZrpTestNetwork.node6.wlan[0].mac.dcf.recipientMacDataService packetDefragmented:count 233
 attr recordingmode count
 attr title "packets defragmented, count"
 scalar ZrpTestNetwork.node6.wlan[0].mac.dcf.recipientMacDataService packetDropDuplicateDetected:count 0
@@ -11785,22 +11784,22 @@ par ZrpTestNetwork.node6.wlan[0].mac.dcf.ctsPolicy rateSelectionModule "\"^.rate
 par ZrpTestNetwork.node6.wlan[0].mac.dcf typename "\"inet.linklayer.ieee80211.mac.coordinationfunction.Dcf\""
 par ZrpTestNetwork.node6.wlan[0].mac.dcf rxModule "\"^.rx\""
 par ZrpTestNetwork.node6.wlan[0].mac.dcf txModule "\"^.tx\""
-scalar ZrpTestNetwork.node6.wlan[0].mac.dcf frameSequenceFinished:count 20
+scalar ZrpTestNetwork.node6.wlan[0].mac.dcf frameSequenceFinished:count 77
 attr recordingmode count
 attr title "finished frame sequences, count"
 statistic ZrpTestNetwork.node6.wlan[0].mac.dcf frameSequenceDuration:histogram
-field count 20
+field count 77
 field mean 5.4e-05
 field stddev 0
 field min 5.4e-05
 field max 5.4e-05
-field sum 0.00108
-field sqrsum 5.832e-08
+field sum 0.004158
+field sqrsum 2.24532e-07
 attr recordingmode histogram
 attr source frameSequenceDuration(frameSequenceFinished)
 attr title "frame sequence durations"
 bin	-inf	0
-bin	0	20
+bin	0	77
 bin	0.01	0
 bin	0.02	0
 bin	0.03	0
@@ -11853,25 +11852,25 @@ bin	0.49	0
 bin	0.5	0
 bin	0.51	0
 statistic ZrpTestNetwork.node6.wlan[0].mac.dcf frameSequenceNumPackets:histogram
-field count 20
+field count 77
 field mean 1
 field stddev 0
 field min 1
 field max 1
-field sum 20
-field sqrsum 20
+field sum 77
+field sqrsum 77
 attr recordingmode histogram
 attr source frameSequenceNumPackets(frameSequenceFinished)
 attr title "frame sequences: number of packets"
 bin	-inf	0
 bin	0	0
-bin	1	20
+bin	1	77
 bin	2	0
-scalar ZrpTestNetwork.node6.wlan[0].mac.dcf packetReceivedFromPeer:count 60
+scalar ZrpTestNetwork.node6.wlan[0].mac.dcf packetReceivedFromPeer:count 233
 attr interpolationmode none
 attr recordingmode count
 attr title "packets received, count"
-scalar ZrpTestNetwork.node6.wlan[0].mac.dcf packetReceivedFromPeer:sum(packetBytes) 4200
+scalar ZrpTestNetwork.node6.wlan[0].mac.dcf packetReceivedFromPeer:sum(packetBytes) 16310
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets received, sum(packetBytes)"
@@ -11885,22 +11884,22 @@ attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Unicast(packetReceivedFromPeer)
 attr title "packets received: unicast, sum(packetBytes)"
-scalar ZrpTestNetwork.node6.wlan[0].mac.dcf packetReceivedFromPeerMulticast:count 60
+scalar ZrpTestNetwork.node6.wlan[0].mac.dcf packetReceivedFromPeerMulticast:count 233
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211Multicast(packetReceivedFromPeer)
 attr title "packets received: multicast, count"
-scalar ZrpTestNetwork.node6.wlan[0].mac.dcf packetReceivedFromPeerMulticast:sum(packetBytes) 4200
+scalar ZrpTestNetwork.node6.wlan[0].mac.dcf packetReceivedFromPeerMulticast:sum(packetBytes) 16310
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Multicast(packetReceivedFromPeer)
 attr title "packets received: multicast, sum(packetBytes)"
-scalar ZrpTestNetwork.node6.wlan[0].mac.dcf packetReceivedFromPeerBroadcast:count 60
+scalar ZrpTestNetwork.node6.wlan[0].mac.dcf packetReceivedFromPeerBroadcast:count 233
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211Broadcast(packetReceivedFromPeer)
 attr title "packets received: broadcast, count"
-scalar ZrpTestNetwork.node6.wlan[0].mac.dcf packetReceivedFromPeerBroadcast:sum(packetBytes) 4200
+scalar ZrpTestNetwork.node6.wlan[0].mac.dcf packetReceivedFromPeerBroadcast:sum(packetBytes) 16310
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Broadcast(packetReceivedFromPeer)
@@ -11915,21 +11914,21 @@ attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Retry(packetReceivedFromPeer)
 attr title "packets received: with retry, sum(packetBytes)"
-scalar ZrpTestNetwork.node6.wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:count 60
+scalar ZrpTestNetwork.node6.wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:count 233
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211NotRetry(packetReceivedFromPeer)
 attr title "packets received: without retry, count"
-scalar ZrpTestNetwork.node6.wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:sum(packetBytes) 4200
+scalar ZrpTestNetwork.node6.wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:sum(packetBytes) 16310
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211NotRetry(packetReceivedFromPeer)
 attr title "packets received: without retry, sum(packetBytes)"
-scalar ZrpTestNetwork.node6.wlan[0].mac.dcf packetSentToPeer:count 20
+scalar ZrpTestNetwork.node6.wlan[0].mac.dcf packetSentToPeer:count 77
 attr interpolationmode none
 attr recordingmode count
 attr title "packets sent, count"
-scalar ZrpTestNetwork.node6.wlan[0].mac.dcf packetSentToPeer:sum(packetBytes) 1400
+scalar ZrpTestNetwork.node6.wlan[0].mac.dcf packetSentToPeer:sum(packetBytes) 5390
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets sent, sum(packetBytes)"
@@ -11943,22 +11942,22 @@ attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Unicast(packetSentToPeer)
 attr title "packets sent: unicast, sum(packetBytes)"
-scalar ZrpTestNetwork.node6.wlan[0].mac.dcf packetSentToPeerMulticast:count 20
+scalar ZrpTestNetwork.node6.wlan[0].mac.dcf packetSentToPeerMulticast:count 77
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211Multicast(packetSentToPeer)
 attr title "packets sent: multicast, count"
-scalar ZrpTestNetwork.node6.wlan[0].mac.dcf packetSentToPeerMulticast:sum(packetBytes) 1400
+scalar ZrpTestNetwork.node6.wlan[0].mac.dcf packetSentToPeerMulticast:sum(packetBytes) 5390
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Multicast(packetSentToPeer)
 attr title "packets sent: multicast, sum(packetBytes)"
-scalar ZrpTestNetwork.node6.wlan[0].mac.dcf packetSentToPeerBroadcast:count 20
+scalar ZrpTestNetwork.node6.wlan[0].mac.dcf packetSentToPeerBroadcast:count 77
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211Broadcast(packetSentToPeer)
 attr title "packets sent: broadcast , count"
-scalar ZrpTestNetwork.node6.wlan[0].mac.dcf packetSentToPeerBroadcast:sum(packetBytes) 1400
+scalar ZrpTestNetwork.node6.wlan[0].mac.dcf packetSentToPeerBroadcast:sum(packetBytes) 5390
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Broadcast(packetSentToPeer)
@@ -11973,12 +11972,12 @@ attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211Retry(packetSentToPeer)
 attr title "packets sent: with retry, sum(packetBytes)"
-scalar ZrpTestNetwork.node6.wlan[0].mac.dcf packetSentToPeerWithoutRetry:count 20
+scalar ZrpTestNetwork.node6.wlan[0].mac.dcf packetSentToPeerWithoutRetry:count 77
 attr interpolationmode none
 attr recordingmode count
 attr source ieee80211NotRetry(packetSentToPeer)
 attr title "packets sent: without retry, count"
-scalar ZrpTestNetwork.node6.wlan[0].mac.dcf packetSentToPeerWithoutRetry:sum(packetBytes) 1400
+scalar ZrpTestNetwork.node6.wlan[0].mac.dcf packetSentToPeerWithoutRetry:sum(packetBytes) 5390
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source ieee80211NotRetry(packetSentToPeer)
@@ -12044,35 +12043,35 @@ attr enum off,sleep,receiver,transmitter,transceiver
 par ZrpTestNetwork.node6.wlan[0].mac mtu 2304B
 attr unit B
 par ZrpTestNetwork.node6.wlan[0].mac qosStation false
-scalar ZrpTestNetwork.node6.wlan[0].mac packetReceivedFromLower:count 60
+scalar ZrpTestNetwork.node6.wlan[0].mac packetReceivedFromLower:count 233
 attr interpolationmode none
 attr recordingmode count
 attr title "packets received from lower layer, count"
-scalar ZrpTestNetwork.node6.wlan[0].mac packetReceivedFromLower:sum(packetBytes) 4200
+scalar ZrpTestNetwork.node6.wlan[0].mac packetReceivedFromLower:sum(packetBytes) 16310
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets received from lower layer, sum(packetBytes)"
-scalar ZrpTestNetwork.node6.wlan[0].mac packetSentToLower:count 20
+scalar ZrpTestNetwork.node6.wlan[0].mac packetSentToLower:count 77
 attr interpolationmode none
 attr recordingmode count
 attr title "packets sent to lower layer, count"
-scalar ZrpTestNetwork.node6.wlan[0].mac packetSentToLower:sum(packetBytes) 1400
+scalar ZrpTestNetwork.node6.wlan[0].mac packetSentToLower:sum(packetBytes) 5390
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets sent to lower layer, sum(packetBytes)"
-scalar ZrpTestNetwork.node6.wlan[0].mac packetReceivedFromUpper:count 20
+scalar ZrpTestNetwork.node6.wlan[0].mac packetReceivedFromUpper:count 77
 attr interpolationmode none
 attr recordingmode count
 attr title "packets received from upper layer, count"
-scalar ZrpTestNetwork.node6.wlan[0].mac packetReceivedFromUpper:sum(packetBytes) 840
+scalar ZrpTestNetwork.node6.wlan[0].mac packetReceivedFromUpper:sum(packetBytes) 3234
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets received from upper layer, sum(packetBytes)"
-scalar ZrpTestNetwork.node6.wlan[0].mac packetSentToUpper:count 60
+scalar ZrpTestNetwork.node6.wlan[0].mac packetSentToUpper:count 233
 attr interpolationmode none
 attr recordingmode count
 attr title "packets sent to upper layer, count"
-scalar ZrpTestNetwork.node6.wlan[0].mac packetSentToUpper:sum(packetBytes) 2520
+scalar ZrpTestNetwork.node6.wlan[0].mac packetSentToUpper:sum(packetBytes) 9786
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr title "packets sent to upper layer, sum(packetBytes)"
@@ -12287,29 +12286,29 @@ bin	0.44	0
 bin	0.46	0
 bin	0.48	0
 bin	0.5	0
-scalar ZrpTestNetwork.node6.wlan[0].radio radioMode:count 43
+scalar ZrpTestNetwork.node6.wlan[0].radio radioMode:count 157
 attr interpolationmode sample-hold
 attr recordingmode count
 attr source radioModeChanged
 attr title "Radio mode, count"
-scalar ZrpTestNetwork.node6.wlan[0].radio receptionState:count 161
+scalar ZrpTestNetwork.node6.wlan[0].radio receptionState:count 621
 attr interpolationmode sample-hold
 attr recordingmode count
 attr source receptionStateChanged
 attr title "Radio reception state, count"
-scalar ZrpTestNetwork.node6.wlan[0].radio transmissionState:count 80
+scalar ZrpTestNetwork.node6.wlan[0].radio transmissionState:count 308
 attr interpolationmode sample-hold
 attr recordingmode count
 attr source transmissionStateChanged
 attr title "Radio transmission state, count"
 statistic ZrpTestNetwork.node6.wlan[0].radio minSnir:histogram
-field count 60
-field mean 809.39807508969
-field stddev 68.980244614393
+field count 233
+field mean 809.0315277718
+field stddev 68.467002886897
 field min 727.35224985274
 field max 894.80360015726
-field sum 48563.884505381
-field sqrsum 39588252.81221
+field sum 188504.34597083
+field sqrsum 153593512.48476
 attr recordingmode histogram
 attr source minimumSnir(packetSentToUpper)
 attr title "Min SNIR"
@@ -12322,7 +12321,7 @@ bin	705	0
 bin	710	0
 bin	715	0
 bin	720	0
-bin	725	20
+bin	725	78
 bin	730	0
 bin	735	0
 bin	740	0
@@ -12338,7 +12337,7 @@ bin	785	0
 bin	790	0
 bin	795	0
 bin	800	0
-bin	805	20
+bin	805	78
 bin	810	0
 bin	815	0
 bin	820	0
@@ -12355,7 +12354,7 @@ bin	870	0
 bin	875	0
 bin	880	0
 bin	885	0
-bin	890	20
+bin	890	77
 bin	895	0
 bin	900	0
 bin	905	0
@@ -12367,7 +12366,7 @@ bin	930	0
 bin	935	0
 bin	940	0
 statistic ZrpTestNetwork.node6.wlan[0].radio packetErrorRate:histogram
-field count 60
+field count 233
 field mean 0
 field stddev 0
 field min 0
@@ -12403,7 +12402,7 @@ bin	-0.08	0
 bin	-0.06	0
 bin	-0.04	0
 bin	-0.02	0
-bin	0	60
+bin	0	233
 bin	0.02	0
 bin	0.04	0
 bin	0.06	0
@@ -12647,27 +12646,27 @@ par ZrpTestNetwork.node6.udp icmpv6Module "\"^.ipv6.icmpv6\""
 par ZrpTestNetwork.node6.udp crcMode "\"declared\""
 attr enum disabled,declared,computed
 par ZrpTestNetwork.node6.udp defaultMulticastLoop true
-scalar ZrpTestNetwork.node6.udp packetReceived:count 60
+scalar ZrpTestNetwork.node6.udp packetReceived:count 233
 attr interpolationmode none
 attr recordingmode count
 attr source packetReceived
 attr title "packets received, count"
-scalar ZrpTestNetwork.node6.udp packetReceived:sum(packetBytes) 840
+scalar ZrpTestNetwork.node6.udp packetReceived:sum(packetBytes) 3262
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source packetReceived
 attr title "packets received, sum(packetBytes)"
-scalar ZrpTestNetwork.node6.udp packetSent:count 20
+scalar ZrpTestNetwork.node6.udp packetSent:count 77
 attr interpolationmode none
 attr recordingmode count
 attr source packetSent
 attr title "packets sent, count"
-scalar ZrpTestNetwork.node6.udp packetSent:sum(packetBytes) 280
+scalar ZrpTestNetwork.node6.udp packetSent:sum(packetBytes) 1078
 attr interpolationmode none
 attr recordingmode sum(packetBytes)
 attr source packetSent
 attr title "packets sent, sum(packetBytes)"
-scalar ZrpTestNetwork.node6.udp passedUpPk:count 60
+scalar ZrpTestNetwork.node6.udp passedUpPk:count 233
 attr interpolationmode none
 attr recordingmode count
 attr source packetSentToUpper

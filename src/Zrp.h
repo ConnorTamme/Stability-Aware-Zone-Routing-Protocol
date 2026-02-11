@@ -39,8 +39,7 @@
 
 //As the RFC assumes a 32 bit address only IPv4 is to be supported
 
-using namespace inet;
-
+namespace inet {
 namespace zrp {
 
 // Sequence number utilities (RFC 1982 serial number arithmetic for 16-bit)
@@ -69,6 +68,7 @@ enum ZrpSelfMsgKind {
     ZRP_SELF_IARP_UPDATE  = 1,    // Fixed timer
     ZRP_SELF_DEBUG        = 2,    // Fixed timer
     ZRP_SELF_BRP_JITTER   = 10,   // Variable: BRP jitter delivery to IERP (carries BRP packet data)
+    ZRP_SELF_IERP_RETRY   = 11,   // Variable: IERP route request retry timer
 };
 
 // Unique identifier for an IERP route query in the network.
@@ -96,7 +96,7 @@ struct LinkDestInfo {
 struct LinkStateEntry {
     L3Address sourceAddr;           // Node that originated this link state
     unsigned int zoneRadius;        // Zone radius of the source node
-    unsigned int seqNum;            // Link state sequence number
+    uint16_t seqNum;                // Link state sequence number (16-bit, wraps per RFC 1982)
     simtime_t insertTime;           // When this entry was inserted/updated
     std::vector<LinkDestInfo> linkDestinations;  // List of neighbors and their metrics
 };
@@ -149,10 +149,12 @@ class INET_API Zrp : public RoutingProtocolBase,  public NetfilterBase::HookBase
     simtime_t debugInterval = 0;  // 0 = disabled
     simtime_t brpJitterMax = 0.1;        // Max random jitter for BRP relay (RFC: RELAY_JITTER)
     simtime_t brpCoverageLifetime = 30;  // How long to keep coverage entries (RFC: MAX_QUERY_LIFETIME)
+    simtime_t ierpRetryInterval = 3;     // How long to wait before retrying a route request
+    unsigned int ierpMaxRetries = 3;     // Max number of IERP route request retries
 
     // state - NDP/IARP
-    unsigned int NDP_seqNum = 0;  // sequence number for NDP hello messages
-    unsigned int IARP_seqNum = 0; // sequence number for IARP link state updates
+    uint16_t NDP_seqNum = 0;  // sequence number for NDP hello messages (wraps at 65535)
+    uint16_t IARP_seqNum = 0; // sequence number for IARP link state updates (wraps at 65535)
     std::map<L3Address, simtime_t> neighborTable;  // neighbor address -> last heard time
     std::map<L3Address, LinkStateEntry> linkStateTable;  // source address -> link state entry
 
@@ -164,6 +166,10 @@ class INET_API Zrp : public RoutingProtocolBase,  public NetfilterBase::HookBase
 
     // Buffered datagrams waiting for route discovery to complete
     std::multimap<L3Address, Packet *> delayedPackets;
+
+    // IERP route request retry state
+    std::map<L3Address, cMessage*> ierpRetryTimers;  // dest -> retry timer
+    std::map<L3Address, int> ierpRetryCounters;      // dest -> retry count
 
     // state - BRP
     uint16_t BRP_bordercastId = 0;  // locally unique bordercast ID counter
@@ -226,15 +232,15 @@ class INET_API Zrp : public RoutingProtocolBase,  public NetfilterBase::HookBase
     void sendZrpPacket(const Ptr<FieldsChunk>& payload, const L3Address& destAddr, unsigned int ttl);
 
     // NDP Functions
-    const Ptr<inet::zrp::NDP_Hello> createNDPHello();
+    const Ptr<NDP_Hello> createNDPHello();
     void sendNDPHello();
-    void handleNDPHello(const Ptr<inet::zrp::NDP_Hello>& hello, const L3Address& sourceAddr);
+    void handleNDPHello(const Ptr<NDP_Hello>& hello, const L3Address& sourceAddr);
     void NDP_refreshNeighborTable();
 
     //IARP Functions
-    const Ptr<inet::zrp::IARP_LinkStateUpdate> createIARPUpdate();
+    const Ptr<IARP_LinkStateUpdate> createIARPUpdate();
     void sendIARPUpdate();
-    void handleIARPUpdate(const Ptr<inet::zrp::IARP_LinkStateUpdate>& update, const L3Address& sourceAddr);
+    void handleIARPUpdate(const Ptr<IARP_LinkStateUpdate>& update, const L3Address& sourceAddr);
     void IARP_refreshLinkStateTable();
     void IARP_updateRoutingTable();
     void IARP_purgeRoutingTable();
@@ -246,12 +252,12 @@ class INET_API Zrp : public RoutingProtocolBase,  public NetfilterBase::HookBase
     void IERP_initiateRouteDiscovery(const L3Address& dest);
 
     // Packet creation
-    const Ptr<inet::zrp::IERP_RouteData> IERP_createRouteRequest(const L3Address& dest);
-    const Ptr<inet::zrp::IERP_RouteData> IERP_createRouteReply(const Ptr<inet::zrp::IERP_RouteData>& request);
+    const Ptr<IERP_RouteData> IERP_createRouteRequest(const L3Address& dest);
+    const Ptr<IERP_RouteData> IERP_createRouteReply(const Ptr<IERP_RouteData>& request);
 
     // Packet handling - called when IERP packets arrive (via BRP delivery or direct IP)
-    void IERP_handleRouteRequest(const Ptr<inet::zrp::IERP_RouteData>& request, const L3Address& sourceAddr);
-    void IERP_handleRouteReply(const Ptr<inet::zrp::IERP_RouteData>& reply, const L3Address& sourceAddr);
+    void IERP_handleRouteRequest(const Ptr<IERP_RouteData>& request, const L3Address& sourceAddr);
+    void IERP_handleRouteReply(const Ptr<IERP_RouteData>& reply, const L3Address& sourceAddr);
 
     // Route maintenance - called when IARP detects a topology change
     void IERP_routeMaintenance();
@@ -279,9 +285,9 @@ class INET_API Zrp : public RoutingProtocolBase,  public NetfilterBase::HookBase
     // bordercast() replaces traditional broadcast() per RFC IERP Section 4
     // RFC BRP E.1: Send(encap_packet) - called by IERP
     // Coverage state is resolved internally via BRP_findOrCreateCoverage.
-    void BRP_bordercast(const Ptr<inet::zrp::IERP_RouteData>& packet);
+    void BRP_bordercast(const Ptr<IERP_RouteData>& packet);
     // RFC BRP E.2: Deliver(packet) - called when BRP packet arrives from IP
-    void BRP_deliver(const Ptr<inet::zrp::BRP_Data>& brpPacket, const L3Address& sourceAddr);
+    void BRP_deliver(const Ptr<BRP_Data>& brpPacket, const L3Address& sourceAddr);
 
     // BRP helper functions
     // Get our own routing zone members (self + all IARP route destinations)
@@ -315,7 +321,6 @@ class INET_API Zrp : public RoutingProtocolBase,  public NetfilterBase::HookBase
 };
 
 } // namespace zrp
-
-
+} // namespace inet
 
 #endif //ZRP_H_

@@ -19,9 +19,11 @@
 // This .cc file exists for future extensions and to ensure the class
 // is compiled and linked into the binary.
 
+namespace inet {
 namespace zrp {
 
 // Register with OMNeT++ so it can be displayed in the GUI
 Register_Class(ZrpRouteData);
 
 } // namespace zrp
+} // namespace inet
