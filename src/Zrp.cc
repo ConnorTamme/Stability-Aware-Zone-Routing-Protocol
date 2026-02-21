@@ -440,11 +440,10 @@ INetfilter::IHook::Result Zrp::datagramPreRoutingHook(Packet* datagram)
 INetfilter::IHook::Result Zrp::datagramForwardHook(Packet* datagram)
 {
     Enter_Method("datagramForwardHook");
-    // No route for forwarded packet, trigger IERP discovery
     const auto& networkHeader = getNetworkProtocolHeader(datagram);
     L3Address destAddr = networkHeader->getDestinationAddress();
 
-    if (!destAddr.isBroadcast() && !destAddr.isMulticast()) {
+    if (!destAddr.isBroadcast() && !destAddr.isMulticast() && destAddr != getSelfIPAddress()) {
         IRoute* route = routingTable->findBestMatchingRoute(destAddr);
         if (!route) {
             EV_INFO << "Forward hook: No route to " << destAddr << ", buffering and initiating IERP discovery" << endl;
@@ -476,8 +475,7 @@ INetfilter::IHook::Result Zrp::datagramLocalOutHook(Packet* datagram)
     const auto& networkHeader = getNetworkProtocolHeader(datagram);
     L3Address destAddr = networkHeader->getDestinationAddress();
 
-    // Check if we have any route to this destination
-    if (!destAddr.isBroadcast() && !destAddr.isMulticast()) {
+    if (!destAddr.isBroadcast() && !destAddr.isMulticast() && destAddr != getSelfIPAddress()) {
         IRoute* route = routingTable->findBestMatchingRoute(destAddr);
         if (!route) {
             // No route available. Buffer datagram and initiate discovery
@@ -1182,7 +1180,8 @@ void Zrp::IERP_handleRouteRequest(const Ptr<IERP_RouteData>& request, const L3Ad
     }
     routeToSource.push_back(querySource);
 
-    if (!IERP_hasRouteToDestination(querySource)) {
+    // Only install reverse IERP route if source isn't already reachable via IARP
+    if (!routingTable->findBestMatchingRoute(querySource) && !IERP_hasRouteToDestination(querySource)) {
         L3Address nextHop = routeToSource.size() > 1 ? routeToSource[1] : querySource;
         IERP_createRoute(querySource, nextHop, routeToSource.size() - 1, routeToSource);
     }
