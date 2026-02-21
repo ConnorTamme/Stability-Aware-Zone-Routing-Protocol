@@ -47,7 +47,7 @@ namespace inet {
 namespace zrp {
 
 /**
- * Class generated from <tt>ZrpControlPackets.msg:30</tt> by opp_msgtool.
+ * Class generated from <tt>ZrpControlPackets.msg:21</tt> by opp_msgtool.
  * <pre>
  * //The Neighbor Discovery Protocol is not included in the RFC so this is used to obtain neighboring nodes
  * class NDP_Hello extends FieldsChunk
@@ -58,7 +58,7 @@ namespace zrp {
  * 
  * 
  * //
- * // IARP Link State Update Packet
+ * // IARP Link State Update Packet from RFC
  * //
  * //                       1                   2                   3
  * //   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -134,7 +134,7 @@ inline void doParsimPacking(omnetpp::cCommBuffer *b, const NDP_Hello& obj) {obj.
 inline void doParsimUnpacking(omnetpp::cCommBuffer *b, NDP_Hello& obj) {obj.parsimUnpack(b);}
 
 /**
- * Struct generated from ZrpControlPackets.msg:79 by opp_msgtool.
+ * Struct generated from ZrpControlPackets.msg:70 by opp_msgtool.
  */
 struct IARP_MetricData
 {
@@ -152,7 +152,7 @@ inline void doParsimPacking(omnetpp::cCommBuffer *b, const IARP_MetricData& obj)
 inline void doParsimUnpacking(omnetpp::cCommBuffer *b, IARP_MetricData& obj) { __doUnpacking(b, obj); }
 
 /**
- * Struct generated from ZrpControlPackets.msg:87 by opp_msgtool.
+ * Struct generated from ZrpControlPackets.msg:78 by opp_msgtool.
  */
 struct IARP_LinkDestData
 {
@@ -169,7 +169,7 @@ inline void doParsimPacking(omnetpp::cCommBuffer *b, const IARP_LinkDestData& ob
 inline void doParsimUnpacking(omnetpp::cCommBuffer *b, IARP_LinkDestData& obj) { __doUnpacking(b, obj); }
 
 /**
- * Class generated from <tt>ZrpControlPackets.msg:96</tt> by opp_msgtool.
+ * Class generated from <tt>ZrpControlPackets.msg:87</tt> by opp_msgtool.
  * <pre>
  * class IARP_LinkStateUpdate extends FieldsChunk
  * {
@@ -183,7 +183,7 @@ inline void doParsimUnpacking(omnetpp::cCommBuffer *b, IARP_LinkDestData& obj) {
  *     IARP_LinkDestData linkDestData[];
  * }
  * 
- * //IERP Packet
+ * //IERP Packet from RFC
  * //
  * //                        1                   2                   3
  * //    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -274,7 +274,7 @@ inline void doParsimPacking(omnetpp::cCommBuffer *b, const IARP_LinkStateUpdate&
 inline void doParsimUnpacking(omnetpp::cCommBuffer *b, IARP_LinkStateUpdate& obj) {obj.parsimUnpack(b);}
 
 /**
- * Enum generated from <tt>ZrpControlPackets.msg:133</tt> by opp_msgtool.
+ * Enum generated from <tt>ZrpControlPackets.msg:124</tt> by opp_msgtool.
  * <pre>
  * enum IERP_Type
  * {
@@ -292,12 +292,12 @@ inline void doParsimPacking(omnetpp::cCommBuffer *b, const IERP_Type& e) { b->pa
 inline void doParsimUnpacking(omnetpp::cCommBuffer *b, IERP_Type& e) { int n; b->unpack(n); e = static_cast<IERP_Type>(n); }
 
 /**
- * Class generated from <tt>ZrpControlPackets.msg:139</tt> by opp_msgtool.
+ * Class generated from <tt>ZrpControlPackets.msg:130</tt> by opp_msgtool.
  * <pre>
  * class IERP_RouteData extends FieldsChunk
  * {
  *     uint8_t type;
- *     uint8_t length; //Total packet length in  multiples of 4 bytes
+ *     uint8_t length; //Total packet length in multiples of 4 bytes
  *     uint8_t nodePtr;
  *     uint8_t reserved1 = 0;
  *     uint16_t queryID;
@@ -308,7 +308,7 @@ inline void doParsimUnpacking(omnetpp::cCommBuffer *b, IERP_Type& e) { int n; b-
  * }
  * 
  * 
- * //BRP Packet
+ * //BRP Packet from RFC
  * //
  * //	                     1                   2                   3
  * //	 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -397,7 +397,7 @@ inline void doParsimPacking(omnetpp::cCommBuffer *b, const IERP_RouteData& obj) 
 inline void doParsimUnpacking(omnetpp::cCommBuffer *b, IERP_RouteData& obj) {obj.parsimUnpack(b);}
 
 /**
- * Class generated from <tt>ZrpControlPackets.msg:171</tt> by opp_msgtool.
+ * Class generated from <tt>ZrpControlPackets.msg:162</tt> by opp_msgtool.
  * <pre>
  * class BRP_Data extends FieldsChunk
  * {

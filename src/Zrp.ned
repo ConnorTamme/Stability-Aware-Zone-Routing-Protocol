@@ -1,16 +1,6 @@
+//Connor Tamme, tammeconnor@gmail.com
 //
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with this program.  If not, see http://www.gnu.org/licenses/.
+// Defines a ZRP module so a node can use ZRP
 //
 
 package sa_zrp;
@@ -27,14 +17,15 @@ simple Zrp like IApp
 	    string networkProtocolModule = default("^.ipv4.ip");
 	    int udpPort = default(654);
 	    string interface = default("wlan0");
-	
-	    int zoneRadius= default(2);
-	    double NDP_helloInterval @unit(s) = default(1s);
-	    double IARP_updateInterval @unit(s) = default(1s);
+
+		//Parameters
+	    int zoneRadius= default(2); // Radius of the routing zone in hops
+	    double NDP_helloInterval @unit(s) = default(1s); // Interval between NDP hello messages
+	    double IARP_updateInterval @unit(s) = default(1s); // Interval between IARP updates
 	    double linkStateLifetime @unit(s) = default(3s);  // How long before link state entries expire
 	    double debugInterval @unit(s) = default(0s);      // Debug output interval (0 = disabled)
-	    double brpJitterMax @unit(s) = default(0.1s);     // Max random jitter before BRP relays query to IERP (RFC BRP Section 4: RELAY_JITTER)
-	    double brpCoverageLifetime @unit(s) = default(30s); // How long to keep BRP query coverage entries (RFC: MAX_QUERY_LIFETIME)
+	    double brpJitterMax @unit(s) = default(0.1s);     // Max random jitter before BRP relays query to IERP 
+	    double brpCoverageLifetime @unit(s) = default(30s); // How long to keep BRP query coverage entries 
 	    double ierpRetryInterval @unit(s) = default(3s);    // Interval between IERP route request retries
 	    int ierpMaxRetries = default(3);                    // Max number of IERP route request retries before dropping packets
 	
