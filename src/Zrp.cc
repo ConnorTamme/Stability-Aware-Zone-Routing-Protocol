@@ -84,7 +84,7 @@ void Zrp::initialize(int stage)
         WATCH(zoneRadius);
         WATCH(NDP_seqNum);
         WATCH(IARP_seqNum);
-        WATCH_MAP(neighborTable);
+        WATCH_MAP(neighbourTable);
         WATCH_MAP(linkStateTable);
         WATCH(IERP_queryId);
     }
@@ -95,7 +95,7 @@ void Zrp::handleMessageWhenUp(cMessage* msg)
 {
     if (msg->isSelfMessage()) {
         if (msg == NDP_helloTimer) {
-            NDP_refreshNeighborTable();
+            NDP_refreshNeighbourTable();
             sendNDPHello();
         }
         else if (msg == IARP_updateTimer) {
@@ -270,7 +270,7 @@ void Zrp::clearState()
     ierpRetryTimers.clear();
 
     // Clear state tables
-    neighborTable.clear();
+    neighbourTable.clear();
     linkStateTable.clear();
     ierpQueryTable.clear();
     brpCoverageTable.clear();
@@ -297,16 +297,16 @@ void Zrp::printDebugTables()
     os << "  ZRP DEBUG OUTPUT - Node: " << getSelfIPAddress() << " @ t=" << simTime() << "\n";
     os << "========================================================================\n";
 
-    // --- Neighbor Table ---
-    os << "\n  NEIGHBOR TABLE (" << neighborTable.size() << " entries):\n";
+    // --- Neighbour Table ---
+    os << "\n  NEIGHBOR TABLE (" << neighbourTable.size() << " entries):\n";
     os << "  +-----------------+------------------+--------------+\n";
-    os << "  | Neighbor        | Last Heard       | Age (sec)    |\n";
+    os << "  | Neighbour        | Last Heard       | Age (sec)    |\n";
     os << "  +-----------------+------------------+--------------+\n";
-    if (neighborTable.empty()) {
+    if (neighbourTable.empty()) {
         os << "  |            (empty)                               |\n";
     }
     else {
-        for (const auto& entry : neighborTable) {
+        for (const auto& entry : neighbourTable) {
             double age = (simTime() - entry.second).dbl();
             os << "  | " << std::setw(15) << std::left << entry.first.str() << " | " << std::setw(16) << entry.second
                << " | " << std::setw(12) << std::fixed << std::setprecision(2) << age << " |\n";
@@ -325,7 +325,7 @@ void Zrp::printDebugTables()
             double age = (simTime() - ls.insertTime).dbl();
             os << "  +-- Source: " << ls.sourceAddr.str() << " (seq=" << ls.seqNum << ", zone=" << ls.zoneRadius
                << ", age=" << std::fixed << std::setprecision(1) << age << "s)\n";
-            os << "  |   Neighbors (" << ls.linkDestinations.size() << "):\n";
+            os << "  |   Neighbours (" << ls.linkDestinations.size() << "):\n";
             for (const auto& dest : ls.linkDestinations) {
                 os << "  |     -> " << dest.destAddr.str();
                 if (IARP_METRIC_COUNT > 0) {
@@ -514,18 +514,18 @@ void Zrp::receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj, 
 {
     Enter_Method("receiveSignal");
     if (signalID == linkBrokenSignal) {
-        // Link failure. Remove broken neighbor and trigger route maintenance
+        // Link failure. Remove broken neighbour and trigger route maintenance
         Packet* datagram = check_and_cast<Packet*>(obj);
         const auto& networkHeader = findNetworkProtocolHeader(datagram);
         if (networkHeader != nullptr) {
             L3Address unreachableNextHop = networkHeader->getDestinationAddress();
             EV_WARN << "Link break detected to " << unreachableNextHop << endl;
 
-            // Remove from neighbor table immediately
-            auto it = neighborTable.find(unreachableNextHop);
-            if (it != neighborTable.end()) {
-                neighborTable.erase(it);
-                EV_INFO << "Removed broken neighbor " << unreachableNextHop << " from neighbor table" << endl;
+            // Remove from neighbour table immediately
+            auto it = neighbourTable.find(unreachableNextHop);
+            if (it != neighbourTable.end()) {
+                neighbourTable.erase(it);
+                EV_INFO << "Removed broken neighbour " << unreachableNextHop << " from neighbour table" << endl;
             }
 
             // Invalidate any IERP routes using this next hop
@@ -550,7 +550,7 @@ void Zrp::refreshDisplay() const
     RoutingProtocolBase::refreshDisplay();
 
     int numRoutes = getNumIarpRoutes();
-    int numNeighbors = neighborTable.size();
+    int numNeighbours = neighbourTable.size();
     int numIerpRoutes = 0;
     for (int i = 0; i < routingTable->getNumRoutes(); i++) {
         IRoute* route = routingTable->getRoute(i);
@@ -563,7 +563,7 @@ void Zrp::refreshDisplay() const
     }
 
     char buf[80];
-    sprintf(buf, "N:%d IA:%d IE:%d", numNeighbors, numRoutes, numIerpRoutes);
+    sprintf(buf, "N:%d IA:%d IE:%d", numNeighbours, numRoutes, numIerpRoutes);
     getDisplayString().setTagArg("t", 0, buf); // "t" = text below icon
 }
 
@@ -664,40 +664,40 @@ void Zrp::handleNDPHello(const Ptr<NDP_Hello>& hello, const L3Address& sourceAdd
     EV_INFO << "Received NDP Hello from " << sourceAddr << " (node address: " << hello->getNodeAddress()
             << ", seq: " << hello->getSeqNum() << ")" << endl;
 
-    // Check if this is a new neighbor
-    bool isNew = (neighborTable.find(sourceAddr) == neighborTable.end());
+    // Check if this is a new neighbour
+    bool isNew = (neighbourTable.find(sourceAddr) == neighbourTable.end());
 
-    // Update neighbor table with current time
-    neighborTable[sourceAddr] = simTime();
+    // Update neighbour table with current time
+    neighbourTable[sourceAddr] = simTime();
 
-    EV_DETAIL << "Neighbor table now has " << neighborTable.size() << " entries" << endl;
+    EV_DETAIL << "Neighbour table now has " << neighbourTable.size() << " entries" << endl;
 
-    // New neighbor. Recompute IARP routes
+    // New neighbour. Recompute IARP routes
     if (isNew) {
-        EV_INFO << "New neighbor " << sourceAddr << " discovered, recomputing IARP routes" << endl;
+        EV_INFO << "New neighbour " << sourceAddr << " discovered, recomputing IARP routes" << endl;
         IARP_updateRoutingTable();
     }
 }
 
-void Zrp::NDP_refreshNeighborTable()
+void Zrp::NDP_refreshNeighbourTable()
 {
-    EV_INFO << "Refreshing neighbor table..." << endl;
+    EV_INFO << "Refreshing neighbour table..." << endl;
 
     simtime_t now = simTime();
     std::vector<L3Address> toRemove;
 
-    for (const auto& entry : neighborTable) {
+    for (const auto& entry : neighbourTable) {
         if (now - entry.second > linkStateLifetime) {
             toRemove.push_back(entry.first);
         }
     }
 
     for (const auto& addr : toRemove) {
-        neighborTable.erase(addr);
-        EV_DETAIL << "Removed stale neighbor: " << addr << endl;
+        neighbourTable.erase(addr);
+        EV_DETAIL << "Removed stale neighbour: " << addr << endl;
     }
 
-    EV_INFO << "Neighbor table refresh complete, " << neighborTable.size() << " neighbors remain" << endl;
+    EV_INFO << "Neighbour table refresh complete, " << neighbourTable.size() << " neighbours remain" << endl;
 }
 
 // IARP Functions
@@ -723,19 +723,19 @@ const Ptr<IARP_LinkStateUpdate> Zrp::createIARPUpdate()
     // updates are NOT in anyway for the node sending them to gain information. They are to inform other nodes
     // about the sender's links, and if everyone is doing that then everyone will learn everything they need to know.
 
-    size_t neighborCount = neighborTable.size();
-    update->setLinkDestCount(neighborCount);
-    update->setLinkDestDataArraySize(neighborCount);
+    size_t neighbourCount = neighbourTable.size();
+    update->setLinkDestCount(neighbourCount);
+    update->setLinkDestDataArraySize(neighbourCount);
 
     size_t idx = 0;
-    for (const auto& neighbor : neighborTable) {
+    for (const auto& neighbour : neighbourTable) {
         IARP_LinkDestData destData;
-        destData.addr = neighbor.first;
+        destData.addr = neighbour.first;
 
-        // Set metrics - for now just hop count = 1 for direct neighbors
+        // Set metrics - for now just hop count = 1 for direct neighbours
         for (int m = 0; m < IARP_METRIC_COUNT; m++) {
             destData.metrics[m].metricType = 0;  // 0 = hop count
-            destData.metrics[m].metricValue = 1; // direct neighbor = 1 hop
+            destData.metrics[m].metricValue = 1; // direct neighbour = 1 hop
         }
 
         update->setLinkDestData(idx++, destData);
@@ -744,7 +744,7 @@ const Ptr<IARP_LinkStateUpdate> Zrp::createIARPUpdate()
     // Calculate chunk length:
     // Header: sourceAddr(4) + seqNum(2) + radius(1) + TTL(1) + reserved1(2) + reserved2(1) + linkDestCount(1) = 12
     // bytes Per link dest: addr(4) + metrics(IARP_METRIC_COUNT * 4) bytes
-    B chunkLength = B(12 + neighborCount * (4 + IARP_METRIC_COUNT * 4));
+    B chunkLength = B(12 + neighbourCount * (4 + IARP_METRIC_COUNT * 4));
     update->setChunkLength(chunkLength);
 
     return update;
@@ -752,11 +752,11 @@ const Ptr<IARP_LinkStateUpdate> Zrp::createIARPUpdate()
 
 void Zrp::sendIARPUpdate()
 {
-    EV_INFO << "Sending IARP Link State Update from " << getSelfIPAddress() << " with " << neighborTable.size()
-            << " neighbors" << endl;
+    EV_INFO << "Sending IARP Link State Update from " << getSelfIPAddress() << " with " << neighbourTable.size()
+            << " neighbours" << endl;
 
-    if (neighborTable.empty()) {
-        EV_DETAIL << "No neighbors to advertise, skipping IARP update" << endl;
+    if (neighbourTable.empty()) {
+        EV_DETAIL << "No neighbours to advertise, skipping IARP update" << endl;
         scheduleAfter(IARP_updateInterval, IARP_updateTimer);
         return;
     }
@@ -936,12 +936,12 @@ void Zrp::IARP_computeRoutes()
             IARP_createRoute(u, nextHop[u], d);
         }
 
-        // For self: use neighborTable, for others: use linkStateTable
-        std::vector<std::pair<L3Address, unsigned int>> neighbors;
+        // For self: use neighbourTable, for others: use linkStateTable
+        std::vector<std::pair<L3Address, unsigned int>> neighbours;
 
         if (u == self) {
-            for (const auto& entry : neighborTable) {
-                neighbors.push_back({entry.first, 1}); // hop count = 1 for direct neighbors
+            for (const auto& entry : neighbourTable) {
+                neighbours.push_back({entry.first, 1}); // hop count = 1 for direct neighbours
             }
         }
         else {
@@ -949,12 +949,12 @@ void Zrp::IARP_computeRoutes()
             if (it != linkStateTable.end()) {
                 for (const auto& linkDest : it->second.linkDestinations) {
                     // Use first metric (hop count)
-                    neighbors.push_back({linkDest.destAddr, linkDest.metrics[0]});
+                    neighbours.push_back({linkDest.destAddr, linkDest.metrics[0]});
                 }
             }
         }
 
-        for (const auto& [v, weight] : neighbors) {
+        for (const auto& [v, weight] : neighbours) {
             if (visited.count(v)) {
                 continue;
             }
@@ -1008,20 +1008,20 @@ std::vector<L3Address> Zrp::IARP_getRoutePath(const L3Address& dest) const
         if (u == dest)
             break; // Found shortest path, done
 
-        std::vector<std::pair<L3Address, unsigned int>> neighbors;
+        std::vector<std::pair<L3Address, unsigned int>> neighbours;
         if (u == self) {
-            for (const auto& entry : neighborTable)
-                neighbors.push_back({entry.first, 1});
+            for (const auto& entry : neighbourTable)
+                neighbours.push_back({entry.first, 1});
         }
         else {
             auto it = linkStateTable.find(u);
             if (it != linkStateTable.end()) {
                 for (const auto& linkDest : it->second.linkDestinations)
-                    neighbors.push_back({linkDest.destAddr, linkDest.metrics[0]});
+                    neighbours.push_back({linkDest.destAddr, linkDest.metrics[0]});
             }
         }
 
-        for (const auto& [v, weight] : neighbors) {
+        for (const auto& [v, weight] : neighbours) {
             if (visited.count(v))
                 continue;
             unsigned int newDist = d + weight;
@@ -1455,8 +1455,8 @@ void Zrp::IERP_routeMaintenance()
         L3Address nextHop = route->getNextHopAsGeneric();
         bool nextHopReachable = false;
 
-        // Check if next hop is a direct neighbor
-        if (neighborTable.find(nextHop) != neighborTable.end()) {
+        // Check if next hop is a direct neighbour
+        if (neighbourTable.find(nextHop) != neighbourTable.end()) {
             nextHopReachable = true;
         }
         // Or reachable via IARP
@@ -1649,8 +1649,8 @@ void Zrp::BRP_bordercast(const Ptr<IERP_RouteData>& packet)
 
     auto& coverage = brpCoverageTable[cacheId];
 
-    // Determine the set of outgoing neighbors
-    std::set<L3Address> outNeighbors;
+    // Determine the set of outgoing neighbours
+    std::set<L3Address> outNeighbours;
 
     // Check if we have an IARP route to the query destination
     bool haveIarpRouteToDest = false;
@@ -1662,7 +1662,7 @@ void Zrp::BRP_bordercast(const Ptr<IERP_RouteData>& packet)
                 haveIarpRouteToDest = true;
                 // If the destination is not already covered, send to next hop toward it
                 if (coverage.coveredNodes.find(queryDest) == coverage.coveredNodes.end()) {
-                    outNeighbors.insert(route->getNextHopAsGeneric());
+                    outNeighbours.insert(route->getNextHopAsGeneric());
                 }
                 break;
             }
@@ -1685,23 +1685,23 @@ void Zrp::BRP_bordercast(const Ptr<IERP_RouteData>& packet)
                   << endl;
 
         if (!uncoveredPeripherals.empty()) {
-            // Get next hop neighbors on shortest paths to uncovered peripherals
-            outNeighbors = BRP_getOutNeighbors(uncoveredPeripherals);
+            // Get next hop neighbours on shortest paths to uncovered peripherals
+            outNeighbours = BRP_getOutNeighbours(uncoveredPeripherals);
         }
     }
 
-    if (outNeighbors.empty()) {
+    if (outNeighbours.empty()) {
         EV_INFO << "BRP: No uncovered peripheral nodes to bordercast to" << endl;
     }
     else {
         printDebugTables();
-        EV_INFO << "BRP: Bordercasting to " << outNeighbors.size() << " neighbor(s): ";
-        for (const auto& n : outNeighbors)
+        EV_INFO << "BRP: Bordercasting to " << outNeighbours.size() << " neighbour(s): ";
+        for (const auto& n : outNeighbours)
             EV_INFO << n << " ";
         EV_INFO << endl;
 
         // Build BRP packet wrapping the IERP packet
-        for (const auto& neighbor : outNeighbors) {
+        for (const auto& neighbour : outNeighbours) {
             auto brpPacket = makeShared<BRP_Data>();
             brpPacket->setSourceAddr(qid.source);
             brpPacket->setDestAddr(queryDest);
@@ -1725,8 +1725,8 @@ void Zrp::BRP_bordercast(const Ptr<IERP_RouteData>& packet)
             // BRP header: source(4) + dest(4) + queryID(2) + queryExt(1) + reserved(1) + prevBcast(4) = 16 bytes
             brpPacket->setChunkLength(B(16) + packet->getChunkLength());
 
-            // Unicast to each out_neighbor
-            sendZrpPacket(brpPacket, neighbor, zoneRadius);
+            // Unicast to each out_neighbour
+            sendZrpPacket(brpPacket, neighbour, zoneRadius);
         }
     }
 
@@ -1752,9 +1752,9 @@ void Zrp::BRP_deliver(const Ptr<BRP_Data>& brpPacket, const L3Address& sourceAdd
 
     int cacheId = BRP_findOrCreateCoverage(qid);
 
-    // Check if we are an out_neighbor and compute prevBordercaster's zone
+    // Check if we are an out_neighbour and compute prevBordercaster's zone
     std::set<L3Address> prevBcastZone;
-    bool isOutNbr = BRP_isOutNeighbor(prevBordercaster, self, brpCoverageTable[cacheId].coveredNodes, prevBcastZone);
+    bool isOutNbr = BRP_isOutNeighbour(prevBordercaster, self, brpCoverageTable[cacheId].coveredNodes, prevBcastZone);
     BRP_recordCoverage(cacheId, prevBcastZone);
 
     if (isOutNbr && !brpCoverageTable[cacheId].delivered) {
@@ -1762,7 +1762,7 @@ void Zrp::BRP_deliver(const Ptr<BRP_Data>& brpPacket, const L3Address& sourceAdd
         brpCoverageTable[cacheId].delivered = true;
         simtime_t jitter = uniform(0, brpJitterMax);
 
-        EV_DETAIL << "BRP: We are an out_neighbor of " << prevBordercaster
+        EV_DETAIL << "BRP: We are an out_neighbour of " << prevBordercaster
                   << ", scheduling IERP delivery with jitter=" << jitter << "s" << endl;
 
         // Create a self-message carrying the BRP data for when jitter expires
@@ -1782,13 +1782,13 @@ void Zrp::BRP_deliver(const Ptr<BRP_Data>& brpPacket, const L3Address& sourceAdd
         schedulePendingTimer(jitterMsg, jitter);
     }
     else {
-        // Not an out_neighbor or already scheduled. Just accumulate coverage
+        // Not an out_neighbour or already scheduled. Just accumulate coverage
         if (isOutNbr) {
             EV_DETAIL << "BRP: Already scheduled delivery for this query (cacheId=" << cacheId
                       << "), updating coverage only" << endl;
         }
         else {
-            EV_DETAIL << "BRP: Not an out_neighbor of " << prevBordercaster
+            EV_DETAIL << "BRP: Not an out_neighbour of " << prevBordercaster
                       << ", marking own zone as covered and discarding" << endl;
         }
 
@@ -1834,10 +1834,10 @@ std::set<L3Address> Zrp::BRP_getMyPeripherals() const
     return peripherals;
 }
 
-// Next hop neighbors for reaching uncovered peripheral nodes
-std::set<L3Address> Zrp::BRP_getOutNeighbors(const std::set<L3Address>& uncoveredPeripherals) const
+// Next hop neighbours for reaching uncovered peripheral nodes
+std::set<L3Address> Zrp::BRP_getOutNeighbours(const std::set<L3Address>& uncoveredPeripherals) const
 {
-    std::set<L3Address> outNeighbors;
+    std::set<L3Address> outNeighbours;
 
     for (const auto& peripheral : uncoveredPeripherals) {
         // Find the IARP route to this peripheral and get its next-hop
@@ -1846,19 +1846,19 @@ std::set<L3Address> Zrp::BRP_getOutNeighbors(const std::set<L3Address>& uncovere
             if (route->getSource() == this && route->getDestinationAsGeneric() == peripheral) {
                 auto* rd = dynamic_cast<ZrpRouteData*>(route->getProtocolData());
                 if (rd && rd->isIarpRoute()) {
-                    outNeighbors.insert(route->getNextHopAsGeneric());
+                    outNeighbours.insert(route->getNextHopAsGeneric());
                     break;
                 }
             }
         }
     }
 
-    return outNeighbors;
+    return outNeighbours;
 }
 
-// Check if 'node' is an outgoing neighbor in prevBordercaster's bordercast tree.
+// Check if 'node' is an outgoing neighbour in prevBordercaster's bordercast tree.
 // Also outputs prevBordercaster's zone (computed as byproduct of Dijkstra).
-bool Zrp::BRP_isOutNeighbor(const L3Address& prevBordercaster, const L3Address& node,
+bool Zrp::BRP_isOutNeighbour(const L3Address& prevBordercaster, const L3Address& node,
                             const std::set<L3Address>& coveredNodes, std::set<L3Address>& outPrevZone) const
 {
     // Single Dijkstra from prevBordercaster: computes zone, peripherals, and next-hops
@@ -1889,36 +1889,36 @@ bool Zrp::BRP_isOutNeighbor(const L3Address& prevBordercaster, const L3Address& 
             continue;              // Don't expand beyond peripherals
         }
 
-        // Get neighbors of u from best available source.
+        // Get neighbours of u from best available source.
         // For self use NDP; for others use link-state.
-        // Also inject symmetric edge self<->u for NDP neighbors (important for zoneRadius==1
+        // Also inject symmetric edge self<->u for NDP neighbours (important for zoneRadius==1
         // since otherwise there is no outgoing edges on those nodes).
-        std::vector<std::pair<L3Address, unsigned int>> neighbors;
+        std::vector<std::pair<L3Address, unsigned int>> neighbours;
         if (u == self) {
-            for (const auto& entry : neighborTable)
-                neighbors.push_back({entry.first, 1});
+            for (const auto& entry : neighbourTable)
+                neighbours.push_back({entry.first, 1});
         }
         else {
             auto it = linkStateTable.find(u);
             if (it != linkStateTable.end()) {
                 for (const auto& linkDest : it->second.linkDestinations)
-                    neighbors.push_back({linkDest.destAddr, linkDest.metrics[0]});
+                    neighbours.push_back({linkDest.destAddr, linkDest.metrics[0]});
             }
-            // Ensure symmetric link self<->u when u is our NDP neighbor
-            if (neighborTable.find(u) != neighborTable.end()) {
+            // Ensure symmetric link self<->u when u is our NDP neighbour
+            if (neighbourTable.find(u) != neighbourTable.end()) {
                 bool selfAlreadyListed = false;
-                for (const auto& n : neighbors) {
+                for (const auto& n : neighbours) {
                     if (n.first == self) {
                         selfAlreadyListed = true;
                         break;
                     }
                 }
                 if (!selfAlreadyListed)
-                    neighbors.push_back({self, 1});
+                    neighbours.push_back({self, 1});
             }
         }
 
-        for (const auto& [v, weight] : neighbors) {
+        for (const auto& [v, weight] : neighbours) {
             if (visited.count(v))
                 continue;
             unsigned int newDist = d + weight;

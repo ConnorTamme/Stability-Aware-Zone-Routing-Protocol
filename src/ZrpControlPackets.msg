@@ -16,7 +16,7 @@ import inet.networklayer.common.L3Address;
 
 namespace inet::zrp;
 
-//The Neighbor Discovery Protocol is not included in the RFC so this is used to obtain neighboring nodes
+//The Neighbour Discovery Protocol is not included in the RFC so this is used to obtain neighbouring nodes
 class NDP_Hello extends FieldsChunk
 {
 	L3Address nodeAddress;
@@ -91,7 +91,7 @@ class IARP_LinkStateUpdate extends FieldsChunk
 	uint8_t TTL;
 	uint16_t reserved1 = 0;
 	uint8_t reserved2 = 0;
-	uint8_t linkDestCount; //The number of neighbors the source has
+	uint8_t linkDestCount; //The number of neighbours the source has
 	IARP_LinkDestData linkDestData[];
 }
 

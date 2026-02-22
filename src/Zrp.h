@@ -77,7 +77,7 @@ struct LinkStateEntry {
     unsigned int zoneRadius;                    // Zone radius of the source node
     uint16_t seqNum;                            // Link state sequence number
     simtime_t insertTime;                       // When this entry was inserted/updated
-    std::vector<LinkDestInfo> linkDestinations; // List of neighbors and their metrics
+    std::vector<LinkDestInfo> linkDestinations; // List of neighbours and their metrics
 };
 
 // Recorded query for duplicate detection
@@ -97,7 +97,7 @@ struct PendingTimerEntry {
 inline std::ostream& operator<<(std::ostream& os, const LinkStateEntry& entry)
 {
     os << "src=" << entry.sourceAddr << " seq=" << entry.seqNum << " zone=" << entry.zoneRadius
-       << " neighbors=" << entry.linkDestinations.size() << " age=" << (simTime() - entry.insertTime).dbl() << "s";
+       << " neighbours=" << entry.linkDestinations.size() << " age=" << (simTime() - entry.insertTime).dbl() << "s";
     return os;
 }
 
@@ -128,7 +128,7 @@ class INET_API Zrp : public RoutingProtocolBase,
     // NDP/IARP
     uint16_t NDP_seqNum = 0;                            // sequence number for NDP hello messages (wraps at 65535)
     uint16_t IARP_seqNum = 0;                           // sequence number for IARP link state updates (wraps at 65535)
-    std::map<L3Address, simtime_t> neighborTable;       // neighbor address -> last heard time
+    std::map<L3Address, simtime_t> neighbourTable;       // neighbour address -> last heard time
     std::map<L3Address, LinkStateEntry> linkStateTable; // source address -> link state entry
 
     // IERP
@@ -202,7 +202,7 @@ class INET_API Zrp : public RoutingProtocolBase,
     const Ptr<NDP_Hello> createNDPHello();
     void sendNDPHello();
     void handleNDPHello(const Ptr<NDP_Hello>& hello, const L3Address& sourceAddr);
-    void NDP_refreshNeighborTable();
+    void NDP_refreshNeighbourTable();
 
     // IARP Functions
     const Ptr<IARP_LinkStateUpdate> createIARPUpdate();
@@ -252,8 +252,8 @@ class INET_API Zrp : public RoutingProtocolBase,
     // BRP helpers
     std::set<L3Address> BRP_getMyZone() const;
     std::set<L3Address> BRP_getMyPeripherals() const;
-    std::set<L3Address> BRP_getOutNeighbors(const std::set<L3Address>& uncoveredPeripherals) const;
-    bool BRP_isOutNeighbor(const L3Address& prevBordercaster, const L3Address& node,
+    std::set<L3Address> BRP_getOutNeighbours(const std::set<L3Address>& uncoveredPeripherals) const;
+    bool BRP_isOutNeighbour(const L3Address& prevBordercaster, const L3Address& node,
                            const std::set<L3Address>& coveredNodes, std::set<L3Address>& outPrevZone) const;
     void BRP_recordCoverage(int brpCacheId, const std::set<L3Address>& nodes);
     int BRP_findOrCreateCoverage(const IerpQueryId& qid);
