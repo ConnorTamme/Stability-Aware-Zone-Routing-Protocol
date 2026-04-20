@@ -49,7 +49,7 @@ namespace zrp {
 /**
  * Class generated from <tt>ZrpControlPackets.msg:21</tt> by opp_msgtool.
  * <pre>
- * //The Neighbor Discovery Protocol is not included in the RFC so this is used to obtain neighboring nodes
+ * //The Neighbour Discovery Protocol is not included in the RFC so this is used to obtain neighbouring nodes
  * class NDP_Hello extends FieldsChunk
  * {
  *     L3Address nodeAddress;
@@ -179,7 +179,7 @@ inline void doParsimUnpacking(omnetpp::cCommBuffer *b, IARP_LinkDestData& obj) {
  *     uint8_t TTL;
  *     uint16_t reserved1 = 0;
  *     uint8_t reserved2 = 0;
- *     uint8_t linkDestCount; //The number of neighbors the source has
+ *     uint8_t linkDestCount; //The number of neighbours the source has
  *     IARP_LinkDestData linkDestData[];
  * }
  * 
