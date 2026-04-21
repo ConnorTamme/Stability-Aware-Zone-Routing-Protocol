@@ -1,0 +1,177 @@
+==========================================================
+ Starting experiment set: FanetRecon
+==========================================================
+----------------------------------------------------------
+ Running Scenario: FanetRecon -> Recon_NodeSweep_StabilityZrp
+----------------------------------------------------------
+OMNeT++ Discrete Event Simulation  (C) 1992-2025 Andras Varga, OpenSim Ltd.
+Version: 6.3.0, build: 251110-bb3d6a4731, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+See the license for distribution terms and warranty disclaimer
+
+Setting up Cmdenv...
+
+Loading NED files from .:  2
+Loading NED files from ../../src:  2
+Loading NED files from ../../../inet-4.5.4/src:  1187
+
+Preparing for running configuration Recon_NodeSweep_StabilityZrp, run #0...
+Scenario: $numNodes=10, $repetition=0
+Assigned runID=Recon_NodeSweep_StabilityZrp-0-20260420-19:52:10-59382
+Setting up network "FanetReconNetwork"...
+Initializing...
+
+Running simulation...
+** Event #0   t=0   Elapsed: 1.2e-05s (0m 00s)  0% completed  (0% total)
+     Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
+     Messages:  created: 418   present: 418   in FES: 66
+** Event #115968   t=105.343080862952   Elapsed: 2.00311s (0m 02s)  21% completed  (0% total)
+     Speed:     ev/sec=57894.8   simsec/sec=52.5901   ev/simsec=1100.87
+     Messages:  created: 102612   present: 530   in FES: 59
+** Event #218880   t=142.239990694067   Elapsed: 4.00454s (0m 04s)  28% completed  (0% total)
+     Speed:     ev/sec=51419.2   simsec/sec=18.4353   ev/simsec=2789.18
+     Messages:  created: 211832   present: 1281   in FES: 54
+** Event #313600   t=169.79512148442   Elapsed: 6.00746s (0m 06s)  33% completed  (1% total)
+     Speed:     ev/sec=47290.9   simsec/sec=13.7575   ev/simsec=3437.47
+     Messages:  created: 313259   present: 1726   in FES: 57
+** Event #407808   t=199.052944592995   Elapsed: 8.01104s (0m 08s)  39% completed  (1% total)
+     Speed:     ev/sec=47019.8   simsec/sec=14.6028   ev/simsec=3219.93
+     Messages:  created: 415783   present: 2220   in FES: 53
+** Event #507904   t=238.008768155273   Elapsed: 10.0119s (0m 10s)  47% completed  (1% total)
+     Speed:     ev/sec=50026.7   simsec/sec=19.4696   ev/simsec=2569.47
+     Messages:  created: 520766   present: 3082   in FES: 53
+** Event #606208   t=282.052949012812   Elapsed: 12.0122s (0m 12s)  56% completed  (1% total)
+     Speed:     ev/sec=49145.2   simsec/sec=22.019   ev/simsec=2231.94
+     Messages:  created: 620366   present: 4118   in FES: 44
+** Event #705280   t=323.4060934573   Elapsed: 14.0162s (0m 14s)  64% completed  (2% total)
+     Speed:     ev/sec=49437.7   simsec/sec=20.6355   ev/simsec=2395.75
+     Messages:  created: 722531   present: 5121   in FES: 54
+** Event #810496   t=370.028360969539   Elapsed: 16.0171s (0m 16s)  74% completed  (2% total)
+     Speed:     ev/sec=52582.3   simsec/sec=23.2998   ev/simsec=2256.78
+     Messages:  created: 831543   present: 6234   in FES: 54
+** Event #918016   t=427.847521106339   Elapsed: 18.0188s (0m 18s)  85% completed  (2% total)
+     Speed:     ev/sec=53716.1   simsec/sec=28.886   ev/simsec=1859.59
+     Messages:  created: 940548   present: 7812   in FES: 49
+** Event #1012736   t=485.295106744848   Elapsed: 20.0217s (0m 20s)  97% completed  (3% total)
+     Speed:     ev/sec=47290.4   simsec/sec=28.6816   ev/simsec=1648.81
+     Messages:  created: 1033965   present: 2326   in FES: 55
+** Event #1046260   t=500   Elapsed: 20.7005s (0m 20s)  100% completed  (3% total)
+     Speed:     ev/sec=49388   simsec/sec=21.6641   ev/simsec=2279.72
+     Messages:  created: 1068828   present: 2655   in FES: 42
+
+<!> Simulation time limit reached -- at t=500s, event #1046260
+
+Calling finish() at end of Run #0...
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.groundStation.app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[0].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[1].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[2].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[3].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[4].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[5].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[6].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[7].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[8].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[9].app.debugTimer -- check module destructor
+
+Preparing for running configuration Recon_NodeSweep_StabilityZrp, run #1...
+Scenario: $numNodes=10, $repetition=1
+Assigned runID=Recon_NodeSweep_StabilityZrp-1-20260420-19:52:31-59382
+Setting up network "FanetReconNetwork"...
+Initializing...
+
+Running simulation...
+** Event #0   t=0   Elapsed: 6e-06s (0m 00s)  0% completed  (3% total)
+     Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
+     Messages:  created: 418   present: 418   in FES: 66
+** Event #114944   t=105.334873020183   Elapsed: 2.00148s (0m 02s)  21% completed  (4% total)
+     Speed:     ev/sec=57430.3   simsec/sec=52.6288   ev/simsec=1091.23
+     Messages:  created: 103095   present: 512   in FES: 46
+** Event #213760   t=140.486997834278   Elapsed: 4.00331s (0m 04s)  28% completed  (4% total)
+     Speed:     ev/sec=49362.7   simsec/sec=17.56   ev/simsec=2811.1
+     Messages:  created: 208376   present: 1330   in FES: 43
+** Event #318720   t=169.128124447772   Elapsed: 6.00621s (0m 06s)  33% completed  (4% total)
+     Speed:     ev/sec=52404.1   simsec/sec=14.2999   ev/simsec=3664.66
+     Messages:  created: 322291   present: 1899   in FES: 43
+** Event #428032   t=221.267266277428   Elapsed: 8.07921s (0m 08s)  44% completed  (4% total)
+     Speed:     ev/sec=52731.1   simsec/sec=25.1515   ev/simsec=2096.54
+     Messages:  created: 432624   present: 3669   in FES: 53
+** Event #538112   t=273.114792869871   Elapsed: 10.0823s (0m 10s)  54% completed  (5% total)
+     Speed:     ev/sec=54955.2   simsec/sec=25.8838   ev/simsec=2123.15
+     Messages:  created: 543235   present: 5014   in FES: 54
+** Event #655616   t=391.2   Elapsed: 12.0835s (0m 12s)  78% completed  (5% total)
+     Speed:     ev/sec=58715.6   simsec/sec=59.006   ev/simsec=995.078
+     Messages:  created: 640148   present: 9638   in FES: 43
+** Event #763194   t=500   Elapsed: 14.0053s (0m 14s)  100% completed  (6% total)
+     Speed:     ev/sec=55977.7   simsec/sec=56.6141   ev/simsec=988.759
+     Messages:  created: 729598   present: 6634   in FES: 42
+
+<!> Simulation time limit reached -- at t=500s, event #763194
+
+Calling finish() at end of Run #1...
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.groundStation.app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[0].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[1].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[2].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[3].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[4].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[5].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[6].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[7].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[8].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[9].app.debugTimer -- check module destructor
+
+Preparing for running configuration Recon_NodeSweep_StabilityZrp, run #2...
+Scenario: $numNodes=10, $repetition=2
+Assigned runID=Recon_NodeSweep_StabilityZrp-2-20260420-19:52:46-59382
+Setting up network "FanetReconNetwork"...
+Initializing...
+
+Running simulation...
+** Event #0   t=0   Elapsed: 4e-06s (0m 00s)  0% completed  (6% total)
+     Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
+     Messages:  created: 418   present: 418   in FES: 66
+** Event #117248   t=103.736998026795   Elapsed: 2.00374s (0m 02s)  20% completed  (7% total)
+     Speed:     ev/sec=58515.2   simsec/sec=51.7718   ev/simsec=1130.25
+     Messages:  created: 109815   present: 470   in FES: 46
+** Event #221952   t=113.185994902626   Elapsed: 4.00561s (0m 04s)  22% completed  (7% total)
+     Speed:     ev/sec=52303   simsec/sec=4.72007   ev/simsec=11081
+     Messages:  created: 233652   present: 547   in FES: 44
+** Event #329984   t=135.629635351275   Elapsed: 6.00895s (0m 06s)  27% completed  (7% total)
+     Speed:     ev/sec=53926.1   simsec/sec=11.2031   ev/simsec=4813.48
+     Messages:  created: 355625   present: 845   in FES: 56
+** Event #429312   t=164.82053643628   Elapsed: 8.01351s (0m 08s)  32% completed  (7% total)
+     Speed:     ev/sec=49551   simsec/sec=14.5622   ev/simsec=3402.7
+     Messages:  created: 463371   present: 1394   in FES: 43
+** Event #535040   t=195.276732380296   Elapsed: 10.0176s (0m 10s)  39% completed  (7% total)
+     Speed:     ev/sec=52756.1   simsec/sec=15.197   ev/simsec=3471.48
+     Messages:  created: 578354   present: 2021   in FES: 51
+** Event #642048   t=232.536153974167   Elapsed: 12.0191s (0m 12s)  46% completed  (8% total)
+     Speed:     ev/sec=53465.2   simsec/sec=18.6162   ev/simsec=2871.97
+     Messages:  created: 692294   present: 2871   in FES: 43
+** Event #701440   t=260.030019467728   Elapsed: 14.0234s (0m 14s)  52% completed  (8% total)
+     Speed:     ev/sec=29632.1   simsec/sec=13.7174   ev/simsec=2160.19
+     Messages:  created: 751913   present: 3670   in FES: 54
+** Event #814592   t=314.821172095026   Elapsed: 16.025s (0m 16s)  62% completed  (8% total)
+     Speed:     ev/sec=56531.2   simsec/sec=27.3739   ev/simsec=2065.15
+     Messages:  created: 867547   present: 5236   in FES: 58
+** Event #922880   t=350.685994902626   Elapsed: 18.0278s (0m 18s)  70% completed  (9% total)
+     Speed:     ev/sec=54067.8   simsec/sec=17.9072   ev/simsec=3019.34
+     Messages:  created: 983323   present: 5461   in FES: 44
+** Event #1025024   t=376.698381020468   Elapsed: 20.0321s (0m 20s)  75% completed  (9% total)
+     Speed:     ev/sec=50961.7   simsec/sec=12.9781   ev/simsec=3926.74
+     Messages:  created: 1094276   present: 5151   in FES: 43
+** Event #1135872   t=394.07053643628   Elapsed: 22.0367s (0m 22s)  78% completed  (9% total)
+     Speed:     ev/sec=55296.3   simsec/sec=8.66606   ev/simsec=6380.79
+     Messages:  created: 1223112   present: 5350   in FES: 45
+** Event #1246720   t=439.301327829075   Elapsed: 24.0407s (0m 24s)  87% completed  (9% total)
+     Speed:     ev/sec=55313   simsec/sec=22.5701   ev/simsec=2450.72
+     Messages:  created: 1340161   present: 6303   in FES: 56
+** Event #1345024   t=455.226730902626   Elapsed: 26.0439s (0m 26s)  91% completed  (9% total)
+     Speed:     ev/sec=49075.2   simsec/sec=7.95026   ev/simsec=6172.78
+     Messages:  created: 1454322   present: 6411   in FES: 43
+** Event #1449728   t=472.988628580748   Elapsed: 28.044s (0m 28s)  94% completed  (9% total)
+     Speed:     ev/sec=52347.4   simsec/sec=8.88018   ev/simsec=5894.87
+     Messages:  created: 1570588   present: 5056   in FES: 48
+** Event #1553664   t=475.53545255527   Elapsed: 30.0456s (0m 30s)  95% completed  (9% total)
+     Speed:     ev/sec=51926.6   simsec/sec=1.2724   ev/simsec=40810
+     Messages:  created: 1699305   present: 4989   in FES: 57
