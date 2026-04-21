@@ -21,8 +21,9 @@ for exp in $EXPERIMENTS; do
         echo "----------------------------------------------------------"
         
         # -u Cmdenv forces terminal/headless execution 
-        # OMNeT++ will auto-run all variable sweeps/repeats in this config
-        ./run -u Cmdenv -c "$config" "$@"
+        # opp_runall automatically queries the number of sweeps/repeats and runs them in parallel 
+        # across all available CPU cores (-j $(nproc)).
+        opp_runall -j $(nproc) ./run -u Cmdenv -c "$config" "$@"
         
         if [ $? -ne 0 ]; then
              echo "==== Error encountered during $config in $exp! ===="
