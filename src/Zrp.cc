@@ -27,7 +27,6 @@
 #include "inet/networklayer/ipv4/Ipv4Header_m.h"
 #include "inet/networklayer/ipv4/Ipv4Route.h"
 #include "inet/transportlayer/common/L4PortTag_m.h"
-#include "inet/transportlayer/contract/udp/UdpControlInfo.h"
 
 namespace inet {
 namespace zrp {
@@ -698,6 +697,10 @@ void Zrp::NDP_refreshNeighbourTable()
     }
 
     EV_INFO << "Neighbour table refresh complete, " << neighbourTable.size() << " neighbours remain" << endl;
+
+    if (!toRemove.empty()) {
+        IARP_updateRoutingTable();
+    }
 }
 
 // IARP Functions
@@ -864,7 +867,8 @@ void Zrp::IARP_refreshLinkStateTable()
     IERP_routeMaintenance();
 }
 
-IRoute* Zrp::IARP_createRoute(const L3Address& dest, const L3Address& nextHop, unsigned int hops)
+IRoute* Zrp::IARP_createRoute(const L3Address& dest, const L3Address& nextHop, unsigned int hops,
+                              const std::vector<L3Address>& fullRoute)
 {
     IRoute* newRoute = routingTable->createRoute();
 
@@ -876,6 +880,7 @@ IRoute* Zrp::IARP_createRoute(const L3Address& dest, const L3Address& nextHop, u
     newRoute->setSource(this);
 
     ZrpRouteData* routeData = new ZrpRouteData(ZRP_ROUTE_IARP);
+    routeData->setSourceRoute(fullRoute);
     routeData->setDiscoveryTime(simTime());
     newRoute->setProtocolData(routeData);
 
@@ -911,7 +916,7 @@ void Zrp::IARP_computeRoutes()
     L3Address self = getSelfIPAddress();
 
     std::map<L3Address, unsigned int> dist;
-    std::map<L3Address, L3Address> nextHop;
+    std::map<L3Address, L3Address> prev;
     std::set<L3Address> visited;
 
     // min-heap by distance
@@ -933,7 +938,14 @@ void Zrp::IARP_computeRoutes()
         EV_DETAIL << "Dijkstra: processing node " << u << " at distance " << d << endl;
 
         if (u != self) {
-            IARP_createRoute(u, nextHop[u], d);
+            std::vector<L3Address> path;
+            for (L3Address cur = u; cur != self; cur = prev[cur])
+                path.push_back(cur);
+            path.push_back(self);
+            std::reverse(path.begin(), path.end());
+
+            L3Address nextHop = path.size() > 1 ? path[1] : u;
+            IARP_createRoute(u, nextHop, d, path);
         }
 
         // For self: use neighbourTable, for others: use linkStateTable
@@ -967,84 +979,11 @@ void Zrp::IARP_computeRoutes()
 
             if (dist.find(v) == dist.end() || newDist < dist[v]) {
                 dist[v] = newDist;
-
-                if (u == self) {
-                    nextHop[v] = v;
-                }
-                else {
-                    nextHop[v] = nextHop[u];
-                }
-
-                pq.push({newDist, v});
-            }
-        }
-    }
-}
-
-std::vector<L3Address> Zrp::IARP_getRoutePath(const L3Address& dest) const
-{
-    // Dijkstra from self, tracking predecessors to reconstruct the full path.
-    // Returns [self, ..., dest] or empty if dest is not in our zone.
-    L3Address self = getSelfIPAddress();
-
-    std::map<L3Address, unsigned int> dist;
-    std::map<L3Address, L3Address> prev;
-    std::set<L3Address> visited;
-
-    typedef std::pair<unsigned int, L3Address> PQEntry;
-    std::priority_queue<PQEntry, std::vector<PQEntry>, std::greater<PQEntry>> pq;
-
-    dist[self] = 0;
-    pq.push({0, self});
-
-    while (!pq.empty()) {
-        auto [d, u] = pq.top();
-        pq.pop();
-
-        if (visited.count(u))
-            continue;
-        visited.insert(u);
-
-        if (u == dest)
-            break; // Found shortest path, done
-
-        std::vector<std::pair<L3Address, unsigned int>> neighbours;
-        if (u == self) {
-            for (const auto& entry : neighbourTable)
-                neighbours.push_back({entry.first, 1});
-        }
-        else {
-            auto it = linkStateTable.find(u);
-            if (it != linkStateTable.end()) {
-                for (const auto& linkDest : it->second.linkDestinations)
-                    neighbours.push_back({linkDest.destAddr, linkDest.metrics[0]});
-            }
-        }
-
-        for (const auto& [v, weight] : neighbours) {
-            if (visited.count(v))
-                continue;
-            unsigned int newDist = d + weight;
-            if (newDist > zoneRadius)
-                continue;
-            if (dist.find(v) == dist.end() || newDist < dist[v]) {
-                dist[v] = newDist;
                 prev[v] = u;
                 pq.push({newDist, v});
             }
         }
     }
-
-    if (!visited.count(dest))
-        return {}; // Not reachable within zone
-
-    // Reconstruct path by walking predecessors
-    std::vector<L3Address> path;
-    for (L3Address cur = dest; cur != self; cur = prev[cur])
-        path.push_back(cur);
-    path.push_back(self);
-    std::reverse(path.begin(), path.end());
-    return path;
 }
 
 void Zrp::IARP_updateRoutingTable()
@@ -1221,26 +1160,17 @@ void Zrp::IERP_handleRouteRequest(const Ptr<IERP_RouteData>& request, const L3Ad
         editableRequest->setIntermediateNodes(currentSize, self);
         editableRequest->setNodePtr(currentSize + 1);
 
-        if (queryDest != self && ierpRoute) {
-            // Destination known via cached IERP source route, append intermediate hops
-            auto* rd = dynamic_cast<ZrpRouteData*>(ierpRoute->getProtocolData());
-            if (rd && !rd->getSourceRoute().empty()) {
+        IRoute* chosenRoute = iarpRoute ? iarpRoute : ierpRoute;
+        if (queryDest != self && chosenRoute) {
+            // srcRoute = [self, ..., dest]. Skip self (already added) and dest (set by reply).
+            auto* rd = dynamic_cast<ZrpRouteData*>(chosenRoute->getProtocolData());
+            if (rd) {
                 const auto& srcRoute = rd->getSourceRoute();
-                for (size_t i = 1; i < srcRoute.size() - 1; i++) {
+                for (size_t i = 1; i + 1 < srcRoute.size(); i++) {
                     size_t sz = editableRequest->getIntermediateNodesArraySize();
                     editableRequest->setIntermediateNodesArraySize(sz + 1);
                     editableRequest->setIntermediateNodes(sz, srcRoute[i]);
                 }
-            }
-        }
-        else if (queryDest != self && iarpRoute) {
-            // Destination in our zone. Append the IARP route
-            std::vector<L3Address> iarpPath = IARP_getRoutePath(queryDest);
-            // iarpPath = [self, ..., dest]. Skip self (already added) and dest (set by reply).
-            for (size_t i = 1; i < iarpPath.size() - 1; i++) {
-                size_t sz = editableRequest->getIntermediateNodesArraySize();
-                editableRequest->setIntermediateNodesArraySize(sz + 1);
-                editableRequest->setIntermediateNodes(sz, iarpPath[i]);
             }
         }
 

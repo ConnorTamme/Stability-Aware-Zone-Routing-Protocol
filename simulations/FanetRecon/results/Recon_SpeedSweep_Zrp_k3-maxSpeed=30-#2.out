@@ -1,0 +1,42 @@
+** Event #0   t=0   Elapsed: 1.8e-05s (0m 00s)  0% completed  (0% total)
+     Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
+     Messages:  created: 1178   present: 1178   in FES: 186
+** Event #74240   t=5.134918455491   Elapsed: 2.00238s (0m 02s)  1% completed  (0% total)
+     Speed:     ev/sec=37076.7   simsec/sec=2.56443   ev/simsec=14458.1
+     Messages:  created: 83289   present: 1131   in FES: 128
+** Event #77744   t=5.273003100262   Elapsed: 2.09471s (0m 02s)  1% completed  (0% total)
+     Speed:     ev/sec=37937.1   simsec/sec=1.49544   ev/simsec=25368.6
+     Messages:  created: 87297   present: 1213   in FES: 157
+
+<!> SIGINT or SIGTERM received, exiting -- at t=5.273003100262s, event #77744
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.groundStation.app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[0].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[1].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[2].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[3].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[4].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[5].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[6].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[7].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[8].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[9].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[10].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[11].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[12].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[13].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[14].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[15].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[16].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[17].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[18].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[19].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[20].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[21].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[22].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[23].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[24].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[25].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[26].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[27].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[28].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetReconNetwork.uav[29].app.debugTimer -- check module destructor

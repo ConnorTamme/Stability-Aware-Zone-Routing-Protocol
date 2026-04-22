@@ -1,13 +1,13 @@
 #
-# OMNeT++/OMNEST Makefile for SA-ZRP
+# OMNeT++/OMNEST Makefile for Stability-Aware-Zone-Routing-Protocol
 #
 # This file was generated with the command:
-#  opp_makemake -f --deep -KINET_4_5_4_PROJ=../../inet-4.5.4 -DINET_IMPORT -I$$\(INET_4_5_4_PROJ\)/src -L$$\(INET_4_5_4_PROJ\)/src -lINET$$\(D\)
+#  opp_makemake -f --deep -KINETMANET_4_X_PROJ=../../inetmanet-4.x -DINET_IMPORT -I$$\(INETMANET_4_X_PROJ\)/src -L$$\(INETMANET_4_X_PROJ\)/src -lINET$$\(D\)
 #
 
 # Name of target to be created (-o option)
 TARGET_DIR = .
-TARGET_NAME = SA-ZRP$(D)
+TARGET_NAME = Stability-Aware-Zone-Routing-Protocol$(D)
 TARGET = $(TARGET_NAME)$(EXE_SUFFIX)
 TARGET_FILES = $(TARGET_DIR)/$(TARGET)
 
@@ -17,13 +17,13 @@ USERIF_LIBS = $(ALL_ENV_LIBS) # that is, $(QTENV_LIBS) $(CMDENV_LIBS)
 #USERIF_LIBS = $(QTENV_LIBS)
 
 # C++ include paths (with -I)
-INCLUDE_PATH = -I$(INET_4_5_4_PROJ)/src
+INCLUDE_PATH = -I$(INETMANET_4_X_PROJ)/src
 
 # Additional object and library files to link with
 EXTRA_OBJS =
 
 # Additional libraries (-L, -l options)
-LIBS = $(LDFLAG_LIBPATH)$(INET_4_5_4_PROJ)/src  -lINET$(D)
+LIBS = $(LDFLAG_LIBPATH)$(INETMANET_4_X_PROJ)/src  -lINET$(D)
 
 # Output directory
 PROJECT_OUTPUT_DIR = ../out
@@ -41,7 +41,7 @@ MSGFILES = \
 SMFILES =
 
 # Other makefile variables (-K)
-INET_4_5_4_PROJ=../../inet-4.5.4
+INETMANET_4_X_PROJ=../../inetmanet-4.x
 
 #------------------------------------------------------------------------------
 
@@ -62,7 +62,7 @@ include $(CONFIGFILE)
 # Simulation kernel and user interface libraries
 OMNETPP_LIBS = $(OPPMAIN_LIB) $(USERIF_LIBS) $(KERNEL_LIBS) $(SYS_LIBS)
 ifneq ($(PLATFORM),win32)
-LIBS += -Wl,-rpath,$(abspath $(INET_4_5_4_PROJ)/src)
+LIBS += -Wl,-rpath,$(abspath $(INETMANET_4_X_PROJ)/src)
 endif
 
 COPTS = $(CFLAGS) $(IMPORT_DEFINES) -DINET_IMPORT $(INCLUDE_PATH) -I$(OMNETPP_INCL_DIR)
@@ -114,11 +114,11 @@ $O/%.o: %.cc $(COPTS_FILE) | msgheaders smheaders
 
 %_m.cc %_m.h: %.msg
 	$(qecho) MSGC: $<
-	$(Q)$(MSGC) -s _m.cc -MD -MP -MF $O/$(basename $<)_m.h.d $(MSGCOPTS) $<
+	$(Q)$(MSGC) -s _m.cc -MD -MP -MF $O/$(basename $<)_m.h.d $(MSGCOPTS) $?
 
 %_sm.cc %_sm.h: %.sm
 	$(qecho) SMC: $<
-	$(Q)$(SMC) -c++ -suffix cc $(SMCOPTS) $<
+	$(Q)$(SMC) -c++ -suffix cc $(SMCOPTS) $?
 
 msgheaders: $(MSGFILES:.msg=_m.h)
 

@@ -1,0 +1,64 @@
+** Event #0   t=0   Elapsed: 8e-06s (0m 00s)  0% completed  (50% total)
+     Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
+     Messages:  created: 418   present: 418   in FES: 66
+** Event #66048   t=50.350777975057   Elapsed: 2.00956s (0m 02s)  10% completed  (55% total)
+     Speed:     ev/sec=32867.5   simsec/sec=25.0557   ev/simsec=1311.78
+     Messages:  created: 49793   present: 428   in FES: 54
+** Event #142336   t=109.069355455847   Elapsed: 4.01003s (0m 04s)  21% completed  (60% total)
+     Speed:     ev/sec=38135   simsec/sec=29.3524   ev/simsec=1299.21
+     Messages:  created: 114193   present: 656   in FES: 45
+** Event #201728   t=130.438689626696   Elapsed: 6.0139s (0m 06s)  26% completed  (63% total)
+     Speed:     ev/sec=29638.7   simsec/sec=10.6641   ev/simsec=2779.31
+     Messages:  created: 167219   present: 1345   in FES: 46
+** Event #254720   t=137.757778354585   Elapsed: 8.01726s (0m 08s)  27% completed  (63% total)
+     Speed:     ev/sec=26451.5   simsec/sec=3.6534   ev/simsec=7240.25
+     Messages:  created: 224357   present: 1379   in FES: 65
+** Event #318208   t=146.483953211708   Elapsed: 10.0221s (0m 10s)  29% completed  (64% total)
+     Speed:     ev/sec=31667.6   simsec/sec=4.35259   ev/simsec=7275.58
+     Messages:  created: 292364   present: 1365   in FES: 54
+** Event #373504   t=155.999397569944   Elapsed: 12.0281s (0m 12s)  31% completed  (65% total)
+     Speed:     ev/sec=27564.8   simsec/sec=4.7434   ev/simsec=5811.18
+     Messages:  created: 352238   present: 1437   in FES: 57
+** Event #437504   t=167.673103347992   Elapsed: 14.0286s (0m 14s)  33% completed  (66% total)
+     Speed:     ev/sec=31992.6   simsec/sec=5.8355   ev/simsec=5482.41
+     Messages:  created: 421891   present: 1586   in FES: 45
+** Event #504832   t=192.087855908275   Elapsed: 16.0308s (0m 16s)  38% completed  (69% total)
+     Speed:     ev/sec=33627.1   simsec/sec=12.194   ev/simsec=2757.68
+     Messages:  created: 489839   present: 2496   in FES: 44
+** Event #572160   t=251.43867043484   Elapsed: 18.0334s (0m 18s)  50% completed  (75% total)
+     Speed:     ev/sec=33619.5   simsec/sec=29.6362   ev/simsec=1134.41
+     Messages:  created: 542859   present: 4883   in FES: 48
+** Event #647680   t=285.067712572636   Elapsed: 20.0395s (0m 20s)  57% completed  (78% total)
+     Speed:     ev/sec=37645.2   simsec/sec=16.7634   ev/simsec=2245.68
+     Messages:  created: 613211   present: 5831   in FES: 43
+** Event #723968   t=314.066224311944   Elapsed: 22.043s (0m 22s)  62% completed  (81% total)
+     Speed:     ev/sec=38078.6   simsec/sec=14.4744   ev/simsec=2630.76
+     Messages:  created: 685886   present: 6516   in FES: 44
+** Event #782592   t=324.247327257064   Elapsed: 24.0543s (0m 24s)  64% completed  (82% total)
+     Speed:     ev/sec=29146.3   simsec/sec=5.06178   ev/simsec=5758.12
+     Messages:  created: 747413   present: 6650   in FES: 43
+** Event #832000   t=352.751874595415   Elapsed: 26.0605s (0m 26s)  70% completed  (85% total)
+     Speed:     ev/sec=24628.2   simsec/sec=14.2085   ev/simsec=1733.34
+     Messages:  created: 780642   present: 7791   in FES: 43
+** Event #911360   t=418.367329023196   Elapsed: 28.0675s (0m 28s)  83% completed  (91% total)
+     Speed:     ev/sec=39541.1   simsec/sec=32.6929   ev/simsec=1209.47
+     Messages:  created: 841294   present: 10419   in FES: 43
+** Event #985088   t=470.350844224498   Elapsed: 30.0746s (0m 30s)  94% completed  (97% total)
+     Speed:     ev/sec=36733.1   simsec/sec=25.8995   ev/simsec=1418.3
+     Messages:  created: 893605   present: 12527   in FES: 53
+** Event #1026162   t=500   Elapsed: 31.4512s (0m 31s)  100% completed  (100% total)
+     Speed:     ev/sec=29837.8   simsec/sec=21.5385   ev/simsec=1385.33
+     Messages:  created: 923505   present: 1268   in FES: 42
+
+<!> Simulation time limit reached -- at t=500s, event #1026162
+undisposed object: (omnetpp::cMessage) FanetSarNetwork.groundStation.app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetSarNetwork.uav[0].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetSarNetwork.uav[1].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetSarNetwork.uav[2].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetSarNetwork.uav[3].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetSarNetwork.uav[4].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetSarNetwork.uav[5].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetSarNetwork.uav[6].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetSarNetwork.uav[7].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetSarNetwork.uav[8].app.debugTimer -- check module destructor
+undisposed object: (omnetpp::cMessage) FanetSarNetwork.uav[9].app.debugTimer -- check module destructor

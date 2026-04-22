@@ -212,8 +212,8 @@ class INET_API Zrp : public RoutingProtocolBase,
     void IARP_updateRoutingTable();
     void IARP_purgeRoutingTable();
     void IARP_computeRoutes();
-    std::vector<L3Address> IARP_getRoutePath(const L3Address& dest) const;
-    IRoute* IARP_createRoute(const L3Address& dest, const L3Address& nextHop, unsigned int hops);
+    IRoute* IARP_createRoute(const L3Address& dest, const L3Address& nextHop, unsigned int hops,
+                             const std::vector<L3Address>& fullRoute);
 
     // IERP Functions
     // Route discovery initiation

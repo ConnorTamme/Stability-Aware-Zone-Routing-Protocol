@@ -1,65 +1,263 @@
 #!/bin/bash
 cd "$(dirname "$0")"
 
-EXPERIMENTS="FanetRecon FanetSar FanetStress"
+ALL_EXPERIMENTS=("FanetRecon" "FanetSar" "FanetStress")
+MARKER_SUBDIR="results/.done"
 
-for exp in $EXPERIMENTS; do
-    echo "=========================================================="
-    echo " Starting experiment set: $exp"
-    echo "=========================================================="
-    
-    cd "$exp" || { echo "Failed to enter $exp"; continue; }
-    
-    # We dynamically find all leaf configurations in the omnetpp.ini
-    # by catching lines like "[Config Recon_NodeSweep_StabilityZrp]" 
-    # and excluding base configs without an underscore.
-    CONFIGS=$(grep -hE '^\[Config ' omnetpp.ini | awk '{print $2}' | tr -d ']' | grep '_')
-    
-    for config in $CONFIGS; do
-        echo "----------------------------------------------------------"
-        echo " Running Scenario: $exp -> $config"
-        echo "----------------------------------------------------------"
-        
-        # -u Cmdenv forces terminal/headless execution 
-        # opp_runall automatically queries the number of sweeps/repeats and runs them in parallel 
-        # across all available CPU cores (-j $(nproc)).
-        opp_runall -j $(nproc) ./run -u Cmdenv -c "$config" "$@"
-        
-        if [ $? -ne 0 ]; then
-             echo "==== Error encountered during $config in $exp! ===="
-        fi
+usage() {
+    local me
+    me="$(basename "$0")"
+    cat <<EOF
+Usage: $me [options] [config-pattern ...]
+
+Runs OMNeT++ sweep configs across the FANET experiments
+(${ALL_EXPERIMENTS[*]}). Each leaf config (e.g. Recon_NodeSweep_Aodv) is one
+sweep. By default every sweep in every experiment is considered.
+
+Success markers
+  When a sweep finishes with opp_runall returning 0 (every run succeeded),
+  a marker file is written at:
+      <experiment>/${MARKER_SUBDIR}/<config>.marker
+  Subsequent runs skip any config that already has a marker. To re-run,
+  either delete the marker or pass --force. A sweep with ANY failed run
+  is never marked done — fix the cause and re-invoke to retry only that
+  sweep (others keep their markers).
+
+Options
+  -h, --help              Show this help and exit
+  -l, --list              List experiments and configs; [*] marks sweeps
+                          that already have a success marker
+  -f, --force             Re-run even if the success marker exists
+  -e, --experiment EXP    Restrict to EXP. Repeatable. One of:
+                          ${ALL_EXPERIMENTS[*]}
+  -r, --run FILTER        Run specific individual experiments/runs (e.g., "1,2" or 
+                          "\$numNodes==30 AND \$repetition==1"). When this is used, 
+                          success markers are skipped (not checked or written).
+  -n, --dry-run           Print what would run; don't execute
+  --                      End of options; remaining args are forwarded
+                          verbatim to opp_runall
+
+Config patterns
+  Zero or more config names or shell globs (matched against names shown by
+  --list). Must use quotes to prevent the shell from expanding globs.
+  Examples:
+      $me                                  # run everything not yet marked
+      $me --list                           # see all configs + marker state
+      $me Recon_NodeSweep_Aodv             # just one sweep
+      $me -e FanetRecon '*Aodv*'           # all Aodv sweeps in FanetRecon
+      $me '*_SpeedSweep_Zrp_k2'            # k=2 ZRP speed sweeps, all exps
+      $me -f Recon_NodeSweep_StabilityZrp  # force re-run one sweep
+EOF
+}
+
+FORCE=0
+DRY_RUN=0
+DO_LIST=0
+RUN_FILTER=""
+SELECTED_EXPERIMENTS=()
+PATTERNS=()
+EXTRA_ARGS=()
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -h|--help)    usage; exit 0 ;;
+        -l|--list)    DO_LIST=1; shift ;;
+        -f|--force)   FORCE=1; shift ;;
+        -n|--dry-run) DRY_RUN=1; shift ;;
+        -r|--run)
+            if [ $# -lt 2 ]; then
+                echo "Error: $1 requires a value" >&2; exit 2
+            fi
+            RUN_FILTER="$2"; shift 2 ;;
+        -e|--experiment)
+            if [ $# -lt 2 ]; then
+                echo "Error: $1 requires a value" >&2; exit 2
+            fi
+            SELECTED_EXPERIMENTS+=("$2"); shift 2 ;;
+        --)           shift; EXTRA_ARGS+=("$@"); break ;;
+        -*)           echo "Unknown option: $1" >&2; echo; usage >&2; exit 2 ;;
+        *)            PATTERNS+=("$1"); shift ;;
+    esac
+done
+
+if [ ${#SELECTED_EXPERIMENTS[@]} -eq 0 ]; then
+    SELECTED_EXPERIMENTS=("${ALL_EXPERIMENTS[@]}")
+fi
+
+for exp in "${SELECTED_EXPERIMENTS[@]}"; do
+    found=0
+    for known in "${ALL_EXPERIMENTS[@]}"; do
+        [ "$exp" = "$known" ] && { found=1; break; }
     done
-    
+    if [ $found -eq 0 ]; then
+        echo "Unknown experiment: $exp" >&2
+        echo "Known: ${ALL_EXPERIMENTS[*]}" >&2
+        exit 2
+    fi
+    if [ ! -f "$exp/omnetpp.ini" ]; then
+        echo "Error: $exp/omnetpp.ini not found (cwd=$(pwd))" >&2
+        exit 2
+    fi
+done
+
+configs_of() {
+    grep -hE '^\[Config ' "$1/omnetpp.ini" | awk '{print $2}' | tr -d ']' | grep '_'
+}
+
+matches_patterns() {
+    local name="$1"
+    [ ${#PATTERNS[@]} -eq 0 ] && return 0
+    local p
+    for p in "${PATTERNS[@]}"; do
+        # shellcheck disable=SC2053
+        [[ "$name" == $p ]] && return 0
+    done
+    return 1
+}
+
+marker_for() { echo "$1/$MARKER_SUBDIR/$2.marker"; }
+
+if [ "$DO_LIST" -eq 1 ]; then
+    any_listed=0
+    for exp in "${SELECTED_EXPERIMENTS[@]}"; do
+        header_printed=0
+        while IFS= read -r cfg; do
+            matches_patterns "$cfg" || continue
+            if [ $header_printed -eq 0 ]; then
+                echo "[$exp]"
+                header_printed=1
+            fi
+            mark=" "
+            [ -f "$(marker_for "$exp" "$cfg")" ] && mark="*"
+            echo "  [$mark] $cfg"
+            any_listed=1
+        done < <(configs_of "$exp")
+        [ $header_printed -eq 1 ] && echo
+    done
+    if [ $any_listed -eq 0 ]; then
+        echo "No configs matched."
+        [ ${#PATTERNS[@]} -gt 0 ] && echo "Patterns: ${PATTERNS[*]}"
+        exit 1
+    fi
+    echo "[*] = success marker present (skipped unless --force)"
+    echo "Marker dir: <experiment>/$MARKER_SUBDIR/"
+    exit 0
+fi
+
+date
+OVERALL_RC=0
+MATCHED_ANY=0
+TOUCHED_EXPERIMENTS=()
+
+for exp in "${SELECTED_EXPERIMENTS[@]}"; do
+    exp_touched=0
+    while IFS= read -r cfg; do
+        matches_patterns "$cfg" || continue
+        MATCHED_ANY=1
+
+        marker="$(marker_for "$exp" "$cfg")"
+        if [ -n "$RUN_FILTER" ]; then
+            echo "[specific run] $exp / $cfg  (ignoring markers: $RUN_FILTER)"
+        elif [ "$FORCE" -ne 1 ] && [ -f "$marker" ]; then
+            echo "[skip] $exp / $cfg  (marker: $marker)"
+            continue
+        fi
+
+        echo "=========================================================="
+        echo " Running: $exp -> $cfg"
+        echo "=========================================================="
+
+        if [ "$DRY_RUN" -eq 1 ]; then
+            if [ -n "$RUN_FILTER" ]; then
+                echo "  (dry-run) opp_runall -j $(nproc) ./run -u Cmdenv -c $cfg -r \"$RUN_FILTER\" ${EXTRA_ARGS[*]}"
+            else
+                echo "  (dry-run) opp_runall -j $(nproc) ./run -u Cmdenv -c $cfg ${EXTRA_ARGS[*]}"
+            fi
+            continue
+        fi
+
+        exp_touched=1
+        (
+            cd "$exp" || exit 1
+            if [ -n "$RUN_FILTER" ]; then
+                if [ ${#EXTRA_ARGS[@]} -gt 0 ]; then
+                    opp_runall -j "$(nproc)" ./run -u Cmdenv -c "$cfg" -r "$RUN_FILTER" "${EXTRA_ARGS[@]}"
+                else
+                    opp_runall -j "$(nproc)" ./run -u Cmdenv -c "$cfg" -r "$RUN_FILTER"
+                fi
+            else
+                if [ ${#EXTRA_ARGS[@]} -gt 0 ]; then
+                    opp_runall -j "$(nproc)" ./run -u Cmdenv -c "$cfg" "${EXTRA_ARGS[@]}"
+                else
+                    opp_runall -j "$(nproc)" ./run -u Cmdenv -c "$cfg"
+                fi
+            fi
+        )
+        rc=$?
+
+        if [ $rc -eq 0 ]; then
+            if [ -n "$RUN_FILTER" ]; then
+                echo "[ok] $exp / $cfg  (specific run finished; NOT marking done)"
+            else
+                mkdir -p "$exp/$MARKER_SUBDIR"
+                {
+                    echo "config=$cfg"
+                    echo "experiment=$exp"
+                    echo "finished=$(date -Iseconds 2>/dev/null || date)"
+                    echo "host=$(hostname)"
+                } > "$marker"
+                echo "[ok] $exp / $cfg  (marked done)"
+            fi
+        else
+            OVERALL_RC=1
+            echo "==== FAILED: $exp / $cfg (rc=$rc) — NOT marking as done ===="
+        fi
+    done < <(configs_of "$exp")
+
+    [ $exp_touched -eq 1 ] && TOUCHED_EXPERIMENTS+=("$exp")
+done
+
+if [ "$MATCHED_ANY" -eq 0 ] && [ ${#PATTERNS[@]} -gt 0 ]; then
+    echo "No configs matched pattern(s): ${PATTERNS[*]}" >&2
+    echo "Try: $(basename "$0") --list" >&2
+    exit 2
+fi
+
+for exp in "${TOUCHED_EXPERIMENTS[@]}"; do
+    [ "$DRY_RUN" -eq 1 ] && continue
     echo "=========================================================="
     echo " Generating Results & Exports for $exp..."
     echo "=========================================================="
-    
-    # Auto-generate a basic OMNeT++ Analysis File (.anf)
-    cat <<EOF > results.anf
+
+    cat > "$exp/results.anf" <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <analysis version="2">
     <inputs>
-        <input pattern="/SA-ZRP/simulations/$exp/results/*.vec"/>
-        <input pattern="/SA-ZRP/simulations/$exp/results/*.sca"/>
+        <input pattern="/Stability-Aware-Zone-Routing-Protocol/simulations/$exp/results/*.vec"/>
+        <input pattern="/Stability-Aware-Zone-Routing-Protocol/simulations/$exp/results/*.sca"/>
     </inputs>
     <charts/>
 </analysis>
 EOF
-    
-    # Export all scalar and vector results to standard CSVs for Python/pandas analysis
-    if command -v scavetool &> /dev/null; then
-        echo "Exporting results to CSV using scavetool..."
-        scavetool x results/*.sca -o results_scalars.csv 2>/dev/null
-        scavetool x results/*.vec -o results_vectors.csv 2>/dev/null
+
+    if command -v opp_scavetool &> /dev/null; then
+        echo "Exporting results to CSV using opp_scavetool..."
+        (cd "$exp" && opp_scavetool x results/*.sca -o results_scalars.csv 2>/dev/null)
+        (cd "$exp" && opp_scavetool x results/*.vec -o results_vectors.csv 2>/dev/null)
     else
-        echo "Warning: scavetool not found in PATH! CSV exports skipped."
+        echo "Warning: opp_scavetool not found in PATH! CSV exports skipped."
     fi
-    
-    cd ..
 done
 
-echo "=========================================================="
-echo " All main configurations have been successfully run!"
-echo "=========================================================="
-
-echo "All experiments finished!"
+date
+if [ "$OVERALL_RC" -eq 0 ]; then
+    if [ "$MATCHED_ANY" -eq 1 ]; then
+        echo "Done. All selected sweeps either succeeded or were already marked."
+    else
+        echo "Nothing to do."
+    fi
+else
+    echo "Done with FAILURES — see log above."
+    echo "Run '$(basename "$0") --list' to see which sweeps are still unmarked."
+fi
+exit $OVERALL_RC

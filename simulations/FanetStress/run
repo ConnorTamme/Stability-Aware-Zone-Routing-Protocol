@@ -1,5 +1,5 @@
 #!/bin/sh
 cd `dirname $0`
-../../src/SA-ZRP_dbg \
-  -n .:../../src:../../../inet-4.5.4/src \
+../../src/Stability-Aware-Zone-Routing-Protocol_dbg \
+  -n .:../../src:../../../inetmanet-4.x/src \
   "$@"

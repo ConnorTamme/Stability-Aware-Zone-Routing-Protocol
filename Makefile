@@ -10,7 +10,7 @@ cleanall: checkmakefiles
 	rm -f src/Makefile
 
 makefiles:
-	cd src && opp_makemake -f --deep
+	cd src && opp_makemake -f --deep -o SA-ZRP -KINETMANET_4_X_PROJ=../../inetmanet-4.x -DINET_IMPORT -I'$$(INETMANET_4_X_PROJ)/src' -L'$$(INETMANET_4_X_PROJ)/src' -lINET'$$(D)'
 
 checkmakefiles:
 	@if [ ! -f src/Makefile ]; then \

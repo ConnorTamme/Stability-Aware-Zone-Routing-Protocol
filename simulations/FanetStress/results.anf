@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<analysis version="2">
+    <inputs>
+        <input pattern="/Stability-Aware-Zone-Routing-Protocol/simulations/FanetStress/results/*.vec"/>
+        <input pattern="/Stability-Aware-Zone-Routing-Protocol/simulations/FanetStress/results/*.sca"/>
+    </inputs>
+    <charts/>
+</analysis>
