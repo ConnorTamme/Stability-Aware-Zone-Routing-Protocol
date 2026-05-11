@@ -37,6 +37,14 @@ Define_Module(SaZrp);
 
 simsignal_t SaZrp::controlPacketSentSignal = registerSignal("controlPacketSent");
 simsignal_t SaZrp::routeDiscoveryStartedSignal = registerSignal("routeDiscoveryStarted");
+simsignal_t SaZrp::routeDiscoveryRetriedSignal = registerSignal("routeDiscoveryRetried");
+simsignal_t SaZrp::pktSentNDPSignal       = registerSignal("pktSentNDP");
+simsignal_t SaZrp::pktSentIARPSignal      = registerSignal("pktSentIARP");
+simsignal_t SaZrp::pktSentIERPQuerySignal = registerSignal("pktSentIERPQuery");
+simsignal_t SaZrp::pktSentIERPReplySignal = registerSignal("pktSentIERPReply");
+simsignal_t SaZrp::pktSentBRPSignal       = registerSignal("pktSentBRP");
+simsignal_t SaZrp::routeLengthSignal       = registerSignal("routeLength");
+simsignal_t SaZrp::routeDiscoveryTimeSignal = registerSignal("routeDiscoveryTime");
 
 namespace {
 // Threshold below which a link is treated as effectively absent by the widest-path
@@ -119,6 +127,8 @@ void SaZrp::initialize(int stage)
         ierpRetryInterval = par("ierpRetryInterval");
         ierpMaxRetries = par("ierpMaxRetries");
         delayedPacketLifetime = par("delayedPacketLifetime");
+        IARP_eventDelay = par("IARP_eventDelay");
+        IARP_eventJitter = par("IARP_eventJitter");
 
         // WATCH variables for Qtenv
         WATCH(stabilityThreshold);
@@ -192,7 +202,7 @@ void SaZrp::handleMessageWhenUp(cMessage* msg)
                         }
                     }
 
-                    IERP_initiateRouteDiscovery(dest);
+                    IERP_initiateRouteDiscovery(dest, /*isRetry=*/true);
                 }
                 else {
                     EV_WARN << "IERP: Max retries (" << ierpMaxRetries << ") exhausted for " << dest << ", dropping "
@@ -206,6 +216,10 @@ void SaZrp::handleMessageWhenUp(cMessage* msg)
                     }
                     delayedPackets.erase(lt, ut);
                     ierpRetryCounters.erase(dest);
+                    // Discovery is being abandoned -- drop the start-time
+                    // entry so a future discovery for the same dest doesn't
+                    // emit a stale elapsed value.
+                    ierpDiscoveryStartTimes.erase(dest);
                 }
             }
             else {
@@ -327,6 +341,7 @@ void SaZrp::clearState()
     neighbourKinematics.clear();
     ierpQueryTable.clear();
     brpCoverageTable.clear();
+    ierpDiscoveryStartTimes.clear();
 
     // Reset sequence numbers
     NDP_seqNum = 0;
@@ -702,7 +717,22 @@ void SaZrp::sendZrpPacket(const Ptr<FieldsChunk>& payload, const L3Address& dest
     packet->addTag<L3AddressReq>()->setDestAddress(destAddr);
     packet->addTag<L4PortReq>()->setDestPort(zrpUDPPort);
 
+    // Aggregate signal: every control packet, all types lumped. Kept for
+    // continuity with the existing overhead_ratio metric in extract_metrics.py.
     emit(controlPacketSentSignal, packet);
+    // Per-type attribution: dispatch on payload chunk type so the breakdown
+    // plot can show NDP / IARP / IERP-query / IERP-reply / BRP separately.
+    // Exactly one per-type signal fires per call -- the sum of their counts
+    // must equal controlPacketSent:count (a useful sanity check).
+    if (dynamicPtrCast<const NDP_Hello>(payload))
+        emit(pktSentNDPSignal, packet);
+    else if (dynamicPtrCast<const IARP_LinkStateUpdate>(payload))
+        emit(pktSentIARPSignal, packet);
+    else if (auto ierp = dynamicPtrCast<const IERP_RouteData>(payload))
+        emit(ierp->getType() == IERP_QUERY ? pktSentIERPQuerySignal : pktSentIERPReplySignal,
+             packet);
+    else if (dynamicPtrCast<const BRP_Data>(payload))
+        emit(pktSentBRPSignal, packet);
     socket.send(packet);
 }
 
@@ -797,6 +827,7 @@ void SaZrp::handleNDPHello(const Ptr<NDP_Hello>& hello, const L3Address& sourceA
     if (isNewNeighbour) {
         EV_INFO << "New neighbour " << sourceAddr << " discovered, recomputing IARP routes" << endl;
         IARP_updateRoutingTable();
+        scheduleEarlyIARPUpdate();
     }
 }
 
@@ -824,6 +855,7 @@ void SaZrp::NDP_refreshNeighbourTable()
 
     if (!toRemove.empty()) {
         IARP_updateRoutingTable();
+        scheduleEarlyIARPUpdate();
     }
 }
 
@@ -875,6 +907,7 @@ void SaZrp::sendIARPUpdate()
 
     if (neighbourTable.empty()) {
         EV_DETAIL << "No neighbours to advertise, skipping IARP update" << endl;
+        iarpUpdatePending = false;
         scheduleAfter(IARP_updateInterval, IARP_updateTimer);
         return;
     }
@@ -883,7 +916,20 @@ void SaZrp::sendIARPUpdate()
     // Use a generous IP TTL; flood termination is governed by runningStability, not IP TTL.
     sendZrpPacket(update, Ipv4Address::ALLONES_ADDRESS, 255);
 
+    iarpUpdatePending = false;
     scheduleAfter(IARP_updateInterval, IARP_updateTimer);
+}
+
+void SaZrp::scheduleEarlyIARPUpdate()
+{
+    if (iarpUpdatePending)
+        return;
+    iarpUpdatePending = true;
+    if (IARP_updateTimer->isScheduled())
+        cancelEvent(IARP_updateTimer);
+    // Add some jitter to ensure messages do not collide
+    scheduleAfter(SimTime((int64_t)std::round(IARP_eventDelay + uniform(0, IARP_eventJitter)), SIMTIME_MS), IARP_updateTimer);
+
 }
 
 void SaZrp::handleIARPUpdate(const Ptr<IARP_LinkStateUpdate>& update, const L3Address& sourceAddr)
@@ -910,7 +956,24 @@ void SaZrp::handleIARPUpdate(const Ptr<IARP_LinkStateUpdate>& update, const L3Ad
         return;
     }
     double sbar_self_j = sIt->second;
-    double r_out = decayBeta * std::min(r_in, sbar_self_j);
+
+    // Symmetrize the J<->self link: also consult J's last-advertised view of self,
+    // if cached, and take the min with our view. Falls back to the asymmetric rule
+    // when we have not yet seen an advertisement from J that lists us.
+    double sbar_link = sbar_self_j;
+    auto jLsIt = linkStateTable.find(sourceAddr);
+    if (jLsIt != linkStateTable.end()) {
+        L3Address self = getSelfIPAddress();
+        for (const auto& ld : jLsIt->second.linkDestinations) {
+            if (ld.destAddr == self) {
+                double sbar_j_self = static_cast<double>(ld.metrics[0]) / 255.0;
+                sbar_link = std::min(sbar_self_j, sbar_j_self);
+                break;
+            }
+        }
+    }
+
+    double r_out = decayBeta * std::min(r_in, sbar_link);
 
     if (r_out < stabilityThreshold) {
         EV_DETAIL << "Dropping IARP update: r_out=" << r_out << " < tau=" << stabilityThreshold << endl;
@@ -1094,6 +1157,17 @@ void SaZrp::IARP_computeRoutes()
                 for (const auto& linkDest : it->second.linkDestinations) {
                     // metrics[0] is quantized stability byte
                     double sbar = static_cast<double>(linkDest.metrics[0]) / 255.0;
+                    // Symmetrize: also consult v's advertisement for u, if available, and take the min.
+                    auto vLsIt = linkStateTable.find(linkDest.destAddr);
+                    if (vLsIt != linkStateTable.end()) {
+                        for (const auto& reverseDest : vLsIt->second.linkDestinations) {
+                            if (reverseDest.destAddr == u) {
+                                double sbarReverse = static_cast<double>(reverseDest.metrics[0]) / 255.0;
+                                sbar = std::min(sbar, sbarReverse);
+                                break;
+                            }
+                        }
+                    }
                     neighbours.push_back({linkDest.destAddr, sbar});
                 }
             }
@@ -1139,11 +1213,25 @@ void SaZrp::IARP_updateRoutingTable()
 
 // IERP Functions
 
-void SaZrp::IERP_initiateRouteDiscovery(const L3Address& dest)
+void SaZrp::IERP_initiateRouteDiscovery(const L3Address& dest, bool isRetry)
 {
-    EV_INFO << "Initiating IERP route discovery for " << dest << endl;
+    EV_INFO << (isRetry ? "Retrying" : "Initiating")
+            << " IERP route discovery for " << dest << endl;
 
-    emit(routeDiscoveryStartedSignal, (intval_t)1);
+    // Only the first attempt counts as a "started" discovery -- this matches
+    // INET's AODV semantics, where the routeDiscoveryStarted signal fires once
+    // per destination and the up-to-rreqRetries retransmits don't refire it.
+    if (isRetry)
+        emit(routeDiscoveryRetriedSignal, (intval_t)1);
+    else {
+        emit(routeDiscoveryStartedSignal, (intval_t)1);
+        // Record wallclock start of this discovery for the routeDiscoveryTime
+        // metric. Retries do NOT reset this -- the metric measures end-user
+        // wait time, which spans the whole retry chain. If a stale entry
+        // happens to be sitting here (previous discovery never completed),
+        // overwrite it: the in-flight one wins.
+        ierpDiscoveryStartTimes[dest] = simTime();
+    }
 
     auto request = IERP_createRouteRequest(dest);
 
@@ -1394,27 +1482,57 @@ void SaZrp::IERP_handleRouteReply(const Ptr<IERP_RouteData>& reply, const L3Addr
         routeToDest.push_back(fullRoute[i]);
     }
 
-    // Install/update route to destination
+    // Install/update route to destination. Tiebreak between competing replies
+    // is: (1) high-stability next hop beats low-stability, (2) on the same
+    // tier, fewer hops wins, (3) on a full tie, keep the existing route
+    // (earlier-arriving wins). Stability tier of a next hop is high iff
+    // sbar >= tau OR the neighbour is unknown to neighbourStability (no sample
+    // yet -- treat as high so we don't penalise replies whose first hop we
+    // simply haven't heard a Hello from in this session).
     if (routeToDest.size() > 1) {
         L3Address nextHop = routeToDest[1];
         unsigned int hops = routeToDest.size() - 1;
 
-        // Remove existing IERP route to this destination if any
+        auto isLowStabNextHop = [&](const L3Address& nh) {
+            auto sIt = neighbourStability.find(nh);
+            return (sIt != neighbourStability.end()) && (sIt->second < stabilityThreshold);
+        };
+
         IRoute* existingRoute = IERP_findRoute(routeDest);
+        bool shouldInstall = true;
         if (existingRoute) {
-            routingTable->deleteRoute(existingRoute);
+            L3Address oldNextHop = existingRoute->getNextHopAsGeneric();
+            unsigned int oldHops = existingRoute->getMetric();
+            bool newLow = isLowStabNextHop(nextHop);
+            bool oldLow = isLowStabNextHop(oldNextHop);
+            if (newLow != oldLow) {
+                shouldInstall = !newLow; // prefer the high-stability tier
+            }
+            else {
+                shouldInstall = (hops < oldHops); // same tier -> fewer hops, else keep old
+            }
         }
 
-        IERP_createRoute(routeDest, nextHop, hops, routeToDest);
+        if (shouldInstall) {
+            if (existingRoute)
+                routingTable->deleteRoute(existingRoute);
+            IERP_createRoute(routeDest, nextHop, hops, routeToDest);
 
-        EV_INFO << "IERP: Installed route to " << routeDest << " via " << nextHop << " (" << hops
-                << " hops, full route: ";
-        for (size_t i = 0; i < routeToDest.size(); i++) {
-            if (i > 0)
-                EV_INFO << "->";
-            EV_INFO << routeToDest[i];
+            EV_INFO << "IERP: Installed route to " << routeDest << " via " << nextHop << " (" << hops
+                    << " hops, full route: ";
+            for (size_t i = 0; i < routeToDest.size(); i++) {
+                if (i > 0)
+                    EV_INFO << "->";
+                EV_INFO << routeToDest[i];
+            }
+            EV_INFO << ")" << endl;
         }
-        EV_INFO << ")" << endl;
+        else {
+            EV_INFO << "IERP: Keeping existing route to " << routeDest << " (existing via "
+                    << existingRoute->getNextHopAsGeneric() << ", " << existingRoute->getMetric()
+                    << " hops; new via " << nextHop << ", " << hops
+                    << " hops -- existing wins on stability/hop/first-come tiebreak)" << endl;
+        }
     }
 
     if (self != routeSource) {
@@ -1630,6 +1748,19 @@ void SaZrp::IERP_completeRouteDiscovery(const L3Address& dest)
 {
     EV_DETAIL << "Completing route discovery for " << dest << ", releasing " << delayedPackets.count(dest)
               << " buffered datagrams" << endl;
+
+    // Emit per-discovery metrics on the FIRST reply only. The start-time map
+    // entry is created in IERP_initiateRouteDiscovery (non-retry path) and
+    // erased here, so subsequent replies for the same query don't re-emit.
+    auto stIt = ierpDiscoveryStartTimes.find(dest);
+    if (stIt != ierpDiscoveryStartTimes.end()) {
+        simtime_t elapsed = simTime() - stIt->second;
+        emit(routeDiscoveryTimeSignal, elapsed.dbl());
+        IRoute* installed = IERP_findRoute(dest);
+        if (installed)
+            emit(routeLengthSignal, (intval_t)installed->getMetric());
+        ierpDiscoveryStartTimes.erase(stIt);
+    }
 
     auto lt = delayedPackets.lower_bound(dest);
     auto ut = delayedPackets.upper_bound(dest);
@@ -2001,6 +2132,17 @@ bool SaZrp::BRP_isOutNeighbour(const L3Address& prevBordercaster, const L3Addres
             if (it != linkStateTable.end()) {
                 for (const auto& linkDest : it->second.linkDestinations) {
                     double sbar = static_cast<double>(linkDest.metrics[0]) / 255.0;
+                    // Symmetrize: also consult v's advertisement for u, if available, and take the min.
+                    auto vLsIt = linkStateTable.find(linkDest.destAddr);
+                    if (vLsIt != linkStateTable.end()) {
+                        for (const auto& reverseDest : vLsIt->second.linkDestinations) {
+                            if (reverseDest.destAddr == u) {
+                                double sbarReverse = static_cast<double>(reverseDest.metrics[0]) / 255.0;
+                                sbar = std::min(sbar, sbarReverse);
+                                break;
+                            }
+                        }
+                    }
                     neighbours.push_back({linkDest.destAddr, sbar});
                 }
             }

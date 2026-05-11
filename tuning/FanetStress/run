@@ -1,0 +1,8 @@
+#!/bin/sh
+cd `dirname $0`
+# NED path includes ../../simulations/FanetStress so the existing
+# FanetStressNetwork.ned (package sa_zrp.simulations.FanetStress) is loadable
+# without duplicating the network file here.
+../../src/Stability-Aware-Zone-Routing-Protocol_dbg \
+  -n .:../../src:../../simulations/FanetStress:../../../inetmanet-4.x/src \
+  "$@"

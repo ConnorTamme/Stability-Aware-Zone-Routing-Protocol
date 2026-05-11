@@ -86,6 +86,47 @@ def mean_std(values):
     return m, math.sqrt(var)
 
 
+def pool_delay_stats(sinks):
+    """Pool per-sink endToEndDelay stats into (count, mean, stddev, min, max).
+    `sinks` is {module_fqn: {count, mean, stddev, min, max}}. FanetRecon/Sar
+    have a single sink so this collapses; FanetStress would have 5 if this
+    script were taught to recognize that topology.
+
+    mean is count-weighted; stddev pooled (sample-style, n_i >> 1). min/max
+    span sinks. They're absent for old runs that recorded the default histogram
+    only -- in that case both stay NaN.
+    """
+    valid = []
+    for s in sinks.values():
+        c = s.get("count", float("nan"))
+        if math.isnan(c) or c == 0:
+            continue
+        valid.append((c, s.get("mean", float("nan")),
+                      s.get("stddev", float("nan")),
+                      s.get("min", float("nan")),
+                      s.get("max", float("nan"))))
+    if not valid:
+        return (float("nan"),) * 5
+    total_n = sum(c for c, _, _, _, _ in valid)
+    pooled_mean = sum(c * m for c, m, _, _, _ in valid) / total_n
+    pooled_var = 0.0
+    for c, m, sd, _, _ in valid:
+        if math.isnan(sd):
+            sd = 0.0
+        pooled_var += (c - 1) * sd * sd + c * (m - pooled_mean) ** 2
+    pooled_var /= max(total_n - 1, 1)
+    pooled_std = math.sqrt(max(pooled_var, 0.0))
+    mins = [mn for _, _, _, mn, _ in valid if not math.isnan(mn)]
+    maxs = [mx for _, _, _, _, mx in valid if not math.isnan(mx)]
+    return (
+        total_n,
+        pooled_mean,
+        pooled_std,
+        min(mins) if mins else float("nan"),
+        max(maxs) if maxs else float("nan"),
+    )
+
+
 # ---------------------------------------------------------------------------
 # Plotting
 # ---------------------------------------------------------------------------
@@ -112,7 +153,107 @@ METRICS = [
     ("overhead_ratio", "Routing overhead (control / payload)",  "Routing Overhead (ratio)",     "percent", None),
     ("control_bytes",  "Total routing control bytes",           "Routing Overhead (raw bytes)", "bytes",   None),
     ("rd_per_s",       "Route discoveries per second",          "Route Discovery Rate",         "rate",    None),
+    # Per-discovery quality metrics, emitted by ZRP / SA-ZRP at the IERP query
+    # source. AODV/OLSR don't emit these so those bars stay empty.
+    ("route_length_mean",         "Mean route length (hops)",          "Average Route Length",          "linear",  None),
+    ("route_discovery_time_mean", "Mean route discovery time (s)",     "Average Route Discovery Time",  "seconds", None),
 ]
+
+# Per-run packet drop accounting -- mirror of the same table in tuning/extract_metrics.py.
+# INET emits these as scalars from various modules (radio/MAC/IP/queue) on every
+# node; we aggregate count across all modules for each run, since the question
+# is "where in the network are packets being dropped", not "by which node".
+#
+# Layout: (signal_name, short_key, layer_tag, human_label).
+# layer_tag groups failures into families:
+#   phy  = radio collision / SNR
+#   mac  = MAC contention / retry / queue full / no carrier
+#   ip   = IP routing layer (ARP, route lookup, TTL, forwarding)
+#   app  = above-IP / protocol-internal (lifetime expired in IERP queue, etc.)
+#   misc = bookkeeping (duplicates) -- noisy but kept for completeness
+#
+# Deliberately omitted: packetDrop:count (parent signal, double-counts the
+# specific reasons), packetDropOther / packetDropUndefined / packetDropNotAddressedToUs
+# (catch-all noise that's huge in a broadcast network and not actionable).
+DROP_COUNTERS = [
+    ("packetDropIncorrectlyReceived",     "phy_incorrectly_received",  "phy",  "PHY incorrectly received (collision/SNR)"),
+    ("packetDropRetryLimitReached",       "mac_retry_limit",           "mac",  "MAC retry limit (no link-layer ACK)"),
+    ("packetDropQueueOverflow",           "queue_overflow",            "mac",  "Queue overflow"),
+    ("packetDropNoCarrier",               "no_carrier",                "mac",  "No carrier"),
+    ("packetDropNoRouteFound",            "no_route_found",            "ip",   "IP no route found"),
+    ("packetDropAddressResolutionFailed", "arp_failed",                "ip",   "ARP failed (next hop gone)"),
+    ("packetDropHopLimitReached",         "hop_limit_reached",         "ip",   "Hop limit reached (TTL=0)"),
+    ("packetDropForwardingDisabled",      "forwarding_disabled",       "ip",   "Forwarding disabled"),
+    ("packetDropInterfaceDown",           "interface_down",            "ip",   "Interface down"),
+    ("packetDropLifetimeExpired",         "lifetime_expired",          "app",  "Lifetime expired (aged out of queue)"),
+    ("packetDropDuplicateDetected",       "duplicate_detected",        "misc", "Duplicate detected"),
+]
+DROP_LAYER_COLOR = {
+    "phy":  "#d62728",   # red
+    "mac":  "#ff7f0e",   # orange
+    "ip":   "#1f77b4",   # blue
+    "app":  "#2ca02c",   # green
+    "misc": "#7f7f7f",   # grey
+}
+
+# Per-type control packet attribution. Each ZRP/SA-ZRP routing module emits
+# one of these signals per send (the @signal[pktSent*] declarations in
+# Zrp.ned / SaZrp.ned). The @statistic record= clause is
+# `count, stats(packetBytes)`, so opp_scavetool produces one "statistic" row
+# per (module, type) carrying count + sum + mean + stddev + min + max.
+# AODV/OLSR don't emit these (only the aggregate controlPacketSent), so for
+# those protocols every per-type field stays NaN/0.
+#
+# (signal_short, csv_key, human_label, color)
+PKT_TYPES = [
+    ("NDP",       "ndp",        "NDP_Hello",         "#1f77b4"),  # blue
+    ("IARP",      "iarp",       "IARP link state",   "#2ca02c"),  # green
+    ("IERPQuery", "ierp_query", "IERP query (RREQ)", "#d62728"),  # red
+    ("IERPReply", "ierp_reply", "IERP reply (RREP)", "#9467bd"),  # purple
+    ("BRP",       "brp",        "BRP bordercast",    "#ff7f0e"),  # orange
+]
+# Map from pktSent<short> -> csv_key, used to dispatch the stats(packetBytes)
+# statistic row into the right per-type bucket.
+PKT_SHORT_TO_KEY = {f"pktSent{short}": key for (short, key, _, _) in PKT_TYPES}
+
+
+def pool_size_stats(per_module):
+    """Pool per-module size stats for one packet type into a single dict
+    {count, sum_bytes, mean, stddev, min, max}.
+
+    Identical math to pool_delay_stats but consumes/produces the per-type
+    layout used by PKT_TYPES. count and sum_bytes sum across modules; mean is
+    count-weighted, stddev pooled (sample-style, n_i >> 1), min/max span
+    modules.
+    """
+    valid = [(s.get("count", 0), s.get("mean", float("nan")),
+              s.get("stddev", float("nan")), s.get("min", float("nan")),
+              s.get("max", float("nan")))
+             for s in per_module.values() if s.get("count", 0) > 0]
+    total_count = sum(s.get("count", 0) for s in per_module.values())
+    total_bytes = sum(s.get("sum_bytes", 0) for s in per_module.values())
+    if not valid:
+        return {"count": int(total_count), "sum_bytes": int(total_bytes),
+                "mean": float("nan"), "stddev": float("nan"),
+                "min": float("nan"), "max": float("nan")}
+    pooled_mean = sum(c * m for c, m, _, _, _ in valid) / sum(c for c, _, _, _, _ in valid)
+    pooled_var = 0.0
+    for c, m, sd, _, _ in valid:
+        if math.isnan(sd):
+            sd = 0.0
+        pooled_var += (c - 1) * sd * sd + c * (m - pooled_mean) ** 2
+    pooled_var /= max(total_count - 1, 1)
+    pooled_std = math.sqrt(max(pooled_var, 0.0))
+    mins = [mn for _, _, _, mn, _ in valid if not math.isnan(mn)]
+    maxs = [mx for _, _, _, _, mx in valid if not math.isnan(mx)]
+    return {
+        "count":     int(total_count),
+        "sum_bytes": int(total_bytes),
+        "mean":      pooled_mean,
+        "stddev":    pooled_std,
+        "min":       min(mins) if mins else float("nan"),
+        "max":       max(maxs) if maxs else float("nan"),
+    }
 
 
 def _apply_y_formatter(ax, fmt):
@@ -232,6 +373,107 @@ def plot_metric_box(per_run, metric_key, ylabel, title, fmt, out_png,
     plt.close(fig)
 
 
+def plot_drops_breakdown(per_run, out_png):
+    """Stacked horizontal bars: where packets are being dropped, network-wide.
+    Two panels (numNodes sweep, maxSpeed sweep). Within each panel, one bar
+    per (sweep_value, protocol). Bar segments are coloured by drop reason,
+    grouped by failure layer (PHY -> MAC -> IP -> app -> misc), so the eye
+    can pick out 'is this a channel problem or a routing problem' at a glance.
+
+    Bar value is the mean drop count across the 10 reps."""
+    try:
+        import numpy as np
+        import matplotlib.pyplot as plt
+    except ImportError as e:
+        print(f"missing plotting dep ({e}); pip install matplotlib numpy",
+              file=sys.stderr)
+        return
+
+    if not per_run:
+        return
+
+    # (axis, sweep_value, protocol) -> {key: mean drop count}
+    agg = defaultdict(lambda: {key: [] for (_, key, _, _) in DROP_COUNTERS})
+    for r in per_run:
+        bucket = agg[(r["sweep_axis"], r["sweep_value"], r["protocol"])]
+        for (_sig, key, _layer, _label) in DROP_COUNTERS:
+            bucket[key].append(r[f"drop_{key}"])
+    for k in agg:
+        for key in agg[k]:
+            vals = [v for v in agg[k][key]
+                    if not (isinstance(v, float) and math.isnan(v))]
+            agg[k][key] = (sum(vals) / len(vals)) if vals else 0.0
+
+    axes_to_plot = ["numNodes", "maxSpeed"]
+    fig, axes = plt.subplots(1, 2, figsize=(16, 8), squeeze=False)
+    axes = axes[0]
+    fig.suptitle("Packet drops, attributed by layer and reason "
+                 "(mean across reps)", fontsize=13)
+
+    legend_seen = set()
+    for ax, axis_name in zip(axes, axes_to_plot):
+        # Bars in the order: smallest sweep value -> largest, and within each
+        # sweep value, the canonical PROTO_ORDER. Visually this lines up
+        # protocols at the same density / mobility for easy compare.
+        bars_meta = []
+        sweep_vals = sorted({k[1] for k in agg if k[0] == axis_name})
+        for sv in sweep_vals:
+            for proto in PROTO_ORDER:
+                drops = agg.get((axis_name, sv, proto))
+                if drops is None:
+                    continue
+                bars_meta.append((sv, proto, drops))
+
+        if not bars_meta:
+            ax.set_visible(False)
+            continue
+
+        labels = [f"{sv}  {proto}" for (sv, proto, _) in bars_meta]
+        y = np.arange(len(bars_meta))
+
+        left = np.zeros(len(bars_meta))
+        for (_sig, key, layer, label) in DROP_COUNTERS:
+            seg = np.array([b[2][key] for b in bars_meta], dtype=float)
+            if seg.sum() == 0:
+                continue
+            color = DROP_LAYER_COLOR[layer]
+            legend_label = f"[{layer}] {label}" if label not in legend_seen else None
+            ax.barh(y, seg, left=left, color=color, edgecolor="white",
+                    linewidth=0.4, label=legend_label)
+            legend_seen.add(label)
+            left += seg
+
+        ax.set_yticks(y)
+        ax.set_yticklabels(labels, fontsize=8)
+        ax.invert_yaxis()
+        ax.set_xlabel("Mean dropped packets per run (all modules)")
+        ax.set_title(f"{AXIS_LABELS.get(axis_name, axis_name)} sweep", fontsize=11)
+        ax.grid(axis="x", linestyle="--", alpha=0.45)
+        ax.set_axisbelow(True)
+        # Visually separate sweep-value groups with thin horizontal lines.
+        if len(sweep_vals) > 1:
+            group_size = len(bars_meta) // len(sweep_vals)
+            for i in range(1, len(sweep_vals)):
+                ax.axhline(i * group_size - 0.5, color="black",
+                           linewidth=0.5, alpha=0.35)
+
+    # Single legend for both panels.
+    handles, labels = [], []
+    for ax in axes:
+        h, l = ax.get_legend_handles_labels()
+        for hi, li in zip(h, l):
+            if li and li not in labels:
+                handles.append(hi); labels.append(li)
+    if handles:
+        fig.legend(handles, labels, loc="lower center", ncol=3,
+                   fontsize=8, framealpha=0.92,
+                   bbox_to_anchor=(0.5, -0.02))
+
+    plt.tight_layout(rect=(0, 0.05, 1, 0.96))
+    fig.savefig(out_png, dpi=150, bbox_inches="tight")
+    plt.close(fig)
+
+
 def make_plots(per_run, fig_dir):
     try:
         import matplotlib  # noqa: F401
@@ -244,6 +486,10 @@ def make_plots(per_run, fig_dir):
         out = fig_dir / f"{key}.png"
         plot_metric_box(per_run, key, ylabel, title, fmt, out, fixed_ylim=fixed_ylim)
         print(f"wrote {out}", file=sys.stderr)
+
+    drops_out = fig_dir / "drops_breakdown.png"
+    plot_drops_breakdown(per_run, drops_out)
+    print(f"wrote {drops_out}", file=sys.stderr)
 
 
 # ---------------------------------------------------------------------------
@@ -266,15 +512,50 @@ def main():
     if not src.is_file():
         sys.exit(f"not found: {src}")
 
+    # Pre-compute the set of drop scalar names we care about so the inner
+    # loop can dispatch with one dict lookup per row instead of a startswith.
+    DROP_NAME_TO_KEY = {f"{sig}:count": key
+                        for (sig, key, _layer, _label) in DROP_COUNTERS}
+
+    # endToEndDelay scalar names produced when the recording mode override in
+    # the ini swaps the default histogram for count/mean/stddev/min/max scalars.
+    # Old runs (still on default histogram-only mode) populate delay_sinks via
+    # the histogram branch below -- they just won't have min/max.
+    DELAY_SCALAR_FIELDS = {
+        "endToEndDelay:count":  "count",
+        "endToEndDelay:mean":   "mean",
+        "endToEndDelay:stddev": "stddev",
+        "endToEndDelay:min":    "min",
+        "endToEndDelay:max":    "max",
+    }
+
+    def _new_acc():
+        a = {
+            "sent": 0.0, "rcvd": 0.0,
+            "ctrl_bytes": 0.0, "rcvd_bytes": 0.0,
+            "rd_count": 0.0,
+            # Per-sink endToEndDelay stats: module FQN -> {count, mean, stddev,
+            # min, max}. Pooled across sinks at run finalization.
+            "delay_sinks": {},
+            # Per-(packet type, routing module) size stats: pkt_key ->
+            # module_fqn -> {count, sum_bytes, mean, stddev, min, max}. Pooled
+            # across all routing modules in the run at finalization to give a
+            # single network-wide breakdown. ZRP/SA-ZRP populate this; AODV/OLSR
+            # don't emit per-type signals so it stays empty for them.
+            "pkt_per_type_module": {key: {} for (_, key, _, _) in PKT_TYPES},
+            # Sum + count across all routing modules in this run, of the
+            # per-discovery routeLength and routeDiscoveryTime emissions. The
+            # network-wide averages are sum/count -- correct because each
+            # emission carries equal weight (one successful discovery).
+            "route_len_count": 0.0,  "route_len_sum":  0.0,
+            "route_disc_count": 0.0, "route_disc_sum": 0.0,
+        }
+        for (_sig, key, _layer, _label) in DROP_COUNTERS:
+            a[f"drop_{key}"] = 0.0
+        return a
+
     runs   = {}                                # run_id -> meta dict
-    acc    = defaultdict(lambda: {
-        "sent": 0.0, "rcvd": 0.0,
-        "ctrl_bytes": 0.0, "rcvd_bytes": 0.0,
-        "rd_count": 0.0,
-        "delay_count": float("nan"),
-        "delay_mean":  float("nan"),
-        "delay_stddev": float("nan"),
-    })
+    acc    = defaultdict(_new_acc)
 
     print(f"reading {src} ...", file=sys.stderr)
     with src.open(newline="", encoding="utf-8") as f:
@@ -297,6 +578,14 @@ def main():
                 v = fnum(row["value"])
                 if math.isnan(v):
                     continue
+                # Drop counters fire from MAC / radio / IPv4 modules, none of
+                # which the app/role matchers below recognize. Aggregate them
+                # across every module in the run -- we want network-wide drop
+                # attribution, not per-node.
+                drop_key = DROP_NAME_TO_KEY.get(name)
+                if drop_key is not None:
+                    acc[run][f"drop_{drop_key}"] += v
+                    continue
                 a = acc[run]
                 if name == "packetSent:count" and is_uav_app(mod, 0):
                     a["sent"] += v
@@ -305,18 +594,62 @@ def main():
                         a["rcvd"] += v
                     elif name == "packetReceived:sum(packetBytes)":
                         a["rcvd_bytes"] += v
+                    else:
+                        field = DELAY_SCALAR_FIELDS.get(name)
+                        if field is not None:
+                            sink = a["delay_sinks"].setdefault(mod, {})
+                            sink[field] = v
                 elif name == "controlPacketSent:sum(packetBytes)" and (
                         is_uav_app(mod, 1) or is_sink_app1(mod)):
                     a["ctrl_bytes"] += v
                 elif name == "routeDiscoveryStarted:count" and (
                         is_uav_app(mod, 1) or is_sink_app1(mod)):
                     a["rd_count"] += v
-            elif t == "histogram":
-                if is_sink_app0(row["module"]) and row["name"] == "endToEndDelay:histogram":
-                    a = acc[run]
-                    a["delay_count"]  = fnum(row["count"])
-                    a["delay_mean"]   = fnum(row["mean"])
-                    a["delay_stddev"] = fnum(row["stddev"])
+                elif (is_uav_app(mod, 1) or is_sink_app1(mod)):
+                    # Per-discovery route quality metrics. count and sum let us
+                    # compute the network-wide mean as sum/count without
+                    # weighting (each emission = one completed discovery).
+                    if name == "routeLength:count":
+                        a["route_len_count"] += v
+                    elif name == "routeLength:sum":
+                        a["route_len_sum"] += v
+                    elif name == "routeDiscoveryTime:count":
+                        a["route_disc_count"] += v
+                    elif name == "routeDiscoveryTime:sum":
+                        a["route_disc_sum"] += v
+            elif t in ("histogram", "statistic"):
+                # endToEndDelay: old runs recorded a histogram, new runs record
+                # a stats object (after the appendBins crash fix). Both rows
+                # carry count/mean/stddev; only stats carries min/max. Per-type
+                # packet sizes (pktSent*:stats(packetBytes)) also land here.
+                mod, name = row["module"], row["name"]
+                if is_sink_app0(mod) and name in ("endToEndDelay:histogram",
+                                                  "endToEndDelay:stats"):
+                    new_count = fnum(row["count"])
+                    if math.isnan(new_count) or new_count == 0:
+                        continue
+                    sink = acc[run]["delay_sinks"].setdefault(mod, {})
+                    sink["count"]  = new_count
+                    sink["mean"]   = fnum(row["mean"])
+                    sink["stddev"] = fnum(row["stddev"])
+                    if "min" in row and "max" in row:
+                        sink["min"] = fnum(row["min"])
+                        sink["max"] = fnum(row["max"])
+                elif (is_uav_app(mod, 1) or is_sink_app1(mod)) and \
+                        name.endswith(":stats(packetBytes)"):
+                    # Per-type packet size stats: row name like
+                    # "pktSentNDP:stats(packetBytes)". Map back to pkt_key.
+                    short = name.split(":")[0]
+                    pkt_key = PKT_SHORT_TO_KEY.get(short)
+                    if pkt_key is not None:
+                        mod_stats = acc[run]["pkt_per_type_module"][pkt_key].setdefault(mod, {})
+                        mod_stats["count"]     = fnum(row["count"])
+                        mod_stats["sum_bytes"] = fnum(row.get("sum", float("nan")))
+                        mod_stats["mean"]      = fnum(row["mean"])
+                        mod_stats["stddev"]    = fnum(row["stddev"])
+                        if "min" in row and "max" in row:
+                            mod_stats["min"] = fnum(row["min"])
+                            mod_stats["max"] = fnum(row["max"])
 
     # build per-run rows
     per_run = []
@@ -334,7 +667,17 @@ def main():
         pdr        = (rcvd / sent) if sent > 0 else float("nan")
         overhead   = (a["ctrl_bytes"] / a["rcvd_bytes"]) if a["rcvd_bytes"] > 0 else float("nan")
         rd_rate    = float("nan") if proto == "Olsr" else (a["rd_count"] / args.active_seconds)
-        per_run.append({
+        delay_count, delay_mean, delay_std, delay_min, delay_max = pool_delay_stats(a["delay_sinks"])
+        # Network-wide averages of routeLength (hops) and routeDiscoveryTime
+        # (seconds). count is total successful discoveries across all routing
+        # modules in this run; mean is sum/count. Both stay NaN for AODV/OLSR
+        # which don't emit these signals, and for ZRP/SA-ZRP runs in which no
+        # discovery completed.
+        rl_count, rl_sum = a["route_len_count"], a["route_len_sum"]
+        rd_dur_count, rd_dur_sum = a["route_disc_count"], a["route_disc_sum"]
+        route_len_mean      = (rl_sum / rl_count)        if rl_count > 0     else float("nan")
+        route_disc_time_mean = (rd_dur_sum / rd_dur_count) if rd_dur_count > 0 else float("nan")
+        row = {
             "run": run,
             "config": cfg,
             "protocol": proto,
@@ -344,14 +687,39 @@ def main():
             "packets_sent": int(sent),
             "packets_rcvd": int(rcvd),
             "pdr": pdr,
-            "mean_delay_s":   a["delay_mean"],
-            "delay_stddev_s": a["delay_stddev"],
+            "mean_delay_s":   delay_mean,
+            "delay_stddev_s": delay_std,
+            "min_delay_s":    delay_min,
+            "max_delay_s":    delay_max,
             "control_bytes":  int(a["ctrl_bytes"]),
             "data_bytes_rcvd": int(a["rcvd_bytes"]),
             "overhead_ratio": overhead,
             "rd_started_total": int(a["rd_count"]),
             "rd_per_s": rd_rate,
-        })
+            "route_length_count":         int(rl_count),
+            "route_length_mean":          route_len_mean,
+            "route_discovery_time_count": int(rd_dur_count),
+            "route_discovery_time_mean":  route_disc_time_mean,
+        }
+        drop_total = 0
+        for (_sig, key, _layer, _label) in DROP_COUNTERS:
+            n = int(a[f"drop_{key}"])
+            row[f"drop_{key}"] = n
+            drop_total += n
+        row["drop_total"] = drop_total
+        # Per-type packet attribution: count + total bytes + size distribution
+        # for each ZRP/SA-ZRP control packet type. Sum of pkt_*_count across
+        # all five types should equal controlPacketSent count (sanity check);
+        # sum of pkt_*_bytes should equal control_bytes.
+        for (_short, key, _label, _color) in PKT_TYPES:
+            stats = pool_size_stats(a["pkt_per_type_module"][key])
+            row[f"pkt_{key}_count"]       = stats["count"]
+            row[f"pkt_{key}_bytes"]       = stats["sum_bytes"]
+            row[f"pkt_{key}_mean_size"]   = stats["mean"]
+            row[f"pkt_{key}_min_size"]    = stats["min"]
+            row[f"pkt_{key}_max_size"]    = stats["max"]
+            row[f"pkt_{key}_stddev_size"] = stats["stddev"]
+        per_run.append(row)
 
     per_run.sort(key=lambda d: (d["protocol"], d["sweep_axis"], d["sweep_value"], d["repetition"]))
     out_rows = exp / "metrics_per_run.csv"
@@ -367,10 +735,28 @@ def main():
     for (proto, axis, sv), drs in groups.items():
         row = {"protocol": proto, "sweep_axis": axis, "sweep_value": sv,
                "n_reps": len(drs)}
-        for k in ("pdr", "mean_delay_s", "delay_stddev_s", "overhead_ratio", "rd_per_s"):
+        for k in ("pdr", "mean_delay_s", "delay_stddev_s",
+                  "min_delay_s", "max_delay_s",
+                  "overhead_ratio", "rd_per_s",
+                  "route_length_mean", "route_discovery_time_mean"):
             m, s = mean_std([d[k] for d in drs])
             row[f"{k}_mean"] = m
             row[f"{k}_std"]  = s
+        for (_sig, key, _layer, _label) in DROP_COUNTERS:
+            m, s = mean_std([d[f"drop_{key}"] for d in drs])
+            row[f"drop_{key}_mean"] = m
+            row[f"drop_{key}_std"]  = s
+        m, s = mean_std([d["drop_total"] for d in drs])
+        row["drop_total_mean"] = m
+        row["drop_total_std"]  = s
+        # Per-type packet stats: aggregate count/bytes/size distribution across
+        # the n repetitions of this (protocol, axis, value) cell.
+        for (_short, key, _label, _color) in PKT_TYPES:
+            for field in ("count", "bytes", "mean_size",
+                          "min_size", "max_size", "stddev_size"):
+                m, s = mean_std([d[f"pkt_{key}_{field}"] for d in drs])
+                row[f"pkt_{key}_{field}_mean"] = m
+                row[f"pkt_{key}_{field}_std"]  = s
         summary.append(row)
     summary.sort(key=lambda d: (d["sweep_axis"], d["sweep_value"], d["protocol"]))
     out_sum = exp / "metrics_summary.csv"

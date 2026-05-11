@@ -35,6 +35,14 @@ Define_Module(Zrp);
 
 simsignal_t Zrp::controlPacketSentSignal = registerSignal("controlPacketSent");
 simsignal_t Zrp::routeDiscoveryStartedSignal = registerSignal("routeDiscoveryStarted");
+simsignal_t Zrp::routeDiscoveryRetriedSignal = registerSignal("routeDiscoveryRetried");
+simsignal_t Zrp::pktSentNDPSignal       = registerSignal("pktSentNDP");
+simsignal_t Zrp::pktSentIARPSignal      = registerSignal("pktSentIARP");
+simsignal_t Zrp::pktSentIERPQuerySignal = registerSignal("pktSentIERPQuery");
+simsignal_t Zrp::pktSentIERPReplySignal = registerSignal("pktSentIERPReply");
+simsignal_t Zrp::pktSentBRPSignal       = registerSignal("pktSentBRP");
+simsignal_t Zrp::routeLengthSignal       = registerSignal("routeLength");
+simsignal_t Zrp::routeDiscoveryTimeSignal = registerSignal("routeDiscoveryTime");
 
 Zrp::Zrp()
 {
@@ -82,6 +90,8 @@ void Zrp::initialize(int stage)
         ierpRetryInterval = par("ierpRetryInterval");
         ierpMaxRetries = par("ierpMaxRetries");
         delayedPacketLifetime = par("delayedPacketLifetime");
+        IARP_eventDelay = par("IARP_eventDelay");
+        IARP_eventJitter = par("IARP_eventJitter");
 
         // WATCH variables for Qtenv
         WATCH(zoneRadius);
@@ -149,7 +159,7 @@ void Zrp::handleMessageWhenUp(cMessage* msg)
                         }
                     }
 
-                    IERP_initiateRouteDiscovery(dest);
+                    IERP_initiateRouteDiscovery(dest, /*isRetry=*/true);
                 }
                 else {
                     EV_WARN << "IERP: Max retries (" << ierpMaxRetries << ") exhausted for " << dest << ", dropping "
@@ -163,6 +173,10 @@ void Zrp::handleMessageWhenUp(cMessage* msg)
                     }
                     delayedPackets.erase(lt, ut);
                     ierpRetryCounters.erase(dest);
+                    // Discovery is being abandoned -- drop the start-time
+                    // entry so a future discovery for the same dest doesn't
+                    // emit a stale elapsed value.
+                    ierpDiscoveryStartTimes.erase(dest);
                 }
             }
             else {
@@ -282,6 +296,7 @@ void Zrp::clearState()
     linkStateTable.clear();
     ierpQueryTable.clear();
     brpCoverageTable.clear();
+    ierpDiscoveryStartTimes.clear();
 
     // Reset sequence numbers
     NDP_seqNum = 0;
@@ -651,7 +666,22 @@ void Zrp::sendZrpPacket(const Ptr<FieldsChunk>& payload, const L3Address& destAd
     packet->addTag<L3AddressReq>()->setDestAddress(destAddr);
     packet->addTag<L4PortReq>()->setDestPort(zrpUDPPort);
 
+    // Aggregate signal: every control packet, all types lumped. Kept for
+    // continuity with the existing overhead_ratio metric in extract_metrics.py.
     emit(controlPacketSentSignal, packet);
+    // Per-type attribution: dispatch on payload chunk type so the breakdown
+    // plot can show NDP / IARP / IERP-query / IERP-reply / BRP separately.
+    // Exactly one per-type signal fires per call -- the sum of their counts
+    // must equal controlPacketSent:count (a useful sanity check).
+    if (dynamicPtrCast<const NDP_Hello>(payload))
+        emit(pktSentNDPSignal, packet);
+    else if (dynamicPtrCast<const IARP_LinkStateUpdate>(payload))
+        emit(pktSentIARPSignal, packet);
+    else if (auto ierp = dynamicPtrCast<const IERP_RouteData>(payload))
+        emit(ierp->getType() == IERP_QUERY ? pktSentIERPQuerySignal : pktSentIERPReplySignal,
+             packet);
+    else if (dynamicPtrCast<const BRP_Data>(payload))
+        emit(pktSentBRPSignal, packet);
     socket.send(packet);
 }
 
@@ -696,6 +726,7 @@ void Zrp::handleNDPHello(const Ptr<NDP_Hello>& hello, const L3Address& sourceAdd
     if (isNew) {
         EV_INFO << "New neighbour " << sourceAddr << " discovered, recomputing IARP routes" << endl;
         IARP_updateRoutingTable();
+        scheduleEarlyIARPUpdate();
     }
 }
 
@@ -721,6 +752,7 @@ void Zrp::NDP_refreshNeighbourTable()
 
     if (!toRemove.empty()) {
         IARP_updateRoutingTable();
+        scheduleEarlyIARPUpdate();
     }
 }
 
@@ -781,6 +813,7 @@ void Zrp::sendIARPUpdate()
 
     if (neighbourTable.empty()) {
         EV_DETAIL << "No neighbours to advertise, skipping IARP update" << endl;
+        iarpUpdatePending = false;
         scheduleAfter(IARP_updateInterval, IARP_updateTimer);
         return;
     }
@@ -788,6 +821,7 @@ void Zrp::sendIARPUpdate()
     // If zone radius is 1 we don't need IARP packets as NDP is enough
     if (zoneRadius <= 1) {
         EV_DETAIL << "zoneRadius=1, IARP link-state flooding not needed (NDP suffices)" << endl;
+        iarpUpdatePending = false;
         scheduleAfter(IARP_updateInterval, IARP_updateTimer);
         return;
     }
@@ -795,7 +829,20 @@ void Zrp::sendIARPUpdate()
     auto update = createIARPUpdate();
     sendZrpPacket(update, Ipv4Address::ALLONES_ADDRESS, zoneRadius - 1);
 
+    iarpUpdatePending = false;
     scheduleAfter(IARP_updateInterval, IARP_updateTimer);
+}
+
+void Zrp::scheduleEarlyIARPUpdate()
+{
+    if (iarpUpdatePending)
+        return;
+    iarpUpdatePending = true;
+    if (IARP_updateTimer->isScheduled())
+        cancelEvent(IARP_updateTimer);
+    // Add some jitter to ensure messages do not collide
+    scheduleAfter(SimTime((int64_t)std::round(IARP_eventDelay + uniform(0, IARP_eventJitter)), SIMTIME_MS), IARP_updateTimer);
+
 }
 
 void Zrp::handleIARPUpdate(const Ptr<IARP_LinkStateUpdate>& update, const L3Address& sourceAddr)
@@ -1018,11 +1065,23 @@ void Zrp::IARP_updateRoutingTable()
 
 // IERP Functions
 
-void Zrp::IERP_initiateRouteDiscovery(const L3Address& dest)
+void Zrp::IERP_initiateRouteDiscovery(const L3Address& dest, bool isRetry)
 {
-    EV_INFO << "Initiating IERP route discovery for " << dest << endl;
+    EV_INFO << (isRetry ? "Retrying" : "Initiating")
+            << " IERP route discovery for " << dest << endl;
 
-    emit(routeDiscoveryStartedSignal, (intval_t)1);
+    // Only the first attempt counts as a "started" discovery -- this matches
+    // INET's AODV semantics, where the routeDiscoveryStarted signal fires once
+    // per destination and the up-to-rreqRetries retransmits don't refire it.
+    if (isRetry)
+        emit(routeDiscoveryRetriedSignal, (intval_t)1);
+    else {
+        emit(routeDiscoveryStartedSignal, (intval_t)1);
+        // Record wallclock start of this discovery for the routeDiscoveryTime
+        // metric. Retries do NOT reset this -- the metric measures end-user
+        // wait time, which spans the whole retry chain.
+        ierpDiscoveryStartTimes[dest] = simTime();
+    }
 
     auto request = IERP_createRouteRequest(dest);
 
@@ -1521,6 +1580,19 @@ void Zrp::IERP_completeRouteDiscovery(const L3Address& dest)
 {
     EV_DETAIL << "Completing route discovery for " << dest << ", releasing " << delayedPackets.count(dest)
               << " buffered datagrams" << endl;
+
+    // Emit per-discovery metrics on the FIRST reply only. The start-time map
+    // entry is created in IERP_initiateRouteDiscovery (non-retry path) and
+    // erased here, so subsequent replies for the same query don't re-emit.
+    auto stIt = ierpDiscoveryStartTimes.find(dest);
+    if (stIt != ierpDiscoveryStartTimes.end()) {
+        simtime_t elapsed = simTime() - stIt->second;
+        emit(routeDiscoveryTimeSignal, elapsed.dbl());
+        IRoute* installed = IERP_findRoute(dest);
+        if (installed)
+            emit(routeLengthSignal, (intval_t)installed->getMetric());
+        ierpDiscoveryStartTimes.erase(stIt);
+    }
 
     auto lt = delayedPackets.lower_bound(dest);
     auto ut = delayedPackets.upper_bound(dest);

@@ -3,3 +3,14 @@ out/
 *.vci
 *.vec
 *.sca
+
+# Simulation result artifacts (large, regenerable)
+**/results/
+results.anf
+results_scalars.csv
+results_vectors.csv
+metrics_per_run.csv
+metrics_summary.csv
+
+# OMNeT++ Makefiles emitted under tuning/<scenario>/
+tuning/**/Makefile.*

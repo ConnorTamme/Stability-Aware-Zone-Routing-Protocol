@@ -71,7 +71,7 @@ struct IerpQueryId {
 // Link destination info for the link state table
 struct LinkDestInfo {
     L3Address destAddr;
-    uint16_t metrics[IARP_METRIC_COUNT]; // quantized smoothed stability: floor(sbar * 255)
+    uint16_t metrics[IARP_METRIC_COUNT]; 
 };
 
 // Link state entry from a source node
@@ -112,6 +112,31 @@ class INET_API SaZrp : public RoutingProtocolBase,
     // four protocols evaluated in the FANET experiments).
     static simsignal_t controlPacketSentSignal;
     static simsignal_t routeDiscoveryStartedSignal;
+    // Fired only on retransmissions of an in-progress discovery, so the primary
+    // routeDiscoveryStarted metric stays comparable with AODV (which only counts
+    // the first RREQ per destination, not the expanding-ring retries).
+    static simsignal_t routeDiscoveryRetriedSignal;
+
+    // Per-type control packet signals -- attribution split for the overhead
+    // breakdown plot. Each fires once per call to sendZrpPacket() depending on
+    // the payload chunk type. Counts of all five MUST equal controlPacketSent.
+    // BRP_Data carries an encapsulated IERP_RouteData but only one signal fires
+    // per send (the BRP one) -- this matches wire bytes, no double counting.
+    static simsignal_t pktSentNDPSignal;
+    static simsignal_t pktSentIARPSignal;
+    static simsignal_t pktSentIERPQuerySignal;
+    static simsignal_t pktSentIERPReplySignal;
+    static simsignal_t pktSentBRPSignal;
+
+    // Route quality signals. Both fire only at the IERP query source -- one
+    // emission per successfully-completed discovery -- so per-module count
+    // matches the count of routeDiscoveryStarted events that actually
+    // returned a reply, and pooling across modules reproduces a network-wide
+    // average. routeLength is hop count of the just-installed IERP route;
+    // routeDiscoveryTime is wallclock seconds from the first attempt to the
+    // arriving reply (retries are folded into one start, not restarted).
+    static simsignal_t routeLengthSignal;
+    static simsignal_t routeDiscoveryTimeSignal;
 
   protected:
     // environment
@@ -140,6 +165,8 @@ class INET_API SaZrp : public RoutingProtocolBase,
     unsigned int ierpMaxRetries = 3;    // Max number of IERP route request retries
     simtime_t delayedPacketLifetime = 5; // Hard upper bound on how long a queued datagram
                                          // may sit waiting for route discovery before being dropped
+    double IARP_eventDelay = 500; // Delay to wait before sending update after neighbour set changes (in ms)
+    double IARP_eventJitter = 15; // Jitter added to event delay (in ms)
 
     // NDP/IARP
     uint16_t NDP_seqNum = 0;                                                // sequence number for NDP hello messages (wraps at 65535)
@@ -163,6 +190,12 @@ class INET_API SaZrp : public RoutingProtocolBase,
     std::map<L3Address, cMessage*> ierpRetryTimers; // dest -> retry timer
     std::map<L3Address, int> ierpRetryCounters;     // dest -> retry count
 
+    // Wallclock start of an in-progress discovery, keyed by destination.
+    // Set on the first attempt (not on retries) and consumed on the first
+    // arriving reply or on retry exhaustion. Presence of an entry also gates
+    // metric emission so duplicate replies don't double-count.
+    std::map<L3Address, simtime_t> ierpDiscoveryStartTimes;
+
     // BRP
     uint16_t BRP_bordercastId = 0; // locally unique bordercast ID counter
     // BRP query coverage table
@@ -183,6 +216,10 @@ class INET_API SaZrp : public RoutingProtocolBase,
     cMessage* NDP_helloTimer = nullptr;
     cMessage* IARP_updateTimer = nullptr;
     cMessage* debugTimer = nullptr;
+
+    // True between scheduleEarlyIARPUpdate() and the next sendIARPUpdate(),
+    // so repeated change triggers within the coalesce window collapse into one send.
+    bool iarpUpdatePending = false;
 
   protected:
     void handleMessageWhenUp(cMessage* msg) override;
@@ -227,6 +264,7 @@ class INET_API SaZrp : public RoutingProtocolBase,
     // IARP Functions
     const Ptr<IARP_LinkStateUpdate> createIARPUpdate();
     void sendIARPUpdate();
+    void scheduleEarlyIARPUpdate();
     void handleIARPUpdate(const Ptr<IARP_LinkStateUpdate>& update, const L3Address& sourceAddr);
     void IARP_refreshLinkStateTable();
     void IARP_updateRoutingTable();
@@ -237,7 +275,10 @@ class INET_API SaZrp : public RoutingProtocolBase,
 
     // IERP Functions
     // Route discovery initiation
-    void IERP_initiateRouteDiscovery(const L3Address& dest);
+    // Route discovery initiation. isRetry=true means this call is a retransmit
+    // for an already-pending discovery (driven by the retry timer), so we emit
+    // routeDiscoveryRetried instead of routeDiscoveryStarted.
+    void IERP_initiateRouteDiscovery(const L3Address& dest, bool isRetry = false);
 
     // Packet creation
     const Ptr<IERP_RouteData> IERP_createRouteRequest(const L3Address& dest);
