@@ -31,11 +31,20 @@ PROJECTRELATIVE_PATH = src
 O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 
 # Object files for local .cc, .msg and .sm files
-OBJS = $O/Zrp.o $O/ZrpRouteData.o $O/ZrpControlPackets_m.o
+OBJS = \
+    $O/Zrp.o \
+    $O/ZrpRouteData.o \
+    $O/SAZRP/SaZrp.o \
+    $O/SAZRP/SaZrpRouteData.o \
+    $O/Stats/AodvWithStats.o \
+    $O/Stats/OlsrWithStats.o \
+    $O/ZrpControlPackets_m.o \
+    $O/SAZRP/SaZrpControlPackets_m.o
 
 # Message files
 MSGFILES = \
-    ZrpControlPackets.msg
+    ZrpControlPackets.msg \
+    SAZRP/SaZrpControlPackets.msg
 
 # SM files
 SMFILES =

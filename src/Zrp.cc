@@ -33,6 +33,9 @@ namespace zrp {
 
 Define_Module(Zrp);
 
+simsignal_t Zrp::controlPacketSentSignal = registerSignal("controlPacketSent");
+simsignal_t Zrp::routeDiscoveryStartedSignal = registerSignal("routeDiscoveryStarted");
+
 Zrp::Zrp()
 {
     // This does nothing in AODV, so leaving it blank
@@ -78,6 +81,7 @@ void Zrp::initialize(int stage)
         brpCoverageLifetime = par("brpCoverageLifetime");
         ierpRetryInterval = par("ierpRetryInterval");
         ierpMaxRetries = par("ierpMaxRetries");
+        delayedPacketLifetime = par("delayedPacketLifetime");
 
         // WATCH variables for Qtenv
         WATCH(zoneRadius);
@@ -114,6 +118,16 @@ void Zrp::handleMessageWhenUp(cMessage* msg)
             L3Address dest = L3Address(Ipv4Address(msg->par("destAddr").longValue()));
             EV_INFO << "IERP retry timer for " << dest << endl;
 
+            // Erase the firing timer from the map BEFORE any call that might
+            // try to schedule a new one. IERP_initiateRouteDiscovery only arms
+            // a retry if ierpRetryTimers has no entry for this dest, so leaving
+            // the stale (firing) entry in place would silently swallow the
+            // re-arm and leave subsequent retries unscheduled.
+            auto tmrIt = ierpRetryTimers.find(dest);
+            if (tmrIt != ierpRetryTimers.end() && tmrIt->second == msg) {
+                ierpRetryTimers.erase(tmrIt);
+            }
+
             // Check if we still need a route (no route yet, packets still buffered)
             if (!routingTable->findBestMatchingRoute(dest) && delayedPackets.count(dest) > 0) {
                 auto retryIt = ierpRetryCounters.find(dest);
@@ -145,7 +159,7 @@ void Zrp::handleMessageWhenUp(cMessage* msg)
                     auto lt = delayedPackets.lower_bound(dest);
                     auto ut = delayedPackets.upper_bound(dest);
                     for (auto it = lt; it != ut; it++) {
-                        networkProtocol->dropQueuedDatagram(it->second);
+                        networkProtocol->dropQueuedDatagram(it->second.second);
                     }
                     delayedPackets.erase(lt, ut);
                     ierpRetryCounters.erase(dest);
@@ -156,11 +170,6 @@ void Zrp::handleMessageWhenUp(cMessage* msg)
                 ierpRetryCounters.erase(dest);
             }
 
-            // Remove from retry timers map
-            auto tmrIt = ierpRetryTimers.find(dest);
-            if (tmrIt != ierpRetryTimers.end() && tmrIt->second == msg) {
-                ierpRetryTimers.erase(tmrIt);
-            }
             delete msg;
         }
         else if (msg->getKind() == ZRP_SELF_BRP_JITTER) {
@@ -258,7 +267,7 @@ void Zrp::clearState()
 
     // Drop all buffered datagrams
     for (auto& entry : delayedPackets) {
-        delete entry.second;
+        delete entry.second.second;
     }
     delayedPackets.clear();
 
@@ -513,14 +522,25 @@ void Zrp::receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj, 
 {
     Enter_Method("receiveSignal");
     if (signalID == linkBrokenSignal) {
-        // Link failure. Remove broken neighbour and trigger route maintenance
+        // Link failure. networkHeader->getDestinationAddress() is the FINAL
+        // destination of the failed datagram, not the unreachable neighbour.
+        // To find the actual broken next hop we look up the route to the dest
+        // and read its next hop, mirroring inet/aodv/Aodv.cc:receiveSignal.
         Packet* datagram = check_and_cast<Packet*>(obj);
         const auto& networkHeader = findNetworkProtocolHeader(datagram);
         if (networkHeader != nullptr) {
-            L3Address unreachableNextHop = networkHeader->getDestinationAddress();
-            EV_WARN << "Link break detected to " << unreachableNextHop << endl;
+            L3Address unreachableDest = networkHeader->getDestinationAddress();
+            IRoute* failedRoute = routingTable->findBestMatchingRoute(unreachableDest);
+            if (failedRoute == nullptr || failedRoute->getSource() != this) {
+                EV_DETAIL << "Link break for " << unreachableDest
+                          << " but no ZRP route found; ignoring" << endl;
+                return;
+            }
+            L3Address unreachableNextHop = failedRoute->getNextHopAsGeneric();
+            EV_WARN << "Link break detected to next hop " << unreachableNextHop
+                    << " (final dest " << unreachableDest << ")" << endl;
 
-            // Remove from neighbour table immediately
+            // Remove the actual broken next hop from neighbour table immediately
             auto it = neighbourTable.find(unreachableNextHop);
             if (it != neighbourTable.end()) {
                 neighbourTable.erase(it);
@@ -631,6 +651,7 @@ void Zrp::sendZrpPacket(const Ptr<FieldsChunk>& payload, const L3Address& destAd
     packet->addTag<L3AddressReq>()->setDestAddress(destAddr);
     packet->addTag<L4PortReq>()->setDestPort(zrpUDPPort);
 
+    emit(controlPacketSentSignal, packet);
     socket.send(packet);
 }
 
@@ -1000,6 +1021,8 @@ void Zrp::IARP_updateRoutingTable()
 void Zrp::IERP_initiateRouteDiscovery(const L3Address& dest)
 {
     EV_INFO << "Initiating IERP route discovery for " << dest << endl;
+
+    emit(routeDiscoveryStartedSignal, (intval_t)1);
 
     auto request = IERP_createRouteRequest(dest);
 
@@ -1491,7 +1514,7 @@ void Zrp::IERP_delayDatagram(Packet* datagram)
     const auto& networkHeader = getNetworkProtocolHeader(datagram);
     const L3Address& dest = networkHeader->getDestinationAddress();
     EV_DETAIL << "Buffering datagram for destination " << dest << endl;
-    delayedPackets.insert(std::pair<L3Address, Packet*>(dest, datagram));
+    delayedPackets.insert({dest, {simTime(), datagram}});
 }
 
 void Zrp::IERP_completeRouteDiscovery(const L3Address& dest)
@@ -1502,13 +1525,26 @@ void Zrp::IERP_completeRouteDiscovery(const L3Address& dest)
     auto lt = delayedPackets.lower_bound(dest);
     auto ut = delayedPackets.upper_bound(dest);
 
-    // Reinject the delayed datagrams now that a route exists
+    simtime_t now = simTime();
+    // Reinject the delayed datagrams now that a route exists, but drop any
+    // that have already aged past delayedPacketLifetime so we don't deliver
+    // packets that have been sitting in the queue longer than the application
+    // could reasonably want.
     for (auto it = lt; it != ut; it++) {
-        Packet* datagram = it->second;
+        Packet* datagram = it->second.second;
+        simtime_t age = now - it->second.first;
         const auto& networkHeader = getNetworkProtocolHeader(datagram);
-        EV_DETAIL << "Reinjecting buffered datagram: src=" << networkHeader->getSourceAddress()
-                  << ", dest=" << networkHeader->getDestinationAddress() << endl;
-        networkProtocol->reinjectQueuedDatagram(datagram);
+        if (age > delayedPacketLifetime) {
+            EV_WARN << "Dropping stale buffered datagram (age " << age << "s > "
+                    << delayedPacketLifetime << "s): src=" << networkHeader->getSourceAddress()
+                    << ", dest=" << networkHeader->getDestinationAddress() << endl;
+            networkProtocol->dropQueuedDatagram(datagram);
+        }
+        else {
+            EV_DETAIL << "Reinjecting buffered datagram: src=" << networkHeader->getSourceAddress()
+                      << ", dest=" << networkHeader->getDestinationAddress() << endl;
+            networkProtocol->reinjectQueuedDatagram(datagram);
+        }
     }
 
     delayedPackets.erase(lt, ut);

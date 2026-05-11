@@ -28,7 +28,13 @@ simple Zrp like IApp
 	    double brpCoverageLifetime @unit(s) = default(30s); // How long to keep BRP query coverage entries 
 	    double ierpRetryInterval @unit(s) = default(3s);    // Interval between IERP route request retries
 	    int ierpMaxRetries = default(3);                    // Max number of IERP route request retries before dropping packets
-	
+	    double delayedPacketLifetime @unit(s) = default(5s); // Max age of a queued datagram waiting for route discovery; older packets are dropped instead of reinjected
+
+	    @signal[controlPacketSent](type=inet::Packet);
+	    @statistic[controlPacketSent](title="control packets sent"; source=controlPacketSent; record=count,"sum(packetBytes)","vector(packetBytes)"; interpolationmode=none);
+	    @signal[routeDiscoveryStarted];
+	    @statistic[routeDiscoveryStarted](title="route discoveries initiated"; source=routeDiscoveryStarted; record=count,vector; interpolationmode=none);
+
 	gates:
 	    input socketIn;
 	    output socketOut;

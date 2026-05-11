@@ -105,6 +105,12 @@ class INET_API Zrp : public RoutingProtocolBase,
                      public NetfilterBase::HookBase,
                      public UdpSocket::ICallback,
                      public cListener {
+  public:
+    // Routing-overhead / route-discovery statistics signals (shared across all
+    // four protocols evaluated in the FANET experiments).
+    static simsignal_t controlPacketSentSignal;
+    static simsignal_t routeDiscoveryStartedSignal;
+
   protected:
     // environment
     cModule* host = nullptr;
@@ -124,6 +130,8 @@ class INET_API Zrp : public RoutingProtocolBase,
     simtime_t brpCoverageLifetime = 30; // How long to keep coverage entries (RFC: MAX_QUERY_LIFETIME)
     simtime_t ierpRetryInterval = 3;    // How long to wait before retrying a route request
     unsigned int ierpMaxRetries = 3;    // Max number of IERP route request retries
+    simtime_t delayedPacketLifetime = 5; // Hard upper bound on how long a queued datagram
+                                         // may sit waiting for route discovery before being dropped
 
     // NDP/IARP
     uint16_t NDP_seqNum = 0;                            // sequence number for NDP hello messages (wraps at 65535)
@@ -136,8 +144,10 @@ class INET_API Zrp : public RoutingProtocolBase,
     // Query detection table: (source, queryID) -> record
     std::map<IerpQueryId, IerpQueryRecord> ierpQueryTable;
 
-    // Buffered datagrams waiting for route discovery to complete
-    std::multimap<L3Address, Packet*> delayedPackets;
+    // Buffered datagrams waiting for route discovery to complete.
+    // Value is (insertTime, packet) so we can age out stale entries instead of
+    // reinjecting packets that have been waiting tens of seconds.
+    std::multimap<L3Address, std::pair<simtime_t, Packet*>> delayedPackets;
 
     // IERP route request retry state
     std::map<L3Address, cMessage*> ierpRetryTimers; // dest -> retry timer
