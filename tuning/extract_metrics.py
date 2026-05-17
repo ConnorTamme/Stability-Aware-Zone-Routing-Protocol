@@ -43,9 +43,18 @@ from pathlib import Path
 # ---------------------------------------------------------------------------
 # Recon / Sar: single sink at groundStation, UAV traffic at uav[*].app[0],
 # routing at uav[*].app[1] + groundStation.app[1].
+#
+# GZRP is a *compound* module: the actual C++ class lives at
+# host.app[N].protocol (one level deeper than ZRP's simple-module layout),
+# and that's where emit() fires from -- so the .sca row's module column is
+# e.g. "FanetReconNetwork.uav[3].app[1].protocol". The optional ".protocol"
+# group in each regex below lets the same classifier catch both layouts
+# without double-counting: the compound's own app[N] entry has no relevant
+# scalars (no @statistic blocks live on the compound itself), and the inner
+# protocol's entry is what carries controlPacketSent / routeLength / etc.
 GS_SINK_RE      = re.compile(r"^Fanet\w+Network\.groundStation\.app\[0\]$")
-GS_ROUTING_RE   = re.compile(r"^Fanet\w+Network\.groundStation\.app\[1\]$")
-UAV_APP_RE      = re.compile(r"^Fanet\w+Network\.uav\[(\d+)\]\.app\[(\d+)\]$")
+GS_ROUTING_RE   = re.compile(r"^Fanet\w+Network\.groundStation\.app\[1\](?:\.protocol)?$")
+UAV_APP_RE      = re.compile(r"^Fanet\w+Network\.uav\[(\d+)\]\.app\[(\d+)\](?:\.protocol)?$")
 
 
 def stress_uav_role(idx):
@@ -105,29 +114,68 @@ def classify_module(network, module):
 # ---------------------------------------------------------------------------
 # Config name parsing
 # ---------------------------------------------------------------------------
-# e.g. Recon_TuneNDPHello_Zrp, Sar_TuneStability_StabilityZrp
-CONFIG_RE = re.compile(r"^(?P<scen>\w+?)_Tune(?P<param>\w+?)_(?P<proto>\w+)$")
+# e.g. Recon_TuneRadius_GzrpClassic, Sar_TuneStabFraction_GzrpSazrp.
+# Protocol token is enumerated rather than \w+ so legacy or malformed config
+# names parse to None and get skipped instead of pulling in noise. Zrp /
+# StabilityZrp stay in the alternation for backward compat with old result
+# sets that still hold OFAT runs from before the GZRP rework.
+CONFIG_RE = re.compile(
+    r"^(?P<scen>\w+?)_Tune(?P<param>\w+?)_(?P<proto>Zrp|StabilityZrp|GzrpClassic|GzrpSazrp)$"
+)
 
-# Short config-name token -> (full ini parameter name, human-readable label)
+# Short config-name token -> (full ini parameter name, human-readable label).
+# Old (pre-GZRP) entries are retained so backward-compat result sets still plot.
 PARAM_INFO = {
+    # Legacy ZRP / SA-ZRP OFAT sweeps -- kept so old CSVs still render.
     "ZoneRadius":        ("zoneRadius",          "Zone radius"),
     "NDPHello":          ("NDP_helloInterval",   "NDP hello interval (s)"),
     "IARPUpdate":        ("IARP_updateInterval", "IARP update interval (s)"),
     "IARPEventDelay":    ("IARP_eventDelay",     "IARP event delay (ms)"),
     "LinkLifetime":      ("linkStateLifetime",   "Link state lifetime (s)"),
     "Stability":         ("stabilityThreshold",  "Stability threshold (tau)"),
-    "DecayBeta":         ("decayBeta",           "Decay beta"),
     "EmaAlpha":          ("emaAlpha",            "EMA alpha"),
     "DistanceExponent":  ("distanceExponent",    "Distance exponent p"),
+    "Beta":              ("betaMin",             "Beta bounds (min, max pairs)"),
+    # New GZRP strategy-parameter sweeps.
+    "Radius":            ("radius",              "Zone radius (StepDecay)"),
+    "Threshold":         ("threshold",           "Stability threshold (tau)"),
+    "Q":                 ("q",                   "Fraction-good threshold (q)"),
+    "BetaMax":           ("betaMax",             "Beta max (MultiplicativeBetaDecay)"),
+    "PreDecay":          ("preDecay",            "Originator pre-decay enabled"),
+    # Cross-family baseline: each protocol at its framework defaults, no
+    # iterated variable. parse_config returns param_value=NaN for these; the
+    # dedicated plot_baseline_compare path collects them into a bar chart.
+    "Baseline":          ("",                    "Baseline (framework defaults)"),
 }
 
 # Joint (2D) sweeps: param_short -> (x-axis (full,label), series (full,label)).
 # Each row will additionally carry a "series_value" for the second iter var, and
 # the plot draws one line per series_value (instead of per protocol).
+#
+# StabGrenade is the legacy SA-ZRP joint sweep (tau x fractionGoodThreshold).
+# The new GZRP-Sazrp StabFraction sweep is its direct successor; StabGrenade
+# is kept here so the legacy SA-ZRP sweep still parses and plots side-by-side
+# with the new GZRP-Sazrp grids for cross-family comparison.
 JOINT_PARAM_INFO = {
-    "StabDecay": (
-        ("stabilityThreshold", "Stability threshold (tau)"),
-        ("decayBeta",          "Decay beta"),
+    "StabGrenade": (
+        ("stabilityThreshold",    "Stability threshold (tau)"),
+        ("fractionGoodThreshold", "Fraction Good Threshold (q)"),
+    ),
+    "RadiusPreDecay": (
+        ("radius",   "Zone radius"),
+        ("preDecay", "Originator pre-decay"),
+    ),
+    "StabFraction": (
+        ("threshold", "Stability threshold (tau)"),
+        ("q",         "Fraction-good threshold (q)"),
+    ),
+    "StabBeta": (
+        ("threshold", "Stability threshold (tau)"),
+        ("betaMax",   "Beta max"),
+    ),
+    "FractionBeta": (
+        ("q",       "Fraction-good threshold (q)"),
+        ("betaMax", "Beta max"),
     ),
 }
 
@@ -212,7 +260,10 @@ for (_short, _key, _label, _color) in PKT_TYPES:
 def parse_config(cfg):
     """Returns (proto, param_short, param_full, param_label, joint_info).
     joint_info is None for OFAT sweeps; for joint sweeps it's
-    ((x_full, x_label), (series_full, series_label))."""
+    ((x_full, x_label), (series_full, series_label)).
+    Returns all-None when cfg is not a recognised Tune* config -- the caller
+    should skip the run. This is the entry point that drops legacy joint
+    keys (e.g. StabGrenade) without crashing."""
     m = CONFIG_RE.match(cfg)
     if not m:
         return None, None, None, None, None
@@ -226,7 +277,7 @@ def parse_config(cfg):
         return proto, param_short, x_full, x_label, joint
     info = PARAM_INFO.get(param_short)
     if info is None:
-        return proto, param_short, param_short, param_short, None
+        return None, None, None, None, None
     param_full, param_label = info
     return proto, param_short, param_full, param_label, None
 
@@ -238,6 +289,25 @@ def fnum(s):
         return float(s)
     except ValueError:
         return float("nan")
+
+
+def iter_value_to_float(s):
+    """Convert an OMNeT++ iteration variable value (a string) to a float so
+    it can land on a plot axis. Numbers convert directly; booleans map to
+    0.0 / 1.0 so e.g. `${preDecay=false,true}` produces a valid series axis
+    (without this, the whole RadiusPreDecay joint sweep plots empty)."""
+    if s is None or s == "":
+        return float("nan")
+    try:
+        return float(s)
+    except (TypeError, ValueError):
+        pass
+    low = s.strip().lower()
+    if low == "true":
+        return 1.0
+    if low == "false":
+        return 0.0
+    return float("nan")
 
 
 def mean_std(values):
@@ -337,10 +407,13 @@ def pool_delay_stats(sinks):
 # ---------------------------------------------------------------------------
 # Plotting
 # ---------------------------------------------------------------------------
-PROTO_ORDER  = ["Zrp", "StabilityZrp"]
-PROTO_LABEL  = {"Zrp": "ZRP", "StabilityZrp": "SA-ZRP"}
-PROTO_COLOR  = {"Zrp": "#1f77b4", "StabilityZrp": "#d62728"}
-PROTO_MARKER = {"Zrp": "o",        "StabilityZrp": "s"}
+PROTO_ORDER  = ["Zrp", "StabilityZrp", "GzrpClassic", "GzrpSazrp"]
+PROTO_LABEL  = {"Zrp": "ZRP", "StabilityZrp": "SA-ZRP",
+                "GzrpClassic": "GZRP-Classic", "GzrpSazrp": "GZRP-Sazrp"}
+PROTO_COLOR  = {"Zrp": "#1f77b4", "StabilityZrp": "#d62728",
+                "GzrpClassic": "#2ca02c", "GzrpSazrp": "#ff7f0e"}
+PROTO_MARKER = {"Zrp": "o", "StabilityZrp": "s",
+                "GzrpClassic": "^", "GzrpSazrp": "D"}
 
 METRICS = [
     # (key, ylabel, fmt)
@@ -403,7 +476,8 @@ def plot_param(per_run, param_short, param_full, param_label, out_png):
     param_vals = sorted({r["param_value"] for r in rows})
 
     fig, axes = plt.subplots(*METRICS_GRID, figsize=(20, 9))
-    fig.suptitle(f"Parameter sweep: {param_label}", fontsize=14)
+    proto_blurb = ", ".join(PROTO_LABEL[p] for p in protos) if protos else "?"
+    fig.suptitle(f"Parameter sweep: {param_label}   [{proto_blurb}]", fontsize=14)
 
     for ax, (key, ylabel, fmt) in zip(axes.flat, METRICS):
         for proto in protos:
@@ -437,17 +511,22 @@ def plot_param(per_run, param_short, param_full, param_label, out_png):
             ax.set_ylim(0, 1.05)
         if len(param_vals) > 1:
             ax.set_xticks(param_vals)
-        ax.legend(loc="best", fontsize=9, framealpha=0.92)
+        # Only emit a legend if at least one line landed on this subplot
+        # (otherwise matplotlib warns "no artists with labels").
+        if ax.get_legend_handles_labels()[0]:
+            ax.legend(loc="best", fontsize=9, framealpha=0.92)
 
     plt.tight_layout()
     fig.savefig(out_png, dpi=150, bbox_inches="tight")
     plt.close(fig)
 
 
-def plot_joint(per_run, param_short, x_label, series_label, out_png):
+def plot_joint(per_run, param_short, proto, x_label, series_label, out_png):
     """Joint (2D) sweep plot: x-axis is the primary param, one line per
-    distinct series_value (the second iter var). Same 2x3 metric grid as
-    plot_param. SA-ZRP only -- joint sweeps don't include ZRP."""
+    distinct series_value (the second iter var). Same metric grid as
+    plot_param. Joint sweeps are protocol-specific (StabGrenade is SA-ZRP,
+    RadiusPreDecay is GZRP-Classic, etc.), so we filter to the given proto
+    and put it in the title so the figure self-identifies."""
     try:
         import matplotlib.pyplot as plt
     except ImportError as e:
@@ -455,7 +534,8 @@ def plot_joint(per_run, param_short, x_label, series_label, out_png):
               file=sys.stderr)
         return
 
-    rows = [r for r in per_run if r["param_short"] == param_short]
+    rows = [r for r in per_run
+            if r["param_short"] == param_short and r["protocol"] == proto]
     if not rows:
         return
 
@@ -475,7 +555,9 @@ def plot_joint(per_run, param_short, x_label, series_label, out_png):
                    "#ff7f0e", "#17becf", "#8c564b", "#7f7f7f"]
 
     fig, axes = plt.subplots(*METRICS_GRID, figsize=(20, 9))
-    fig.suptitle(f"Joint sweep: {x_label}  vs  {series_label}", fontsize=14)
+    fig.suptitle(
+        f"Joint sweep: {x_label}  vs  {series_label}   [{PROTO_LABEL.get(proto, proto)}]",
+        fontsize=14)
 
     for ax, (key, ylabel, fmt) in zip(axes.flat, METRICS):
         for i, sv in enumerate(series_vals):
@@ -506,7 +588,8 @@ def plot_joint(per_run, param_short, x_label, series_label, out_png):
             ax.set_ylim(0, 1.05)
         if len(x_vals) > 1:
             ax.set_xticks(x_vals)
-        ax.legend(loc="best", fontsize=8, framealpha=0.92)
+        if ax.get_legend_handles_labels()[0]:
+            ax.legend(loc="best", fontsize=8, framealpha=0.92)
 
     plt.tight_layout()
     fig.savefig(out_png, dpi=150, bbox_inches="tight")
@@ -566,14 +649,24 @@ def plot_drops_breakdown(per_run, out_png):
         len(by_sweep[s]) for s in sweeps)), squeeze=False)
     axes = axes[:, 0]
 
+    # Look up the x-axis param name(s) for this sweep so bar labels say
+    # `radius=3` rather than `pval=3` (and same for the joint series axis).
     for ax, sweep in zip(axes, sweeps):
+        joint = JOINT_PARAM_INFO.get(sweep)
+        if joint is not None:
+            (x_full, _), (s_full, _) = joint
+        else:
+            x_full = PARAM_INFO.get(sweep, (sweep, sweep))[0]
+            s_full = None
         bars = sorted(by_sweep[sweep],
                       key=lambda b: (b[0], b[1], b[2]))
         labels = []
         for proto, pval, sval, _ in bars:
-            label = f"{proto}  pval={pval:g}"
+            label = PROTO_LABEL.get(proto, proto)
+            if x_full:
+                label += f"  {x_full}={pval:g}"
             if not math.isnan(sval):
-                label += f"  sval={sval:g}"
+                label += f"  {s_full or 'sval'}={sval:g}"
             labels.append(label)
         y = np.arange(len(bars))
 
@@ -659,12 +752,18 @@ def plot_pkt_type_breakdown(per_run, out_png, mode="bytes"):
     axes = axes[:, 0]
 
     for ax, sweep in zip(axes, sweeps):
+        joint = JOINT_PARAM_INFO.get(sweep)
+        if joint is not None:
+            (x_full, _), (s_full, _) = joint
+        else:
+            x_full = PARAM_INFO.get(sweep, (sweep, sweep))[0]
+            s_full = None
         bars = sorted(by_sweep[sweep], key=lambda b: (b[0], b[1], b[2]))
         labels = []
         for proto, pval, sval, _ in bars:
-            label = f"{proto}  pval={pval:g}"
+            label = f"{PROTO_LABEL.get(proto, proto)}  {x_full}={pval:g}"
             if not math.isnan(sval):
-                label += f"  sval={sval:g}"
+                label += f"  {s_full or 'sval'}={sval:g}"
             labels.append(label)
         y = np.arange(len(bars))
 
@@ -701,6 +800,172 @@ def plot_pkt_type_breakdown(per_run, out_png, mode="bytes"):
     plt.close(fig)
 
 
+def plot_instance_compare(per_run, out_png):
+    """GZRP-Classic vs GZRP-Sazrp overhead/PDR trade-off scatter. For each
+    (sweep, param_value, series_value) bucket where BOTH instances have data,
+    draw two points (one per instance) at (overhead_ratio_mean, pdr_mean) and
+    connect them with a thin grey line so the trade-off direction is visible.
+    Silently skip if no overlapping buckets exist (which is the expected case
+    when the two instances sweep entirely disjoint strategy parameters)."""
+    try:
+        import matplotlib.pyplot as plt
+    except ImportError as e:
+        print(f"missing plotting dep ({e}); pip install matplotlib numpy",
+              file=sys.stderr)
+        return
+
+    by_bucket = defaultdict(lambda: defaultdict(list))
+    for r in per_run:
+        if r["protocol"] not in ("GzrpClassic", "GzrpSazrp"):
+            continue
+        key = (r["param_short"], r["param_value"], r["series_value"])
+        by_bucket[key][r["protocol"]].append(r)
+
+    pairs = []
+    for key, by_proto in by_bucket.items():
+        if "GzrpClassic" not in by_proto or "GzrpSazrp" not in by_proto:
+            continue
+        c_over, _ = mean_std([d["overhead_ratio"] for d in by_proto["GzrpClassic"]])
+        c_pdr,  _ = mean_std([d["pdr"]            for d in by_proto["GzrpClassic"]])
+        s_over, _ = mean_std([d["overhead_ratio"] for d in by_proto["GzrpSazrp"]])
+        s_pdr,  _ = mean_std([d["pdr"]            for d in by_proto["GzrpSazrp"]])
+        if any(math.isnan(v) for v in (c_over, c_pdr, s_over, s_pdr)):
+            continue
+        pairs.append((key, (c_over, c_pdr), (s_over, s_pdr)))
+
+    if not pairs:
+        return
+
+    fig, ax = plt.subplots(figsize=(8, 6))
+    ax.set_title("GZRP-Classic vs GZRP-Sazrp: overhead / PDR trade-off")
+    for _, (c_over, c_pdr), (s_over, s_pdr) in pairs:
+        ax.plot([c_over, s_over], [c_pdr, s_pdr],
+                color="#999999", linewidth=0.8, zorder=1)
+    cxs = [c_over for _, (c_over, _), _ in pairs]
+    cys = [c_pdr  for _, (_, c_pdr), _ in pairs]
+    sxs = [s_over for _, _, (s_over, _) in pairs]
+    sys2 = [s_pdr for _, _, (_, s_pdr) in pairs]
+    ax.scatter(cxs, cys, color=PROTO_COLOR["GzrpClassic"],
+               marker=PROTO_MARKER["GzrpClassic"], s=42, zorder=2,
+               label=PROTO_LABEL["GzrpClassic"])
+    ax.scatter(sxs, sys2, color=PROTO_COLOR["GzrpSazrp"],
+               marker=PROTO_MARKER["GzrpSazrp"], s=42, zorder=2,
+               label=PROTO_LABEL["GzrpSazrp"])
+    ax.set_xlabel("Routing overhead (control / payload)")
+    ax.set_ylabel("Packet delivery ratio")
+    from matplotlib.ticker import PercentFormatter
+    ax.yaxis.set_major_formatter(PercentFormatter(xmax=1.0, decimals=0))
+    ax.set_ylim(0, 1.05)
+    ax.grid(True, linestyle="--", alpha=0.45)
+    ax.set_axisbelow(True)
+    ax.legend(loc="best", fontsize=9, framealpha=0.92)
+    plt.tight_layout()
+    fig.savefig(out_png, dpi=150, bbox_inches="tight")
+    plt.close(fig)
+
+
+# Human-readable summary of the parameters each baseline protocol uses, for
+# the annotation strip at the bottom of plot_baseline_compare. These mirror
+# the *Base configs in the tuning .inis -- update both sides together.
+BASELINE_PARAM_SUMMARY = {
+    "Zrp":          "zoneRadius=2, NDP=1s, IARP=4s, linkLifetime=8s",
+    "StabilityZrp": "tau=0.2, q=0.4, beta=[0.7..0.85], distExp=4, preDecay=on",
+    "GzrpClassic":  "StepDecay.radius=2, AlwaysAdmitGate, ConstScore=1, preDecay=off",
+    "GzrpSazrp":    "tau=0.2, q=0.4, beta=[0.7..0.85], distExp=4, LparScore, preDecay=on",
+}
+
+
+def plot_baseline_compare(per_run, out_png):
+    """All-protocols-at-defaults bar comparison. One subplot per metric, one
+    bar per protocol family (mean across reps, error bar = sample stddev).
+    Sources rows whose configname matched <Scenario>_TuneBaseline_<Proto> --
+    i.e. each protocol running with no sweep, just the framework's own
+    defaults. This is the single all-four-protocols-same-scenario view that
+    the OFAT/joint sweeps don't give on their own (the parameter renames in
+    GZRP make a shared-axis line plot impossible)."""
+    try:
+        import numpy as np
+        import matplotlib.pyplot as plt
+    except ImportError as e:
+        print(f"missing plotting dep ({e}); pip install matplotlib numpy",
+              file=sys.stderr)
+        return
+
+    rows = [r for r in per_run if r["param_short"] == "Baseline"]
+    if not rows:
+        return
+
+    by_proto = defaultdict(list)
+    for r in rows:
+        by_proto[r["protocol"]].append(r)
+    protos = [p for p in PROTO_ORDER if p in by_proto]
+    if not protos:
+        return
+
+    fig, axes = plt.subplots(*METRICS_GRID, figsize=(20, 9))
+    fig.suptitle("Baseline (framework defaults): protocol family comparison",
+                 fontsize=14)
+
+    xs = list(range(len(protos)))
+    bar_colors = [PROTO_COLOR[p] for p in protos]
+    tick_labels = [PROTO_LABEL[p] for p in protos]
+
+    for ax, (key, ylabel, fmt) in zip(axes.flat, METRICS):
+        means, stds = [], []
+        for proto in protos:
+            vals = [r[key] for r in by_proto[proto]
+                    if isinstance(r[key], (int, float)) and not math.isnan(r[key])]
+            if vals:
+                m, s = mean_std(vals)
+            else:
+                m, s = float("nan"), float("nan")
+            means.append(m)
+            stds.append(s)
+        plot_means = [0.0 if math.isnan(m) else m for m in means]
+        ax.bar(xs, plot_means, color=bar_colors, edgecolor="white", linewidth=0.5)
+        # Error bars clamped to >= 0; skip where mean is NaN.
+        lower, upper, ex = [], [], []
+        for i, (m, s) in enumerate(zip(means, stds)):
+            if math.isnan(m) or math.isnan(s):
+                continue
+            ex.append(xs[i])
+            lower.append(min(s, m))
+            upper.append(s)
+        if ex:
+            ax.errorbar(ex, [plot_means[i] for i in ex],
+                        yerr=[lower, upper], fmt="none",
+                        ecolor="black", capsize=3, linewidth=1.0)
+        # Mark NaN bars with a slash hatch so missing data reads visibly.
+        for i, m in enumerate(means):
+            if math.isnan(m):
+                ax.text(xs[i], 0, "n/a", ha="center", va="bottom",
+                        fontsize=8, color="#555555")
+
+        ax.set_xticks(xs)
+        ax.set_xticklabels(tick_labels, fontsize=9, rotation=15, ha="right")
+        ax.set_ylabel(ylabel)
+        ax.grid(True, axis="y", linestyle="--", alpha=0.45)
+        ax.set_axisbelow(True)
+        _apply_y_formatter(ax, fmt)
+        if key == "pdr":
+            ax.set_ylim(0, 1.05)
+
+    # Reserve room at the bottom and drop in a per-protocol config summary
+    # so the reader can see what each bar actually represents without
+    # cross-referencing the .ini. One line per protocol present.
+    summary_lines = [
+        f"{PROTO_LABEL.get(p, p)}: {BASELINE_PARAM_SUMMARY.get(p, '(no summary registered)')}"
+        for p in protos
+    ]
+    plt.tight_layout(rect=[0, 0.08, 1, 1])
+    fig.text(0.01, 0.005, "\n".join(summary_lines),
+             ha="left", va="bottom", fontsize=8, family="monospace",
+             bbox=dict(boxstyle="round,pad=0.4", facecolor="#f5f5f5",
+                       edgecolor="#cccccc", linewidth=0.5))
+    fig.savefig(out_png, dpi=150, bbox_inches="tight")
+    plt.close(fig)
+
+
 def make_plots(per_run, fig_dir):
     try:
         import matplotlib  # noqa: F401
@@ -709,21 +974,40 @@ def make_plots(per_run, fig_dir):
               "(install with: pip install matplotlib numpy)", file=sys.stderr)
         return
     fig_dir.mkdir(exist_ok=True)
-    # Group rows by parameter so each PNG covers one sweep cleanly.
+    # Group rows by parameter so each PNG covers one sweep cleanly. Joint
+    # sweeps additionally split by protocol so e.g. the legacy SA-ZRP
+    # StabGrenade plot and the new GZRP-Sazrp StabFraction plot don't share
+    # ambiguous filenames.
     by_param = defaultdict(list)
     for r in per_run:
         by_param[r["param_short"]].append(r)
 
     for param_short in sorted(by_param):
-        sample = by_param[param_short][0]
-        out = fig_dir / f"{param_short}.png"
+        if param_short == "Baseline":
+            continue  # handled by plot_baseline_compare below
+        rows = by_param[param_short]
         if param_short in JOINT_PARAM_INFO:
-            plot_joint(per_run, param_short, sample["param_label"],
-                       sample["series_label"], out)
+            sample = rows[0]
+            for proto in PROTO_ORDER:
+                if not any(r["protocol"] == proto for r in rows):
+                    continue
+                out = fig_dir / f"{param_short}_{proto}.png"
+                plot_joint(per_run, param_short, proto, sample["param_label"],
+                           sample["series_label"], out)
+                print(f"wrote {out}", file=sys.stderr)
         else:
+            sample = rows[0]
+            out = fig_dir / f"{param_short}.png"
             plot_param(per_run, param_short, sample["param_full"],
                        sample["param_label"], out)
-        print(f"wrote {out}", file=sys.stderr)
+            print(f"wrote {out}", file=sys.stderr)
+
+    # All-protocols-at-defaults bar comparison. Only writes if at least one
+    # Baseline run exists in the CSV.
+    baseline_out = fig_dir / "baseline_compare.png"
+    plot_baseline_compare(per_run, baseline_out)
+    if baseline_out.exists():
+        print(f"wrote {baseline_out}", file=sys.stderr)
 
     # Cross-sweep drop attribution.
     drops_out = fig_dir / "drops_breakdown.png"
@@ -739,6 +1023,14 @@ def make_plots(per_run, fig_dir):
     pkt_count_out = fig_dir / "pkt_types_count.png"
     plot_pkt_type_breakdown(per_run, pkt_count_out, mode="count")
     print(f"wrote {pkt_count_out}", file=sys.stderr)
+
+    # Cross-instance overhead/PDR trade-off scatter. Silently no-ops when
+    # GzrpClassic and GzrpSazrp don't share any (sweep, param_value) buckets,
+    # which is the expected case under the current disjoint-parameter grid.
+    inst_out = fig_dir / "instance_compare.png"
+    plot_instance_compare(per_run, inst_out)
+    if inst_out.exists():
+        print(f"wrote {inst_out}", file=sys.stderr)
 
 
 # ---------------------------------------------------------------------------
@@ -927,11 +1219,12 @@ def main():
             continue  # not a Tune* config (Base configs leak in via repeat=3 noop)
         rep = int(meta.get("repetition", -1))
         # The iter var name matches param_full, set in the .ini.
-        pval_raw = meta.get(param_full, "")
-        try:
-            pval = float(pval_raw)
-        except (TypeError, ValueError):
-            pval = float("nan")
+        pval = iter_value_to_float(meta.get(param_full, ""))
+        # Baseline configs have no iterated variable; pin pval=0 so the three
+        # repetitions group into a single bucket cleanly (NaN dict keys would
+        # never re-equal themselves).
+        if param_short == "Baseline":
+            pval = 0.0
 
         # For joint sweeps, also pull the second iter var (the "series" axis).
         series_full = ""
@@ -939,11 +1232,7 @@ def main():
         sval = float("nan")
         if joint is not None:
             (_, _), (series_full, series_label) = joint
-            sval_raw = meta.get(series_full, "")
-            try:
-                sval = float(sval_raw)
-            except (TypeError, ValueError):
-                sval = float("nan")
+            sval = iter_value_to_float(meta.get(series_full, ""))
 
         a = acc[run]
         sent, rcvd = a["sent"], a["rcvd"]

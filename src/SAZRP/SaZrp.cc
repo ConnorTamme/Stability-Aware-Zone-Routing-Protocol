@@ -13,6 +13,8 @@
 #include <queue>
 #include <cmath>
 #include <limits>
+#include <fstream>
+#include <cstdlib>
 
 #include "inet/common/IProtocolRegistrationListener.h"
 #include "inet/common/ModuleAccess.h"
@@ -32,6 +34,27 @@
 
 namespace inet {
 namespace sazrp {
+
+// Diagnostic dump (parity hunt with Gzrp.cc in SAZRP-mode). Same format as
+// the Zrp/Gzrp DIAG_LOG macros so the three protocols' logs can be
+// byte-compared. Gated on env var ZRP_DIAG_FILE.
+namespace {
+std::ofstream& diagStream()
+{
+    static std::ofstream s;
+    static bool checked = false;
+    if (!checked) {
+        checked = true;
+        const char* path = std::getenv("ZRP_DIAG_FILE");
+        if (path && *path) s.open(path);
+    }
+    return s;
+}
+inline bool diagEnabled() { return diagStream().is_open(); }
+} // namespace
+#define DIAG_LOG(node, body) do { if (diagEnabled()) { \
+    diagStream() << std::fixed << std::setprecision(9) << simTime().dbl() \
+                 << " " << (node)->getFullName() << " " << body << std::endl; } } while (0)
 
 Define_Module(SaZrp);
 
@@ -119,7 +142,12 @@ void SaZrp::initialize(int stage)
         vMax = par("vMax");
         emaAlpha = par("emaAlpha");
         distanceExponent = par("distanceExponent");
-        decayBeta = par("decayBeta");
+        fractionGoodThreshold = par("fractionGoodThreshold");
+        betaMin = par("betaMin");
+        betaMax = par("betaMax");
+        enableOriginatorPreDecay = par("enableOriginatorPreDecay");
+        if (betaMax < betaMin)
+            throw cRuntimeError("betaMax (%g) must be >= betaMin (%g)", betaMax, betaMin);
         linkStateLifetime = par("linkStateLifetime");
         debugInterval = par("debugInterval");
         brpJitterMax = par("brpJitterMax");
@@ -136,7 +164,10 @@ void SaZrp::initialize(int stage)
         WATCH(vMax);
         WATCH(emaAlpha);
         WATCH(distanceExponent);
-        WATCH(decayBeta);
+        WATCH(fractionGoodThreshold);
+        WATCH(betaMin);
+        WATCH(betaMax);
+        WATCH(enableOriginatorPreDecay);
         WATCH(NDP_seqNum);
         WATCH(IARP_seqNum);
         WATCH_MAP(neighbourTable);
@@ -669,6 +700,53 @@ L3Address SaZrp::getSelfIPAddress() const
     return routingTable->getRouterIdAsGeneric();
 }
 
+double SaZrp::fractionGoodForSelf() const
+{
+    // Fraction of own neighbours whose smoothed stability is at or above tau.
+    // Empty neighbour set returns 1.0 -- treat unknown as "passable" so that a
+    // node which has not yet heard any Hellos still attempts to participate.
+    // Otherwise the protocol would deadlock at startup: every node would refuse
+    // to flood until someone else floods first.
+    if (neighbourStability.empty())
+        return 1.0;
+    size_t good = 0;
+    for (const auto& kv : neighbourStability) {
+        if (kv.second >= stabilityThreshold)
+            ++good;
+    }
+    return static_cast<double>(good) / static_cast<double>(neighbourStability.size());
+}
+
+double SaZrp::fractionGoodFromLinkState(const L3Address& node) const
+{
+    // Reconstruct fractionGood for a remote node from its IARP advertisement.
+    // Each LinkDestInfo carries that node's view of its own link to the listed
+    // neighbour, quantised to a byte. Falls back to 1.0 when there is no link
+    // state entry yet, mirroring the self-side fallback above.
+    auto it = linkStateTable.find(node);
+    if (it == linkStateTable.end() || it->second.linkDestinations.empty())
+        return 1.0;
+    size_t good = 0;
+    for (const auto& ld : it->second.linkDestinations) {
+        double sbar = static_cast<double>(ld.metrics[0]) / 255.0;
+        if (sbar >= stabilityThreshold)
+            ++good;
+    }
+    return static_cast<double>(good) / static_cast<double>(it->second.linkDestinations.size());
+}
+
+double SaZrp::betaForFractionGood(double fg) const
+{
+    // Linear interpolation: fg=0 -> betaMin, fg=1 -> betaMax. With
+    // betaMin == betaMax the per-node beta collapses to a fixed value, which
+    // recovers the v2 behaviour and keeps tuning sweeps that pin one bound
+    // backward-compatible. Caller does not need to clamp fg -- the inputs are
+    // always in [0,1] by construction (counts/total).
+    if (fg < 0.0) fg = 0.0;
+    if (fg > 1.0) fg = 1.0;
+    return betaMin + (betaMax - betaMin) * fg;
+}
+
 void SaZrp::processPacket(Packet* packet)
 {
     L3Address sourceAddr = packet->getTag<L3AddressInd>()->getSrcAddress();
@@ -781,6 +859,8 @@ void SaZrp::handleNDPHello(const Ptr<NDP_Hello>& hello, const L3Address& sourceA
 
     // Update neighbour table with current time
     neighbourTable[sourceAddr] = simTime();
+    DIAG_LOG(host, "NDP_RECV from=" << sourceAddr << " seq=" << hello->getSeqNum()
+                                    << " new=" << (isNewNeighbour ? 1 : 0));
 
     EV_DETAIL << "Neighbour table now has " << neighbourTable.size() << " entries" << endl;
 
@@ -848,6 +928,7 @@ void SaZrp::NDP_refreshNeighbourTable()
         neighbourTable.erase(addr);
         neighbourStability.erase(addr);
         neighbourKinematics.erase(addr);
+        DIAG_LOG(host, "NDP_STALE addr=" << addr);
         EV_DETAIL << "Removed stale neighbour: " << addr << endl;
     }
 
@@ -867,8 +948,18 @@ const Ptr<IARP_LinkStateUpdate> SaZrp::createIARPUpdate()
     update->setSourceAddr(getSelfIPAddress());
     update->setSeqNum(IARP_seqNum++);
     update->setRadius(0); // unused in SAZRP; kept for layout parity
-    // runningStability starts at 255 (encodes 1.0) at the originator.
-    update->setRunningStability(255);
+    // Originator pre-decay (TTL = R - 1 analogue): when enabled, the originator
+    // applies one beta hop before sending. The flood then dies one hop earlier
+    // than the conceptual zone radius -- peripherals at the edge are picked up
+    // by Dijkstra via interior nodes' link-state adjacencies, exactly as in
+    // classic ZRP. Without pre-decay, the running stability starts at 1.0 so
+    // the flood reaches the full beta^k_max distance.
+    double initialR = 1.0;
+    if (enableOriginatorPreDecay) {
+        double fgSelf = fractionGoodForSelf();
+        initialR = betaForFractionGood(fgSelf);
+    }
+    update->setRunningStability(encodeStability(initialR));
 
     size_t neighbourCount = neighbourTable.size();
     update->setLinkDestCount(neighbourCount);
@@ -912,7 +1003,21 @@ void SaZrp::sendIARPUpdate()
         return;
     }
 
+    // Originator gate: only "throw the grenade" if a meaningful fraction of
+    // our own neighbours are stable. Fringe nodes (mostly-bad neighbours)
+    // suppress entirely -- the savings v.s. v2 is exactly this transmission,
+    // plus the avoided downstream forwards through unstable forwarders.
+    double fgSelf = fractionGoodForSelf();
+    if (fgSelf < fractionGoodThreshold) {
+        EV_DETAIL << "Suppressing IARP update: fractionGood=" << fgSelf
+                  << " < q=" << fractionGoodThreshold << " (fringe node)" << endl;
+        iarpUpdatePending = false;
+        scheduleAfter(IARP_updateInterval, IARP_updateTimer);
+        return;
+    }
+
     auto update = createIARPUpdate();
+    DIAG_LOG(host, "IARP_SEND seq=" << update->getSeqNum() << " nbrs=" << neighbourTable.size());
     // Use a generous IP TTL; flood termination is governed by runningStability, not IP TTL.
     sendZrpPacket(update, Ipv4Address::ALLONES_ADDRESS, 255);
 
@@ -946,43 +1051,41 @@ void SaZrp::handleIARPUpdate(const Ptr<IARP_LinkStateUpdate>& update, const L3Ad
         return;
     }
 
-    // Decode the incoming running stability and combine with our link stability to sender.
+    // Route-grenade gate at the receiver: admission and forwarding both depend
+    // on whether THIS node passes the fraction-good test. The per-link min from
+    // v2 is gone; we trust the originator's gate to vet the path's start, the
+    // forwarder gate at every intermediate to vet propagation, and the decay
+    // (per-node beta product) to bound zone radius.
     double r_in = decodeStability(update->getRunningStability());
 
-    auto sIt = neighbourStability.find(sourceAddr);
-    if (sIt == neighbourStability.end()) {
-        // No stability sample for the transmitting neighbour yet (Hello not processed).
-        EV_DETAIL << "Dropping IARP update: no stability sample for sender " << sourceAddr << endl;
-        return;
-    }
-    double sbar_self_j = sIt->second;
-
-    // Symmetrize the J<->self link: also consult J's last-advertised view of self,
-    // if cached, and take the min with our view. Falls back to the asymmetric rule
-    // when we have not yet seen an advertisement from J that lists us.
-    double sbar_link = sbar_self_j;
-    auto jLsIt = linkStateTable.find(sourceAddr);
-    if (jLsIt != linkStateTable.end()) {
-        L3Address self = getSelfIPAddress();
-        for (const auto& ld : jLsIt->second.linkDestinations) {
-            if (ld.destAddr == self) {
-                double sbar_j_self = static_cast<double>(ld.metrics[0]) / 255.0;
-                sbar_link = std::min(sbar_self_j, sbar_j_self);
-                break;
-            }
-        }
-    }
-
-    double r_out = decayBeta * std::min(r_in, sbar_link);
-
-    if (r_out < stabilityThreshold) {
-        EV_DETAIL << "Dropping IARP update: r_out=" << r_out << " < tau=" << stabilityThreshold << endl;
+    if (r_in < stabilityThreshold) {
+        // Sender shouldn't have forwarded us a sub-tau wave, but defend anyway.
+        DIAG_LOG(host, "IARP_RECV from=" << sourceAddr << " orig=" << originatorAddr
+                                         << " seq=" << seqNum << " action=drop_admit");
+        EV_DETAIL << "Dropping IARP update: r_in=" << r_in << " < tau=" << stabilityThreshold << endl;
         return;
     }
 
+    double fgSelf = fractionGoodForSelf();
+    if (fgSelf < fractionGoodThreshold) {
+        // Fringe node: drop the wave (no admit, no forward). The fringe node's
+        // own zone collapses to the 1-hop guarantee set, which is exactly what
+        // we want -- nodes with too-unstable local neighbourhoods stop
+        // contributing to overhead.
+        DIAG_LOG(host, "IARP_RECV from=" << sourceAddr << " orig=" << originatorAddr
+                                         << " seq=" << seqNum << " action=drop_gate");
+        EV_DETAIL << "Dropping IARP update: own fractionGood=" << fgSelf
+                  << " < q=" << fractionGoodThreshold << " (fringe receiver)" << endl;
+        return;
+    }
+
+    // Sequence-number freshness check happens BEFORE route-table updates so a
+    // stale-seq replay does not perturb installed routes.
     auto it = linkStateTable.find(originatorAddr);
     if (it != linkStateTable.end()) {
         if (!seqNumIsNewer(seqNum, it->second.seqNum)) {
+            DIAG_LOG(host, "IARP_RECV from=" << sourceAddr << " orig=" << originatorAddr
+                                             << " seq=" << seqNum << " action=stale");
             EV_DETAIL << "Ignoring stale IARP update (have seq " << it->second.seqNum << ", received " << seqNum << ")"
                       << endl;
             return;
@@ -1006,6 +1109,8 @@ void SaZrp::handleIARPUpdate(const Ptr<IARP_LinkStateUpdate>& update, const L3Ad
     }
 
     linkStateTable[originatorAddr] = entry;
+    DIAG_LOG(host, "IARP_RECV from=" << sourceAddr << " orig=" << originatorAddr
+                                     << " seq=" << seqNum << " action=store nbrs=" << destCount);
 
     EV_DETAIL << "Updated link state table, now has " << linkStateTable.size() << " entries" << endl;
 
@@ -1015,13 +1120,27 @@ void SaZrp::handleIARPUpdate(const Ptr<IARP_LinkStateUpdate>& update, const L3Ad
     // Notify IERP of topology change
     IERP_routeMaintenance();
 
+    // Forwarder decay: r_out = beta_self * r_in (no per-link min). beta_self
+    // is interpolated from THIS node's fractionGood, so cluster-core nodes
+    // (high fg) preserve more of the running stability per hop, while just-
+    // passing nodes (fg near q) decay it more aggressively. The product over
+    // a path equals the product of forwarder betas, which is path-symmetric.
+    double betaSelf = betaForFractionGood(fgSelf);
+    double r_out = betaSelf * r_in;
+
+    if (r_out < stabilityThreshold) {
+        EV_DETAIL << "Admitted but not forwarding IARP update: r_out=" << r_out
+                  << " < tau=" << stabilityThreshold << " (decay-imposed hop budget reached)" << endl;
+        return;
+    }
+
     // Rebroadcast with the new running stability.
     auto fwdUpdate = update->dupShared();
     auto mutableUpdate = CHK(dynamicPtrCast<IARP_LinkStateUpdate>(fwdUpdate));
     mutableUpdate->setRunningStability(encodeStability(r_out));
 
     EV_INFO << "Rebroadcasting IARP update with runningStability=" << (int)mutableUpdate->getRunningStability()
-            << " (r_out=" << r_out << ")" << endl;
+            << " (r_out=" << r_out << ", betaSelf=" << betaSelf << ")" << endl;
     sendZrpPacket(mutableUpdate, Ipv4Address::ALLONES_ADDRESS, 255);
 }
 
@@ -1072,6 +1191,7 @@ IRoute* SaZrp::IARP_createRoute(const L3Address& dest, const L3Address& nextHop,
         newRoute->setInterface(ifEntry);
     }
 
+    DIAG_LOG(host, "IARP_ROUTE_INSTALL dest=" << dest << " nextHop=" << nextHop << " hops=" << hops);
     EV_DETAIL << "Adding IARP route to " << dest << " via " << nextHop << " (hops: " << hops << ")" << endl;
     routingTable->addRoute(newRoute);
 
@@ -1095,10 +1215,22 @@ void SaZrp::IARP_purgeRoutingTable()
 
 void SaZrp::IARP_computeRoutes()
 {
-    // Widest-path-with-decay Dijkstra. A node v is admitted iff there exists a
-    // path P from self to v with beta^|P| * min_{(i,j) in P} sbar_ij >= tau.
-    // Direct neighbours are admitted unconditionally (one-hop guarantee).
+    // Route-grenade Dijkstra. A node v is admitted into self's zone iff one of:
+    //   (1) v is a direct one-hop neighbour (1-hop guarantee, unconditional);
+    //   (2) there is a path self -> P_1 -> ... -> P_{k-1} -> v through forwarders
+    //       (each P_i with fractionGood >= q), with running stability
+    //       prod_i beta_{P_i} >= tau, and v itself passes its fractionGood
+    //       gate (since v has to admit the wave, in the symmetric reading of
+    //       the rule).
+    // Per-link min is gone; the relaxation is r_v = beta_u * r_u, where beta_u
+    // is u's per-node beta. With enableOriginatorPreDecay, self pre-applies its
+    // own beta at the source so the flood reaches one fewer hop -- the receiver
+    // Dijkstra still extends one hop beyond via interior nodes' adjacencies.
     L3Address self = getSelfIPAddress();
+
+    double fgSelf = fractionGoodForSelf();
+    double betaSelf = betaForFractionGood(fgSelf);
+    bool selfPassesGate = (fgSelf >= fractionGoodThreshold);
 
     struct DijkstraState {
         double value;      // running stability r along best path found so far
@@ -1113,35 +1245,66 @@ void SaZrp::IARP_computeRoutes()
     typedef std::pair<double, L3Address> PQEntry;
     std::priority_queue<PQEntry> pq;
 
+    // state[u] = the running stability that u RECEIVES (r_in at u). Self has
+    // no incoming wave; treat its r_in as 1.0 unconditionally. The pre-decay
+    // optimisation, if enabled, is applied on the relaxation OUT of self
+    // below, so the math here stays uniform across modes.
     state[self] = {1.0, 0, self};
     pq.push({1.0, self});
 
     while (!pq.empty()) {
         auto top = pq.top();
         pq.pop();
-        double r = top.first;
         L3Address u = top.second;
 
         if (visited.count(u))
             continue;
         visited.insert(u);
 
-        EV_DETAIL << "IARP Dijkstra: visit " << u << " value=" << r << " hops=" << state[u].hops << endl;
+        EV_DETAIL << "IARP Dijkstra: visit " << u << " value=" << state[u].value
+                  << " hops=" << state[u].hops << endl;
 
+        bool isDirect1Hop = (u != self) && (neighbourTable.find(u) != neighbourTable.end());
+
+        // Admission decision. Self does not need a route to itself. Direct
+        // 1-hop neighbours are admitted unconditionally. Everyone else needs
+        // (a) self to be a forwarder (so it could actually receive a grenade),
+        // (b) running stability >= tau on this path, (c) own fractionGood
+        // >= q so it would admit our reciprocal grenade.
         if (u != self) {
-            // Reconstruct path
-            std::vector<L3Address> path;
-            for (L3Address cur = u; cur != self; cur = state[cur].prev)
-                path.push_back(cur);
-            path.push_back(self);
-            std::reverse(path.begin(), path.end());
+            bool admit;
+            if (isDirect1Hop) {
+                admit = true;
+            }
+            else if (!selfPassesGate) {
+                admit = false;
+            }
+            else {
+                double fg_u = fractionGoodFromLinkState(u);
+                admit = (state[u].value >= stabilityThreshold) && (fg_u >= fractionGoodThreshold);
+            }
 
-            L3Address nextHop = path.size() > 1 ? path[1] : u;
-            IARP_createRoute(u, nextHop, state[u].hops, path);
+            if (admit) {
+                std::vector<L3Address> path;
+                for (L3Address cur = u; cur != self; cur = state[cur].prev)
+                    path.push_back(cur);
+                path.push_back(self);
+                std::reverse(path.begin(), path.end());
+
+                L3Address nextHop = path.size() > 1 ? path[1] : u;
+                IARP_createRoute(u, nextHop, state[u].hops, path);
+            }
+            else {
+                // Not admitted; do not relay further from u either, since the
+                // wave model would have stopped here.
+                continue;
+            }
         }
 
-        // Build neighbour list for u with per-link stabilities.
-        std::vector<std::pair<L3Address, double>> neighbours; // (addr, sbar)
+        // Build u's neighbour list. Per-link stability is no longer used in the
+        // relaxation; we only need the addresses (and a tiny epsilon check to
+        // avoid relaxing across links that have decayed to nothing).
+        std::vector<std::pair<L3Address, double>> neighbours;
 
         if (u == self) {
             for (const auto& entry : neighbourTable) {
@@ -1155,22 +1318,34 @@ void SaZrp::IARP_computeRoutes()
             auto it = linkStateTable.find(u);
             if (it != linkStateTable.end()) {
                 for (const auto& linkDest : it->second.linkDestinations) {
-                    // metrics[0] is quantized stability byte
                     double sbar = static_cast<double>(linkDest.metrics[0]) / 255.0;
-                    // Symmetrize: also consult v's advertisement for u, if available, and take the min.
-                    auto vLsIt = linkStateTable.find(linkDest.destAddr);
-                    if (vLsIt != linkStateTable.end()) {
-                        for (const auto& reverseDest : vLsIt->second.linkDestinations) {
-                            if (reverseDest.destAddr == u) {
-                                double sbarReverse = static_cast<double>(reverseDest.metrics[0]) / 255.0;
-                                sbar = std::min(sbar, sbarReverse);
-                                break;
-                            }
-                        }
-                    }
                     neighbours.push_back({linkDest.destAddr, sbar});
                 }
             }
+        }
+
+        // u as forwarder: the wave can extend through u only if u's own
+        // fractionGood >= q. For self, this is the same gate as
+        // selfPassesGate. For non-self u, recompute from link state.
+        bool uIsForwarder;
+        if (u == self) {
+            uIsForwarder = selfPassesGate;
+        }
+        else {
+            uIsForwarder = (fractionGoodFromLinkState(u) >= fractionGoodThreshold);
+        }
+
+        // beta_u is the multiplier applied at u when it forwards. It matches
+        // the wire-side operation: a non-self forwarder applies its own beta,
+        // self applies beta_self IFF pre-decay is enabled (otherwise self
+        // transmits its 1.0 unchanged and the first decay happens when the
+        // receiver applies its own beta on the next hop).
+        double beta_u;
+        if (u == self) {
+            beta_u = enableOriginatorPreDecay ? betaSelf : 1.0;
+        }
+        else {
+            beta_u = betaForFractionGood(fractionGoodFromLinkState(u));
         }
 
         for (const auto& np : neighbours) {
@@ -1181,14 +1356,22 @@ void SaZrp::IARP_computeRoutes()
 
             bool isDirectFromSelf = (u == self) && (neighbourTable.find(v) != neighbourTable.end());
 
-            // Treat effectively-zero stability as a hard zero to avoid pushing useless states.
+            // Drop links that have effectively zero stability -- these
+            // wouldn't transmit the wave in practice. Direct 1-hop links are
+            // exempt (the guarantee covers them no matter how weak).
             if (sbar < STABILITY_EPSILON && !isDirectFromSelf)
                 continue;
 
-            double newValue = decayBeta * std::min(state[u].value, sbar);
+            // Only forwarders can extend the wave. 1-hop guarantee bypasses
+            // this for direct neighbours (we add them to state regardless so
+            // their routes get installed).
+            if (!uIsForwarder && !isDirectFromSelf)
+                continue;
+
+            double newValue = beta_u * state[u].value;
             unsigned int newHops = state[u].hops + 1;
 
-            // Admission: direct neighbours always pass; others require newValue >= tau.
+            // Decay-imposed hop budget. Direct 1-hop edges are exempt.
             if (!isDirectFromSelf && newValue < stabilityThreshold)
                 continue;
 
@@ -1240,6 +1423,9 @@ void SaZrp::IERP_initiateRouteDiscovery(const L3Address& dest, bool isRetry)
     qid.source = getSelfIPAddress();
     qid.queryId = request->getQueryID();
     IERP_recordQuery(qid, dest);
+
+    DIAG_LOG(host, "IERP_INIT_RD dest=" << dest << " qid=" << qid.source << ":" << qid.queryId
+                                        << " retry=" << (isRetry ? 1 : 0));
 
     // Call BRP to bordercast the route request
     BRP_bordercast(request);
@@ -1686,6 +1872,7 @@ IRoute* SaZrp::IERP_createRoute(const L3Address& dest, const L3Address& nextHop,
         newRoute->setInterface(ifEntry);
     }
 
+    DIAG_LOG(host, "IERP_ROUTE_INSTALL dest=" << dest << " nextHop=" << nextHop << " hops=" << hops);
     EV_DETAIL << "Adding IERP route to " << dest << " via " << nextHop << " (" << hops << " hops)" << endl;
     routingTable->addRoute(newRoute);
 
@@ -1886,6 +2073,8 @@ void SaZrp::BRP_bordercast(const Ptr<IERP_RouteData>& packet)
     }
 
     if (outNeighbours.empty()) {
+        DIAG_LOG(host, "BRP_BORDERCAST qid=" << qid.source << ":" << qid.queryId
+                                             << " dest=" << queryDest << " out=0");
         EV_INFO << "BRP: No uncovered peripheral nodes to bordercast to" << endl;
     }
     else {
@@ -1894,6 +2083,15 @@ void SaZrp::BRP_bordercast(const Ptr<IERP_RouteData>& packet)
         for (const auto& n : outNeighbours)
             EV_INFO << n << " ";
         EV_INFO << endl;
+
+        {
+            std::ostringstream onbrs;
+            for (const auto& n : outNeighbours) onbrs << n << ",";
+            DIAG_LOG(host, "BRP_BORDERCAST qid=" << qid.source << ":" << qid.queryId
+                                                 << " dest=" << queryDest
+                                                 << " out=" << outNeighbours.size()
+                                                 << " neighbours=[" << onbrs.str() << "]");
+        }
 
         for (const auto& neighbour : outNeighbours) {
             auto brpPacket = makeShared<BRP_Data>();
@@ -1947,6 +2145,10 @@ void SaZrp::BRP_deliver(const Ptr<BRP_Data>& brpPacket, const L3Address& sourceA
     std::set<L3Address> prevBcastZone;
     bool isOutNbr = BRP_isOutNeighbour(prevBordercaster, self, brpCoverageTable[cacheId].coveredNodes, prevBcastZone);
     BRP_recordCoverage(cacheId, prevBcastZone);
+    DIAG_LOG(host, "BRP_RECV from=" << sourceAddr << " prev=" << prevBordercaster
+                                    << " qid=" << querySource << ":" << queryID
+                                    << " isOutNbr=" << (isOutNbr ? 1 : 0)
+                                    << " delivered=" << (brpCoverageTable[cacheId].delivered ? 1 : 0));
 
     if (isOutNbr && !brpCoverageTable[cacheId].delivered) {
         brpCoverageTable[cacheId].delivered = true;
@@ -2016,18 +2218,36 @@ std::set<L3Address> SaZrp::BRP_getMyPeripherals() const
 
         // Get v's one-hop neighbour set from available topology info.
         std::set<L3Address> vNbrs;
+        bool haveLinkState = false;
 
-        // v's known neighbours from its link-state advertisement (if we have one).
         auto lsIt = linkStateTable.find(v);
         if (lsIt != linkStateTable.end()) {
             for (const auto& ld : lsIt->second.linkDestinations) {
                 vNbrs.insert(ld.destAddr);
             }
+            haveLinkState = true;
         }
 
-        // If v is our direct neighbour, we are also one of v's neighbours.
-        if (neighbourTable.find(v) != neighbourTable.end()) {
+        bool isDirect1Hop = (neighbourTable.find(v) != neighbourTable.end());
+        if (isDirect1Hop) {
+            // We're one of v's neighbours.
             vNbrs.insert(self);
+        }
+
+        // Fringe-self bordercast continuity: when self is fringe and didn't
+        // accept any IARP grenades, our zone collapses to the 1-hop guarantee
+        // set and we have no link state for any zone member. Without
+        // intervention, BRP_getMyPeripherals returns empty and the bordercast
+        // dies on the floor -- breaking IERP for fringe-self even though our
+        // 1-hop neighbours might have rich zones we could pivot through.
+        // Recover by treating direct 1-hop neighbours as peripherals when we
+        // have no link state for them: we don't know v's neighbour set, but
+        // by construction v has neighbours outside our 1-hop ball (it's a
+        // peripheral by the topological definition), so over-covering is
+        // safe and under-covering would silently drop reachability.
+        if (isDirect1Hop && !haveLinkState) {
+            peripherals.insert(v);
+            continue;
         }
 
         // A neighbour outside the zone makes v a peripheral.
@@ -2071,9 +2291,12 @@ std::set<L3Address> SaZrp::BRP_getOutNeighbours(const std::set<L3Address>& uncov
 bool SaZrp::BRP_isOutNeighbour(const L3Address& prevBordercaster, const L3Address& node,
                                const std::set<L3Address>& coveredNodes, std::set<L3Address>& outPrevZone) const
 {
-    // Widest-path-with-decay Dijkstra from prevBordercaster.
-    // Admission: node v is in prevBordercaster's zone iff value_v >= tau.
-    // Direct neighbours of prevBordercaster are admitted unconditionally (one-hop guarantee).
+    // Route-grenade Dijkstra from prevBordercaster, mirroring IARP_computeRoutes
+    // but rooted at prevBordercaster instead of self. Membership semantics must
+    // match IARP exactly so peripherals computed here line up with the
+    // peripherals each prevBordercaster would compute itself; otherwise BRP
+    // coverage drifts from IARP zone definition and bordercast either misses
+    // peripherals or double-covers them.
     struct SState {
         double value;
         L3Address nextHop;
@@ -2089,8 +2312,8 @@ bool SaZrp::BRP_isOutNeighbour(const L3Address& prevBordercaster, const L3Addres
 
     L3Address self = getSelfIPAddress();
 
-    // Collect prevBordercaster's one-hop neighbour set (from our view) so we can
-    // enforce the one-hop guarantee for edges starting at prevBordercaster.
+    // Collect prevBordercaster's one-hop neighbour set (from our view) for the
+    // 1-hop guarantee.
     std::set<L3Address> prevOneHop;
     if (prevBordercaster == self) {
         for (const auto& entry : neighbourTable) prevOneHop.insert(entry.first);
@@ -2106,18 +2329,47 @@ bool SaZrp::BRP_isOutNeighbour(const L3Address& prevBordercaster, const L3Addres
         }
     }
 
+    // Per-node fractionGood / beta for prevBordercaster. When prevBordercaster
+    // is us, use neighbourStability; otherwise reconstruct from its link state.
+    double fgPrev = (prevBordercaster == self)
+                        ? fractionGoodForSelf()
+                        : fractionGoodFromLinkState(prevBordercaster);
+    double betaPrev = betaForFractionGood(fgPrev);
+    bool prevPassesGate = (fgPrev >= fractionGoodThreshold);
+
     while (!pq.empty()) {
         auto top = pq.top();
         pq.pop();
-        double r = top.first;
         L3Address u = top.second;
 
         if (visited.count(u))
             continue;
         visited.insert(u);
+
+        // Decide if u is in prevBordercaster's zone (mirrors the IARP rule).
+        bool isDirect1Hop = (u != prevBordercaster) && (prevOneHop.find(u) != prevOneHop.end());
+        bool admit;
+        if (u == prevBordercaster) {
+            admit = true;
+        }
+        else if (isDirect1Hop) {
+            admit = true;
+        }
+        else if (!prevPassesGate) {
+            admit = false;
+        }
+        else {
+            double fg_u = (u == self) ? fractionGoodForSelf() : fractionGoodFromLinkState(u);
+            admit = (state[u].value >= stabilityThreshold) && (fg_u >= fractionGoodThreshold);
+        }
+
+        if (!admit)
+            continue;
+
         outPrevZone.insert(u);
 
-        // Build neighbour list for u with per-link stabilities.
+        // Build u's neighbour list. Per-link sbar is only kept for the
+        // STABILITY_EPSILON gate; the relaxation uses per-node beta.
         std::vector<std::pair<L3Address, double>> neighbours;
         if (u == self) {
             for (const auto& entry : neighbourTable) {
@@ -2132,21 +2384,12 @@ bool SaZrp::BRP_isOutNeighbour(const L3Address& prevBordercaster, const L3Addres
             if (it != linkStateTable.end()) {
                 for (const auto& linkDest : it->second.linkDestinations) {
                     double sbar = static_cast<double>(linkDest.metrics[0]) / 255.0;
-                    // Symmetrize: also consult v's advertisement for u, if available, and take the min.
-                    auto vLsIt = linkStateTable.find(linkDest.destAddr);
-                    if (vLsIt != linkStateTable.end()) {
-                        for (const auto& reverseDest : vLsIt->second.linkDestinations) {
-                            if (reverseDest.destAddr == u) {
-                                double sbarReverse = static_cast<double>(reverseDest.metrics[0]) / 255.0;
-                                sbar = std::min(sbar, sbarReverse);
-                                break;
-                            }
-                        }
-                    }
                     neighbours.push_back({linkDest.destAddr, sbar});
                 }
             }
-            // Ensure symmetric link self<->u when u is our NDP neighbour (matches baseline behaviour).
+            // u may be our direct NDP neighbour without an outgoing link state
+            // entry of its own naming us. Make sure we still expose the self
+            // edge so the bordercast tree is symmetric.
             if (neighbourTable.find(u) != neighbourTable.end()) {
                 bool selfAlreadyListed = false;
                 for (const auto& n : neighbours) {
@@ -2164,6 +2407,29 @@ bool SaZrp::BRP_isOutNeighbour(const L3Address& prevBordercaster, const L3Addres
             }
         }
 
+        // u as forwarder: needs fractionGood >= q. For prevBordercaster the
+        // gate is prevPassesGate; for any other u recompute from view.
+        bool uIsForwarder;
+        if (u == prevBordercaster) {
+            uIsForwarder = prevPassesGate;
+        }
+        else {
+            double fg_u = (u == self) ? fractionGoodForSelf() : fractionGoodFromLinkState(u);
+            uIsForwarder = (fg_u >= fractionGoodThreshold);
+        }
+
+        // Multiplier for relaxation (see IARP_computeRoutes for the same logic).
+        double beta_u;
+        if (u == prevBordercaster) {
+            beta_u = enableOriginatorPreDecay ? betaPrev : 1.0;
+        }
+        else if (u == self) {
+            beta_u = betaForFractionGood(fractionGoodForSelf());
+        }
+        else {
+            beta_u = betaForFractionGood(fractionGoodFromLinkState(u));
+        }
+
         for (const auto& np : neighbours) {
             const L3Address& v = np.first;
             double sbar = np.second;
@@ -2172,11 +2438,13 @@ bool SaZrp::BRP_isOutNeighbour(const L3Address& prevBordercaster, const L3Addres
 
             bool isDirectFromPrev = (u == prevBordercaster) && (prevOneHop.find(v) != prevOneHop.end());
 
-            // Treat effectively-zero stability as a hard zero to avoid pushing useless states.
             if (sbar < STABILITY_EPSILON && !isDirectFromPrev)
                 continue;
 
-            double newValue = decayBeta * std::min(r, sbar);
+            if (!uIsForwarder && !isDirectFromPrev)
+                continue;
+
+            double newValue = beta_u * state[u].value;
 
             if (!isDirectFromPrev && newValue < stabilityThreshold)
                 continue;

@@ -34,16 +34,27 @@ O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 OBJS = \
     $O/Zrp.o \
     $O/ZrpRouteData.o \
+    $O/GZRP/Gzrp.o \
+    $O/GZRP/GzrpRouteData.o \
+    $O/GZRP/Strategies/AlwaysAdmitGate.o \
+    $O/GZRP/Strategies/ConstantOneScore.o \
+    $O/GZRP/Strategies/ConstantThreshold.o \
+    $O/GZRP/Strategies/FractionGoodGate.o \
+    $O/GZRP/Strategies/LparStabilityScore.o \
+    $O/GZRP/Strategies/MultiplicativeBetaDecay.o \
+    $O/GZRP/Strategies/StepDecay.o \
     $O/SAZRP/SaZrp.o \
     $O/SAZRP/SaZrpRouteData.o \
     $O/Stats/AodvWithStats.o \
     $O/Stats/OlsrWithStats.o \
     $O/ZrpControlPackets_m.o \
+    $O/GZRP/GzrpControlPackets_m.o \
     $O/SAZRP/SaZrpControlPackets_m.o
 
 # Message files
 MSGFILES = \
     ZrpControlPackets.msg \
+    GZRP/GzrpControlPackets.msg \
     SAZRP/SaZrpControlPackets.msg
 
 # SM files

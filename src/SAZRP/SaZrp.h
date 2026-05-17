@@ -155,7 +155,18 @@ class INET_API SaZrp : public RoutingProtocolBase,
     double vMax = 0.0;
     double emaAlpha = 0.3;
     double distanceExponent = 4.0;
-    double decayBeta = 0.7;
+    // Route-grenade parameters. The per-link min from v2 is gone; admission
+    // and forwarding are gated by the per-node fraction of stable neighbours
+    // (fractionGoodThreshold). decayBeta becomes a per-node value derived
+    // from that node's fractionGood, interpolated linearly on [betaMin, betaMax].
+    // enableOriginatorPreDecay applies one beta hop at send time so the flood
+    // dies one hop earlier than the conceptual zone radius -- the receiver
+    // Dijkstra extends the zone via its 1-hop neighbours' link-state
+    // adjacencies (classic ZRP TTL = R - 1 optimisation).
+    double fractionGoodThreshold = 0.5;
+    double betaMin = 0.7;
+    double betaMax = 0.85;
+    bool enableOriginatorPreDecay = true;
     unsigned int zrpUDPPort = 0;
     simtime_t NDP_helloInterval = 3;
     simtime_t debugInterval = 0;        // 0 = disabled
@@ -254,6 +265,18 @@ class INET_API SaZrp : public RoutingProtocolBase,
     void printDebugTables();
     void processPacket(Packet* packet);
     void sendZrpPacket(const Ptr<FieldsChunk>& payload, const L3Address& destAddr, unsigned int ttl);
+
+    // Route-grenade helpers. fractionGoodForSelf works off neighbourStability
+    // (this node's own NDP samples); fractionGoodFromLinkState reconstructs the
+    // same value for a remote node from its advertised link-state entry. Both
+    // return 1.0 for an empty neighbour set so that nodes which have not yet
+    // accumulated samples are treated as "passable" by default rather than
+    // immediately suppressed (prevents a startup deadlock where no node would
+    // ever flood). betaForFractionGood maps fractionGood in [0,1] linearly to
+    // [betaMin, betaMax] so the cluster-core gets longer effective zones.
+    double fractionGoodForSelf() const;
+    double fractionGoodFromLinkState(const L3Address& node) const;
+    double betaForFractionGood(double fg) const;
 
     // NDP Functions
     const Ptr<NDP_Hello> createNDPHello();

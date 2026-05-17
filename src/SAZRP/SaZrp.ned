@@ -23,7 +23,21 @@ simple SaZrp like IApp
 	    double vMax @unit(mps);                   // Maximum UAV speed in m/s (required, scenario dependent)
 	    double emaAlpha = default(0.3);           // EMA smoothing factor for per-link stability
 	    double distanceExponent = default(4);     // Exponent p in D = 1 - (d/R)^p
-	    double decayBeta = default(0.8);          // Per-hop multiplicative decay applied to running stability
+	    // Route-grenade controls. fractionGoodThreshold (q) is the per-node
+	    // gate: a node only originates or forwards an IARP grenade when at
+	    // least this fraction of its neighbours have smoothed stability >=
+	    // tau. betaMin/betaMax are the lower/upper bounds for the per-node
+	    // decay multiplier; beta is interpolated linearly from fractionGood,
+	    // so cluster-core nodes (fg=1) decay slowly and just-passing nodes
+	    // (fg=q) decay aggressively. Setting betaMin == betaMax recovers the
+	    // v2 fixed-decay semantics. enableOriginatorPreDecay applies one beta
+	    // hop at the source, mirroring classic ZRP's TTL = R - 1 trick:
+	    // peripherals don't receive your flood directly but are still admitted
+	    // via interior nodes' link-state adjacencies.
+	    double fractionGoodThreshold = default(0.4);
+	    double betaMin = default(0.7);
+	    double betaMax = default(0.85);
+	    bool enableOriginatorPreDecay = default(true);
 	    double NDP_helloInterval @unit(s) = default(1s); // Interval between NDP hello messages
 	    double IARP_updateInterval @unit(s) = default(4s); // Interval between IARP updates
 	    double IARP_eventDelay @unit(ms) = default(500ms);  // Delay before sending an event-driven IARP update after neighbour set changes

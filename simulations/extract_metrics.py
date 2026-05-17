@@ -37,24 +37,46 @@ from collections import defaultdict
 from pathlib import Path
 
 # Module-path matchers. Network name is captured so the same code works for
-# FanetRecon and FanetSar (their network classes differ but the topology
-# shape -- one sink at groundStation.app[0] -- is the same).
-UAV_APP_RE  = re.compile(r"^Fanet\w+Network\.uav\[\d+\]\.app\[(\d+)\]$")
-SINK_APP0_RE = re.compile(r"^Fanet\w+Network\.groundStation\.app\[0\]$")
-SINK_APP1_RE = re.compile(r"^Fanet\w+Network\.groundStation\.app\[1\]$")
+# FanetRecon, FanetSar, and FanetStress.
+UAV_APP_RE  = re.compile(r"^Fanet(\w+)Network\.uav\[(\d+)\]\.app\[(\d+)\]$")
+GS_SINK_RE  = re.compile(r"^Fanet\w+Network\.groundStation\.app\[0\]$")
+GS_ROUTING_RE= re.compile(r"^Fanet\w+Network\.groundStation\.app\[1\]$")
 
+def stress_uav_role(idx):
+    if idx <= 4: return "source"
+    if idx <= 9: return "sink"
+    return "forwarder"
 
 def is_uav_app(module: str, idx: int) -> bool:
     m = UAV_APP_RE.match(module)
-    return bool(m) and int(m.group(1)) == idx
-
+    if not m:
+        return False
+    net_type = m.group(1)
+    uav_idx = int(m.group(2))
+    app_idx = int(m.group(3))
+    
+    if net_type == "Stress":
+        role = stress_uav_role(uav_idx)
+        if idx == 0:
+            return role == "source" and app_idx == 0
+        if idx == 1:
+            if role in ("source", "sink"): return app_idx == 1
+            if role == "forwarder": return app_idx == 0
+        return False
+    else:
+        return app_idx == idx
 
 def is_sink_app0(module: str) -> bool:
-    return bool(SINK_APP0_RE.match(module))
-
+    if GS_SINK_RE.match(module):
+        return True
+    m = UAV_APP_RE.match(module)
+    if m and m.group(1) == "Stress":
+        return stress_uav_role(int(m.group(2))) == "sink" and int(m.group(3)) == 0
+    return False
 
 def is_sink_app1(module: str) -> bool:
-    return bool(SINK_APP1_RE.match(module))
+    return bool(GS_ROUTING_RE.match(module))
+
 
 
 def parse_config(cfg: str):
@@ -230,8 +252,10 @@ def pool_size_stats(per_module):
               s.get("stddev", float("nan")), s.get("min", float("nan")),
               s.get("max", float("nan")))
              for s in per_module.values() if s.get("count", 0) > 0]
-    total_count = sum(s.get("count", 0) for s in per_module.values())
-    total_bytes = sum(s.get("sum_bytes", 0) for s in per_module.values())
+    def _nz(x):
+        return 0 if x is None or (isinstance(x, float) and math.isnan(x)) else x
+    total_count = sum(_nz(s.get("count", 0)) for s in per_module.values())
+    total_bytes = sum(_nz(s.get("sum_bytes", 0)) for s in per_module.values())
     if not valid:
         return {"count": int(total_count), "sum_bytes": int(total_bytes),
                 "mean": float("nan"), "stddev": float("nan"),

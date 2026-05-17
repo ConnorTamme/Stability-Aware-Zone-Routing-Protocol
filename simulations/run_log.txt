@@ -1,42 +1,54 @@
-Sat Apr 25 04:15:03 CST 2026
+Sat May  2 01:14:32 CST 2026
+[skip] FanetRecon / Recon_NodeSweep_StabilityZrp  (marker: FanetRecon/results/.done/Recon_NodeSweep_StabilityZrp.marker)
+[skip] FanetRecon / Recon_SpeedSweep_StabilityZrp  (marker: FanetRecon/results/.done/Recon_SpeedSweep_StabilityZrp.marker)
+[skip] FanetRecon / Recon_NodeSweep_Zrp_k1  (marker: FanetRecon/results/.done/Recon_NodeSweep_Zrp_k1.marker)
+[skip] FanetRecon / Recon_SpeedSweep_Zrp_k1  (marker: FanetRecon/results/.done/Recon_SpeedSweep_Zrp_k1.marker)
+[skip] FanetRecon / Recon_NodeSweep_Zrp_k2  (marker: FanetRecon/results/.done/Recon_NodeSweep_Zrp_k2.marker)
+[skip] FanetRecon / Recon_SpeedSweep_Zrp_k2  (marker: FanetRecon/results/.done/Recon_SpeedSweep_Zrp_k2.marker)
+[skip] FanetRecon / Recon_NodeSweep_Zrp_k3  (marker: FanetRecon/results/.done/Recon_NodeSweep_Zrp_k3.marker)
+[skip] FanetRecon / Recon_SpeedSweep_Zrp_k3  (marker: FanetRecon/results/.done/Recon_SpeedSweep_Zrp_k3.marker)
+[skip] FanetRecon / Recon_NodeSweep_Aodv  (marker: FanetRecon/results/.done/Recon_NodeSweep_Aodv.marker)
+[skip] FanetRecon / Recon_SpeedSweep_Aodv  (marker: FanetRecon/results/.done/Recon_SpeedSweep_Aodv.marker)
+[skip] FanetRecon / Recon_NodeSweep_Olsr  (marker: FanetRecon/results/.done/Recon_NodeSweep_Olsr.marker)
+[skip] FanetRecon / Recon_SpeedSweep_Olsr  (marker: FanetRecon/results/.done/Recon_SpeedSweep_Olsr.marker)
 ==========================================================
- Running: FanetRecon -> Recon_NodeSweep_StabilityZrp
+ Running: FanetSar -> Sar_NodeSweep_StabilityZrp
 ==========================================================
-./run -u Cmdenv -c Recon_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 0,1
-./run -u Cmdenv -c Recon_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 2,3
-./run -u Cmdenv -c Recon_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 4,5
-./run -u Cmdenv -c Recon_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 6,7
-./run -u Cmdenv -c Recon_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 8,9
-./run -u Cmdenv -c Recon_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 10,11
-./run -u Cmdenv -c Recon_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 12,13
-./run -u Cmdenv -c Recon_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 14,15
-./run -u Cmdenv -c Recon_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 16,17
-./run -u Cmdenv -c Recon_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 18,19
-./run -u Cmdenv -c Recon_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 20,21
-./run -u Cmdenv -c Recon_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 22,23
-./run -u Cmdenv -c Recon_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 24,25
-./run -u Cmdenv -c Recon_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 26,27
-./run -u Cmdenv -c Recon_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 28,29
-Recon_NodeSweep_StabilityZrp run #22: $numNodes=50, $repetition=2 (runID: Recon_NodeSweep_StabilityZrp-22-20260425-04:15:04-29843)
-Recon_NodeSweep_StabilityZrp run #0: $numNodes=10, $repetition=0 (runID: Recon_NodeSweep_StabilityZrp-0-20260425-04:15:04-29809)
-Recon_NodeSweep_StabilityZrp run #8: $numNodes=10, $repetition=8 (runID: Recon_NodeSweep_StabilityZrp-8-20260425-04:15:04-29821)
-Recon_NodeSweep_StabilityZrp run #10: $numNodes=30, $repetition=0 (runID: Recon_NodeSweep_StabilityZrp-10-20260425-04:15:04-29823)
-Recon_NodeSweep_StabilityZrp run #4: $numNodes=10, $repetition=4 (runID: Recon_NodeSweep_StabilityZrp-4-20260425-04:15:04-29814)
-Recon_NodeSweep_StabilityZrp run #2: $numNodes=10, $repetition=2 (runID: Recon_NodeSweep_StabilityZrp-2-20260425-04:15:04-29811)
-Recon_NodeSweep_StabilityZrp run #16: $numNodes=30, $repetition=6 (runID: Recon_NodeSweep_StabilityZrp-16-20260425-04:15:04-29829)
-Recon_NodeSweep_StabilityZrp run #28: $numNodes=50, $repetition=8 (runID: Recon_NodeSweep_StabilityZrp-28-20260425-04:15:04-29847)
-Recon_NodeSweep_StabilityZrp run #24: $numNodes=50, $repetition=4 (runID: Recon_NodeSweep_StabilityZrp-24-20260425-04:15:04-29845)
-Recon_NodeSweep_StabilityZrp run #18: $numNodes=30, $repetition=8 (runID: Recon_NodeSweep_StabilityZrp-18-20260425-04:15:04-29835)
-Recon_NodeSweep_StabilityZrp run #14: $numNodes=30, $repetition=4 (runID: Recon_NodeSweep_StabilityZrp-14-20260425-04:15:04-29828)
-Recon_NodeSweep_StabilityZrp run #12: $numNodes=30, $repetition=2 (runID: Recon_NodeSweep_StabilityZrp-12-20260425-04:15:04-29830)
-Recon_NodeSweep_StabilityZrp run #6: $numNodes=10, $repetition=6 (runID: Recon_NodeSweep_StabilityZrp-6-20260425-04:15:04-29819)
-Recon_NodeSweep_StabilityZrp run #20: $numNodes=50, $repetition=0 (runID: Recon_NodeSweep_StabilityZrp-20-20260425-04:15:04-29836)
-Recon_NodeSweep_StabilityZrp run #26: $numNodes=50, $repetition=6 (runID: Recon_NodeSweep_StabilityZrp-26-20260425-04:15:04-29846)
-Recon_NodeSweep_StabilityZrp run #9: $numNodes=10, $repetition=9 (runID: Recon_NodeSweep_StabilityZrp-9-20260425-04:15:27-29821)
-Recon_NodeSweep_StabilityZrp run #3: $numNodes=10, $repetition=3 (runID: Recon_NodeSweep_StabilityZrp-3-20260425-04:15:29-29811)
-Recon_NodeSweep_StabilityZrp run #5: $numNodes=10, $repetition=5 (runID: Recon_NodeSweep_StabilityZrp-5-20260425-04:15:33-29814)
-Recon_NodeSweep_StabilityZrp run #1: $numNodes=10, $repetition=1 (runID: Recon_NodeSweep_StabilityZrp-1-20260425-04:15:37-29809)
-Recon_NodeSweep_StabilityZrp run #7: $numNodes=10, $repetition=7 (runID: Recon_NodeSweep_StabilityZrp-7-20260425-04:15:42-29819)
+./run -u Cmdenv -c Sar_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 0,1
+./run -u Cmdenv -c Sar_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 2,3
+./run -u Cmdenv -c Sar_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 4,5
+./run -u Cmdenv -c Sar_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 6,7
+./run -u Cmdenv -c Sar_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 8,9
+./run -u Cmdenv -c Sar_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 10,11
+./run -u Cmdenv -c Sar_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 12,13
+./run -u Cmdenv -c Sar_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 14,15
+./run -u Cmdenv -c Sar_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 16,17
+./run -u Cmdenv -c Sar_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 18,19
+./run -u Cmdenv -c Sar_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 20,21
+./run -u Cmdenv -c Sar_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 22,23
+./run -u Cmdenv -c Sar_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 24,25
+./run -u Cmdenv -c Sar_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 26,27
+./run -u Cmdenv -c Sar_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 28,29
+Sar_NodeSweep_StabilityZrp run #20: $numNodes=50, $repetition=0 (runID: Sar_NodeSweep_StabilityZrp-20-20260502-01:14:33-22763)
+Sar_NodeSweep_StabilityZrp run #8: $numNodes=10, $repetition=8 (runID: Sar_NodeSweep_StabilityZrp-8-20260502-01:14:33-22747)
+Sar_NodeSweep_StabilityZrp run #4: $numNodes=10, $repetition=4 (runID: Sar_NodeSweep_StabilityZrp-4-20260502-01:14:33-22741)
+Sar_NodeSweep_StabilityZrp run #16: $numNodes=30, $repetition=6 (runID: Sar_NodeSweep_StabilityZrp-16-20260502-01:14:33-22760)
+Sar_NodeSweep_StabilityZrp run #6: $numNodes=10, $repetition=6 (runID: Sar_NodeSweep_StabilityZrp-6-20260502-01:14:33-22744)
+Sar_NodeSweep_StabilityZrp run #2: $numNodes=10, $repetition=2 (runID: Sar_NodeSweep_StabilityZrp-2-20260502-01:14:33-22739)
+Sar_NodeSweep_StabilityZrp run #18: $numNodes=30, $repetition=8 (runID: Sar_NodeSweep_StabilityZrp-18-20260502-01:14:33-22759)
+Sar_NodeSweep_StabilityZrp run #10: $numNodes=30, $repetition=0 (runID: Sar_NodeSweep_StabilityZrp-10-20260502-01:14:33-22748)
+Sar_NodeSweep_StabilityZrp run #28: $numNodes=50, $repetition=8 (runID: Sar_NodeSweep_StabilityZrp-28-20260502-01:14:33-22771)
+Sar_NodeSweep_StabilityZrp run #14: $numNodes=30, $repetition=4 (runID: Sar_NodeSweep_StabilityZrp-14-20260502-01:14:33-22756)
+Sar_NodeSweep_StabilityZrp run #26: $numNodes=50, $repetition=6 (runID: Sar_NodeSweep_StabilityZrp-26-20260502-01:14:33-22772)
+Sar_NodeSweep_StabilityZrp run #0: $numNodes=10, $repetition=0 (runID: Sar_NodeSweep_StabilityZrp-0-20260502-01:14:33-22736)
+Sar_NodeSweep_StabilityZrp run #22: $numNodes=50, $repetition=2 (runID: Sar_NodeSweep_StabilityZrp-22-20260502-01:14:33-22765)
+Sar_NodeSweep_StabilityZrp run #24: $numNodes=50, $repetition=4 (runID: Sar_NodeSweep_StabilityZrp-24-20260502-01:14:33-22769)
+Sar_NodeSweep_StabilityZrp run #12: $numNodes=30, $repetition=2 (runID: Sar_NodeSweep_StabilityZrp-12-20260502-01:14:33-22751)
+Sar_NodeSweep_StabilityZrp run #5: $numNodes=10, $repetition=5 (runID: Sar_NodeSweep_StabilityZrp-5-20260502-01:14:54-22741)
+Sar_NodeSweep_StabilityZrp run #3: $numNodes=10, $repetition=3 (runID: Sar_NodeSweep_StabilityZrp-3-20260502-01:14:56-22739)
+Sar_NodeSweep_StabilityZrp run #1: $numNodes=10, $repetition=1 (runID: Sar_NodeSweep_StabilityZrp-1-20260502-01:14:59-22736)
+Sar_NodeSweep_StabilityZrp run #7: $numNodes=10, $repetition=7 (runID: Sar_NodeSweep_StabilityZrp-7-20260502-01:15:01-22744)
+Sar_NodeSweep_StabilityZrp run #9: $numNodes=10, $repetition=9 (runID: Sar_NodeSweep_StabilityZrp-9-20260502-01:15:01-22747)
 
 Run statistics: total 2, successful 2
 
@@ -47,26 +59,26 @@ Run statistics: total 2, successful 2
 Run statistics: total 2, successful 2
 
 Run statistics: total 2, successful 2
-Recon_NodeSweep_StabilityZrp run #17: $numNodes=30, $repetition=7 (runID: Recon_NodeSweep_StabilityZrp-17-20260425-04:18:58-29829)
-Recon_NodeSweep_StabilityZrp run #13: $numNodes=30, $repetition=3 (runID: Recon_NodeSweep_StabilityZrp-13-20260425-04:19:11-29830)
-Recon_NodeSweep_StabilityZrp run #15: $numNodes=30, $repetition=5 (runID: Recon_NodeSweep_StabilityZrp-15-20260425-04:23:26-29828)
-Recon_NodeSweep_StabilityZrp run #11: $numNodes=30, $repetition=1 (runID: Recon_NodeSweep_StabilityZrp-11-20260425-04:23:47-29823)
+Sar_NodeSweep_StabilityZrp run #11: $numNodes=30, $repetition=1 (runID: Sar_NodeSweep_StabilityZrp-11-20260502-01:19:45-22748)
+Sar_NodeSweep_StabilityZrp run #13: $numNodes=30, $repetition=3 (runID: Sar_NodeSweep_StabilityZrp-13-20260502-01:20:36-22751)
+Sar_NodeSweep_StabilityZrp run #19: $numNodes=30, $repetition=9 (runID: Sar_NodeSweep_StabilityZrp-19-20260502-01:20:36-22759)
+Sar_NodeSweep_StabilityZrp run #15: $numNodes=30, $repetition=5 (runID: Sar_NodeSweep_StabilityZrp-15-20260502-01:20:42-22756)
+Sar_NodeSweep_StabilityZrp run #17: $numNodes=30, $repetition=7 (runID: Sar_NodeSweep_StabilityZrp-17-20260502-01:21:48-22760)
 
 Run statistics: total 2, successful 2
 
 Run statistics: total 2, successful 2
 
 Run statistics: total 2, successful 2
-Recon_NodeSweep_StabilityZrp run #19: $numNodes=30, $repetition=9 (runID: Recon_NodeSweep_StabilityZrp-19-20260425-04:27:14-29835)
 
 Run statistics: total 2, successful 2
 
 Run statistics: total 2, successful 2
-Recon_NodeSweep_StabilityZrp run #23: $numNodes=50, $repetition=3 (runID: Recon_NodeSweep_StabilityZrp-23-20260425-04:43:07-29843)
-Recon_NodeSweep_StabilityZrp run #27: $numNodes=50, $repetition=7 (runID: Recon_NodeSweep_StabilityZrp-27-20260425-04:44:10-29846)
-Recon_NodeSweep_StabilityZrp run #29: $numNodes=50, $repetition=9 (runID: Recon_NodeSweep_StabilityZrp-29-20260425-04:46:39-29847)
-Recon_NodeSweep_StabilityZrp run #21: $numNodes=50, $repetition=1 (runID: Recon_NodeSweep_StabilityZrp-21-20260425-04:47:18-29836)
-Recon_NodeSweep_StabilityZrp run #25: $numNodes=50, $repetition=5 (runID: Recon_NodeSweep_StabilityZrp-25-20260425-04:52:08-29845)
+Sar_NodeSweep_StabilityZrp run #21: $numNodes=50, $repetition=1 (runID: Sar_NodeSweep_StabilityZrp-21-20260502-01:33:53-22763)
+Sar_NodeSweep_StabilityZrp run #23: $numNodes=50, $repetition=3 (runID: Sar_NodeSweep_StabilityZrp-23-20260502-01:34:28-22765)
+Sar_NodeSweep_StabilityZrp run #29: $numNodes=50, $repetition=9 (runID: Sar_NodeSweep_StabilityZrp-29-20260502-01:36:13-22771)
+Sar_NodeSweep_StabilityZrp run #27: $numNodes=50, $repetition=7 (runID: Sar_NodeSweep_StabilityZrp-27-20260502-01:37:21-22772)
+Sar_NodeSweep_StabilityZrp run #25: $numNodes=50, $repetition=5 (runID: Sar_NodeSweep_StabilityZrp-25-20260502-01:37:39-22769)
 
 Run statistics: total 2, successful 2
 
@@ -78,219 +90,59 @@ Run statistics: total 2, successful 2
 
 Run statistics: total 2, successful 2
 All runs completed.
-[ok] FanetRecon / Recon_NodeSweep_StabilityZrp  (marked done)
+[ok] FanetSar / Sar_NodeSweep_StabilityZrp  (marked done)
 ==========================================================
- Running: FanetRecon -> Recon_SpeedSweep_StabilityZrp
+ Running: FanetSar -> Sar_SpeedSweep_StabilityZrp
 ==========================================================
-./run -u Cmdenv -c Recon_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 0,1
-./run -u Cmdenv -c Recon_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 2,3
-./run -u Cmdenv -c Recon_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 4,5
-./run -u Cmdenv -c Recon_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 6,7
-./run -u Cmdenv -c Recon_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 8,9
-./run -u Cmdenv -c Recon_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 10,11
-./run -u Cmdenv -c Recon_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 12,13
-./run -u Cmdenv -c Recon_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 14,15
-./run -u Cmdenv -c Recon_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 16,17
-./run -u Cmdenv -c Recon_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 18,19
-./run -u Cmdenv -c Recon_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 20,21
-./run -u Cmdenv -c Recon_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 22,23
-./run -u Cmdenv -c Recon_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 24,25
-./run -u Cmdenv -c Recon_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 26,27
-./run -u Cmdenv -c Recon_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 28,29
-Recon_SpeedSweep_StabilityZrp run #26: $maxSpeed=50, $repetition=6 (runID: Recon_SpeedSweep_StabilityZrp-26-20260425-05:16:00-30258)
-Recon_SpeedSweep_StabilityZrp run #2: $maxSpeed=10, $repetition=2 (runID: Recon_SpeedSweep_StabilityZrp-2-20260425-05:16:00-30226)
-Recon_SpeedSweep_StabilityZrp run #8: $maxSpeed=10, $repetition=8 (runID: Recon_SpeedSweep_StabilityZrp-8-20260425-05:16:00-30234)
-Recon_SpeedSweep_StabilityZrp run #14: $maxSpeed=30, $repetition=4 (runID: Recon_SpeedSweep_StabilityZrp-14-20260425-05:16:00-30242)
-Recon_SpeedSweep_StabilityZrp run #12: $maxSpeed=30, $repetition=2 (runID: Recon_SpeedSweep_StabilityZrp-12-20260425-05:16:00-30239)
-Recon_SpeedSweep_StabilityZrp run #18: $maxSpeed=30, $repetition=8 (runID: Recon_SpeedSweep_StabilityZrp-18-20260425-05:16:00-30249)
-Recon_SpeedSweep_StabilityZrp run #20: $maxSpeed=50, $repetition=0 (runID: Recon_SpeedSweep_StabilityZrp-20-20260425-05:16:00-30255)
-Recon_SpeedSweep_StabilityZrp run #0: $maxSpeed=10, $repetition=0 (runID: Recon_SpeedSweep_StabilityZrp-0-20260425-05:16:00-30223)
-Recon_SpeedSweep_StabilityZrp run #10: $maxSpeed=30, $repetition=0 (runID: Recon_SpeedSweep_StabilityZrp-10-20260425-05:16:00-30241)
-Recon_SpeedSweep_StabilityZrp run #22: $maxSpeed=50, $repetition=2 (runID: Recon_SpeedSweep_StabilityZrp-22-20260425-05:16:00-30253)
-Recon_SpeedSweep_StabilityZrp run #4: $maxSpeed=10, $repetition=4 (runID: Recon_SpeedSweep_StabilityZrp-4-20260425-05:16:00-30228)
-Recon_SpeedSweep_StabilityZrp run #6: $maxSpeed=10, $repetition=6 (runID: Recon_SpeedSweep_StabilityZrp-6-20260425-05:16:00-30232)
-Recon_SpeedSweep_StabilityZrp run #16: $maxSpeed=30, $repetition=6 (runID: Recon_SpeedSweep_StabilityZrp-16-20260425-05:16:00-30247)
-Recon_SpeedSweep_StabilityZrp run #28: $maxSpeed=50, $repetition=8 (runID: Recon_SpeedSweep_StabilityZrp-28-20260425-05:16:00-30261)
-Recon_SpeedSweep_StabilityZrp run #24: $maxSpeed=50, $repetition=4 (runID: Recon_SpeedSweep_StabilityZrp-24-20260425-05:16:00-30260)
-Recon_SpeedSweep_StabilityZrp run #3: $maxSpeed=10, $repetition=3 (runID: Recon_SpeedSweep_StabilityZrp-3-20260425-05:19:46-30226)
-Recon_SpeedSweep_StabilityZrp run #17: $maxSpeed=30, $repetition=7 (runID: Recon_SpeedSweep_StabilityZrp-17-20260425-05:20:39-30247)
-Recon_SpeedSweep_StabilityZrp run #13: $maxSpeed=30, $repetition=3 (runID: Recon_SpeedSweep_StabilityZrp-13-20260425-05:20:55-30239)
-Recon_SpeedSweep_StabilityZrp run #21: $maxSpeed=50, $repetition=1 (runID: Recon_SpeedSweep_StabilityZrp-21-20260425-05:21:38-30255)
-Recon_SpeedSweep_StabilityZrp run #7: $maxSpeed=10, $repetition=7 (runID: Recon_SpeedSweep_StabilityZrp-7-20260425-05:21:50-30232)
-Recon_SpeedSweep_StabilityZrp run #5: $maxSpeed=10, $repetition=5 (runID: Recon_SpeedSweep_StabilityZrp-5-20260425-05:22:22-30228)
-Recon_SpeedSweep_StabilityZrp run #15: $maxSpeed=30, $repetition=5 (runID: Recon_SpeedSweep_StabilityZrp-15-20260425-05:22:54-30242)
-Recon_SpeedSweep_StabilityZrp run #11: $maxSpeed=30, $repetition=1 (runID: Recon_SpeedSweep_StabilityZrp-11-20260425-05:23:23-30241)
-Recon_SpeedSweep_StabilityZrp run #27: $maxSpeed=50, $repetition=7 (runID: Recon_SpeedSweep_StabilityZrp-27-20260425-05:23:29-30258)
-Recon_SpeedSweep_StabilityZrp run #1: $maxSpeed=10, $repetition=1 (runID: Recon_SpeedSweep_StabilityZrp-1-20260425-05:24:04-30223)
-Recon_SpeedSweep_StabilityZrp run #23: $maxSpeed=50, $repetition=3 (runID: Recon_SpeedSweep_StabilityZrp-23-20260425-05:24:29-30253)
+./run -u Cmdenv -c Sar_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 0,1
+./run -u Cmdenv -c Sar_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 2,3
+./run -u Cmdenv -c Sar_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 4,5
+./run -u Cmdenv -c Sar_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 6,7
+./run -u Cmdenv -c Sar_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 8,9
+./run -u Cmdenv -c Sar_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 10,11
+./run -u Cmdenv -c Sar_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 12,13
+./run -u Cmdenv -c Sar_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 14,15
+./run -u Cmdenv -c Sar_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 16,17
+./run -u Cmdenv -c Sar_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 18,19
+./run -u Cmdenv -c Sar_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 20,21
+./run -u Cmdenv -c Sar_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 22,23
+./run -u Cmdenv -c Sar_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 24,25
+./run -u Cmdenv -c Sar_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 26,27
+./run -u Cmdenv -c Sar_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 28,29
+Sar_SpeedSweep_StabilityZrp run #24: $maxSpeed=50, $repetition=4 (runID: Sar_SpeedSweep_StabilityZrp-24-20260502-02:00:13-22828)
+Sar_SpeedSweep_StabilityZrp run #14: $maxSpeed=30, $repetition=4 (runID: Sar_SpeedSweep_StabilityZrp-14-20260502-02:00:13-22811)
+Sar_SpeedSweep_StabilityZrp run #18: $maxSpeed=30, $repetition=8 (runID: Sar_SpeedSweep_StabilityZrp-18-20260502-02:00:13-22820)
+Sar_SpeedSweep_StabilityZrp run #10: $maxSpeed=30, $repetition=0 (runID: Sar_SpeedSweep_StabilityZrp-10-20260502-02:00:13-22806)
+Sar_SpeedSweep_StabilityZrp run #26: $maxSpeed=50, $repetition=6 (runID: Sar_SpeedSweep_StabilityZrp-26-20260502-02:00:13-22830)
+Sar_SpeedSweep_StabilityZrp run #6: $maxSpeed=10, $repetition=6 (runID: Sar_SpeedSweep_StabilityZrp-6-20260502-02:00:13-22800)
+Sar_SpeedSweep_StabilityZrp run #12: $maxSpeed=30, $repetition=2 (runID: Sar_SpeedSweep_StabilityZrp-12-20260502-02:00:13-22813)
+Sar_SpeedSweep_StabilityZrp run #0: $maxSpeed=10, $repetition=0 (runID: Sar_SpeedSweep_StabilityZrp-0-20260502-02:00:13-22793)
+Sar_SpeedSweep_StabilityZrp run #4: $maxSpeed=10, $repetition=4 (runID: Sar_SpeedSweep_StabilityZrp-4-20260502-02:00:13-22798)
+Sar_SpeedSweep_StabilityZrp run #2: $maxSpeed=10, $repetition=2 (runID: Sar_SpeedSweep_StabilityZrp-2-20260502-02:00:13-22796)
+Sar_SpeedSweep_StabilityZrp run #16: $maxSpeed=30, $repetition=6 (runID: Sar_SpeedSweep_StabilityZrp-16-20260502-02:00:13-22814)
+Sar_SpeedSweep_StabilityZrp run #8: $maxSpeed=10, $repetition=8 (runID: Sar_SpeedSweep_StabilityZrp-8-20260502-02:00:13-22804)
+Sar_SpeedSweep_StabilityZrp run #20: $maxSpeed=50, $repetition=0 (runID: Sar_SpeedSweep_StabilityZrp-20-20260502-02:00:13-22821)
+Sar_SpeedSweep_StabilityZrp run #28: $maxSpeed=50, $repetition=8 (runID: Sar_SpeedSweep_StabilityZrp-28-20260502-02:00:13-22829)
+Sar_SpeedSweep_StabilityZrp run #22: $maxSpeed=50, $repetition=2 (runID: Sar_SpeedSweep_StabilityZrp-22-20260502-02:00:13-22824)
+Sar_SpeedSweep_StabilityZrp run #3: $maxSpeed=10, $repetition=3 (runID: Sar_SpeedSweep_StabilityZrp-3-20260502-02:05:31-22796)
+Sar_SpeedSweep_StabilityZrp run #5: $maxSpeed=10, $repetition=5 (runID: Sar_SpeedSweep_StabilityZrp-5-20260502-02:05:33-22798)
+Sar_SpeedSweep_StabilityZrp run #11: $maxSpeed=30, $repetition=1 (runID: Sar_SpeedSweep_StabilityZrp-11-20260502-02:06:32-22806)
+Sar_SpeedSweep_StabilityZrp run #7: $maxSpeed=10, $repetition=7 (runID: Sar_SpeedSweep_StabilityZrp-7-20260502-02:07:32-22800)
+Sar_SpeedSweep_StabilityZrp run #1: $maxSpeed=10, $repetition=1 (runID: Sar_SpeedSweep_StabilityZrp-1-20260502-02:07:33-22793)
+Sar_SpeedSweep_StabilityZrp run #13: $maxSpeed=30, $repetition=3 (runID: Sar_SpeedSweep_StabilityZrp-13-20260502-02:07:38-22813)
+Sar_SpeedSweep_StabilityZrp run #19: $maxSpeed=30, $repetition=9 (runID: Sar_SpeedSweep_StabilityZrp-19-20260502-02:07:39-22820)
+Sar_SpeedSweep_StabilityZrp run #15: $maxSpeed=30, $repetition=5 (runID: Sar_SpeedSweep_StabilityZrp-15-20260502-02:07:46-22811)
+Sar_SpeedSweep_StabilityZrp run #21: $maxSpeed=50, $repetition=1 (runID: Sar_SpeedSweep_StabilityZrp-21-20260502-02:08:03-22821)
+Sar_SpeedSweep_StabilityZrp run #23: $maxSpeed=50, $repetition=3 (runID: Sar_SpeedSweep_StabilityZrp-23-20260502-02:08:22-22824)
+Sar_SpeedSweep_StabilityZrp run #17: $maxSpeed=30, $repetition=7 (runID: Sar_SpeedSweep_StabilityZrp-17-20260502-02:09:20-22814)
+Sar_SpeedSweep_StabilityZrp run #25: $maxSpeed=50, $repetition=5 (runID: Sar_SpeedSweep_StabilityZrp-25-20260502-02:10:32-22828)
+Sar_SpeedSweep_StabilityZrp run #29: $maxSpeed=50, $repetition=9 (runID: Sar_SpeedSweep_StabilityZrp-29-20260502-02:11:18-22829)
 
 Run statistics: total 2, successful 2
-Recon_SpeedSweep_StabilityZrp run #25: $maxSpeed=50, $repetition=5 (runID: Recon_SpeedSweep_StabilityZrp-25-20260425-05:25:17-30260)
+Sar_SpeedSweep_StabilityZrp run #9: $maxSpeed=10, $repetition=9 (runID: Sar_SpeedSweep_StabilityZrp-9-20260502-02:11:30-22804)
+Sar_SpeedSweep_StabilityZrp run #27: $maxSpeed=50, $repetition=7 (runID: Sar_SpeedSweep_StabilityZrp-27-20260502-02:11:58-22830)
 
 Run statistics: total 2, successful 2
-Recon_SpeedSweep_StabilityZrp run #29: $maxSpeed=50, $repetition=9 (runID: Recon_SpeedSweep_StabilityZrp-29-20260425-05:26:33-30261)
-Recon_SpeedSweep_StabilityZrp run #9: $maxSpeed=10, $repetition=9 (runID: Recon_SpeedSweep_StabilityZrp-9-20260425-05:26:54-30234)
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-Recon_SpeedSweep_StabilityZrp run #19: $maxSpeed=30, $repetition=9 (runID: Recon_SpeedSweep_StabilityZrp-19-20260425-05:27:42-30249)
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-All runs completed.
-[ok] FanetRecon / Recon_SpeedSweep_StabilityZrp  (marked done)
-==========================================================
- Running: FanetRecon -> Recon_NodeSweep_Zrp_k1
-==========================================================
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k1 -s --cmdenv-redirect-output=true -r 0,1
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k1 -s --cmdenv-redirect-output=true -r 2,3
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k1 -s --cmdenv-redirect-output=true -r 4,5
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k1 -s --cmdenv-redirect-output=true -r 6,7
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k1 -s --cmdenv-redirect-output=true -r 8,9
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k1 -s --cmdenv-redirect-output=true -r 10,11
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k1 -s --cmdenv-redirect-output=true -r 12,13
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k1 -s --cmdenv-redirect-output=true -r 14,15
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k1 -s --cmdenv-redirect-output=true -r 16,17
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k1 -s --cmdenv-redirect-output=true -r 18,19
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k1 -s --cmdenv-redirect-output=true -r 20,21
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k1 -s --cmdenv-redirect-output=true -r 22,23
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k1 -s --cmdenv-redirect-output=true -r 24,25
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k1 -s --cmdenv-redirect-output=true -r 26,27
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k1 -s --cmdenv-redirect-output=true -r 28,29
-Recon_NodeSweep_Zrp_k1 run #28: $numNodes=50, $repetition=8 (runID: Recon_NodeSweep_Zrp_k1-28-20260425-05:39:01-30319)
-Recon_NodeSweep_Zrp_k1 run #10: $numNodes=30, $repetition=0 (runID: Recon_NodeSweep_Zrp_k1-10-20260425-05:39:01-30297)
-Recon_NodeSweep_Zrp_k1 run #0: $numNodes=10, $repetition=0 (runID: Recon_NodeSweep_Zrp_k1-0-20260425-05:39:01-30282)
-Recon_NodeSweep_Zrp_k1 run #14: $numNodes=30, $repetition=4 (runID: Recon_NodeSweep_Zrp_k1-14-20260425-05:39:01-30304)
-Recon_NodeSweep_Zrp_k1 run #12: $numNodes=30, $repetition=2 (runID: Recon_NodeSweep_Zrp_k1-12-20260425-05:39:01-30302)
-Recon_NodeSweep_Zrp_k1 run #22: $numNodes=50, $repetition=2 (runID: Recon_NodeSweep_Zrp_k1-22-20260425-05:39:01-30313)
-Recon_NodeSweep_Zrp_k1 run #4: $numNodes=10, $repetition=4 (runID: Recon_NodeSweep_Zrp_k1-4-20260425-05:39:01-30289)
-Recon_NodeSweep_Zrp_k1 run #2: $numNodes=10, $repetition=2 (runID: Recon_NodeSweep_Zrp_k1-2-20260425-05:39:01-30288)
-Recon_NodeSweep_Zrp_k1 run #6: $numNodes=10, $repetition=6 (runID: Recon_NodeSweep_Zrp_k1-6-20260425-05:39:01-30287)
-Recon_NodeSweep_Zrp_k1 run #8: $numNodes=10, $repetition=8 (runID: Recon_NodeSweep_Zrp_k1-8-20260425-05:39:01-30293)
-Recon_NodeSweep_Zrp_k1 run #26: $numNodes=50, $repetition=6 (runID: Recon_NodeSweep_Zrp_k1-26-20260425-05:39:01-30318)
-Recon_NodeSweep_Zrp_k1 run #24: $numNodes=50, $repetition=4 (runID: Recon_NodeSweep_Zrp_k1-24-20260425-05:39:01-30314)
-Recon_NodeSweep_Zrp_k1 run #18: $numNodes=30, $repetition=8 (runID: Recon_NodeSweep_Zrp_k1-18-20260425-05:39:01-30308)
-Recon_NodeSweep_Zrp_k1 run #20: $numNodes=50, $repetition=0 (runID: Recon_NodeSweep_Zrp_k1-20-20260425-05:39:01-30311)
-Recon_NodeSweep_Zrp_k1 run #16: $numNodes=30, $repetition=6 (runID: Recon_NodeSweep_Zrp_k1-16-20260425-05:39:01-30303)
-Recon_NodeSweep_Zrp_k1 run #5: $numNodes=10, $repetition=5 (runID: Recon_NodeSweep_Zrp_k1-5-20260425-05:39:12-30289)
-Recon_NodeSweep_Zrp_k1 run #3: $numNodes=10, $repetition=3 (runID: Recon_NodeSweep_Zrp_k1-3-20260425-05:39:19-30288)
-Recon_NodeSweep_Zrp_k1 run #7: $numNodes=10, $repetition=7 (runID: Recon_NodeSweep_Zrp_k1-7-20260425-05:39:22-30287)
-
-Run statistics: total 2, successful 2
-Recon_NodeSweep_Zrp_k1 run #9: $numNodes=10, $repetition=9 (runID: Recon_NodeSweep_Zrp_k1-9-20260425-05:39:47-30293)
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-Recon_NodeSweep_Zrp_k1 run #1: $numNodes=10, $repetition=1 (runID: Recon_NodeSweep_Zrp_k1-1-20260425-05:42:16-30282)
-
-Run statistics: total 2, successful 2
-Recon_NodeSweep_Zrp_k1 run #17: $numNodes=30, $repetition=7 (runID: Recon_NodeSweep_Zrp_k1-17-20260425-05:49:45-30303)
-Recon_NodeSweep_Zrp_k1 run #15: $numNodes=30, $repetition=5 (runID: Recon_NodeSweep_Zrp_k1-15-20260425-06:00:13-30304)
-Recon_NodeSweep_Zrp_k1 run #19: $numNodes=30, $repetition=9 (runID: Recon_NodeSweep_Zrp_k1-19-20260425-06:00:21-30308)
-Recon_NodeSweep_Zrp_k1 run #11: $numNodes=30, $repetition=1 (runID: Recon_NodeSweep_Zrp_k1-11-20260425-06:01:46-30297)
-Recon_NodeSweep_Zrp_k1 run #13: $numNodes=30, $repetition=3 (runID: Recon_NodeSweep_Zrp_k1-13-20260425-06:02:05-30302)
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-Recon_NodeSweep_Zrp_k1 run #21: $numNodes=50, $repetition=1 (runID: Recon_NodeSweep_Zrp_k1-21-20260425-06:48:35-30311)
-Recon_NodeSweep_Zrp_k1 run #27: $numNodes=50, $repetition=7 (runID: Recon_NodeSweep_Zrp_k1-27-20260425-06:53:54-30318)
-Recon_NodeSweep_Zrp_k1 run #29: $numNodes=50, $repetition=9 (runID: Recon_NodeSweep_Zrp_k1-29-20260425-06:55:13-30319)
-Recon_NodeSweep_Zrp_k1 run #25: $numNodes=50, $repetition=5 (runID: Recon_NodeSweep_Zrp_k1-25-20260425-06:55:59-30314)
-Recon_NodeSweep_Zrp_k1 run #23: $numNodes=50, $repetition=3 (runID: Recon_NodeSweep_Zrp_k1-23-20260425-07:00:06-30313)
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-All runs completed.
-[ok] FanetRecon / Recon_NodeSweep_Zrp_k1  (marked done)
-==========================================================
- Running: FanetRecon -> Recon_SpeedSweep_Zrp_k1
-==========================================================
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k1 -s --cmdenv-redirect-output=true -r 0,1
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k1 -s --cmdenv-redirect-output=true -r 2,3
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k1 -s --cmdenv-redirect-output=true -r 4,5
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k1 -s --cmdenv-redirect-output=true -r 6,7
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k1 -s --cmdenv-redirect-output=true -r 8,9
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k1 -s --cmdenv-redirect-output=true -r 10,11
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k1 -s --cmdenv-redirect-output=true -r 12,13
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k1 -s --cmdenv-redirect-output=true -r 14,15
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k1 -s --cmdenv-redirect-output=true -r 16,17
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k1 -s --cmdenv-redirect-output=true -r 18,19
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k1 -s --cmdenv-redirect-output=true -r 20,21
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k1 -s --cmdenv-redirect-output=true -r 22,23
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k1 -s --cmdenv-redirect-output=true -r 24,25
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k1 -s --cmdenv-redirect-output=true -r 26,27
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k1 -s --cmdenv-redirect-output=true -r 28,29
-Recon_SpeedSweep_Zrp_k1 run #8: $maxSpeed=10, $repetition=8 (runID: Recon_SpeedSweep_Zrp_k1-8-20260425-08:11:43-30350)
-Recon_SpeedSweep_Zrp_k1 run #4: $maxSpeed=10, $repetition=4 (runID: Recon_SpeedSweep_Zrp_k1-4-20260425-08:11:43-30344)
-Recon_SpeedSweep_Zrp_k1 run #26: $maxSpeed=50, $repetition=6 (runID: Recon_SpeedSweep_Zrp_k1-26-20260425-08:11:43-30375)
-Recon_SpeedSweep_Zrp_k1 run #24: $maxSpeed=50, $repetition=4 (runID: Recon_SpeedSweep_Zrp_k1-24-20260425-08:11:43-30374)
-Recon_SpeedSweep_Zrp_k1 run #12: $maxSpeed=30, $repetition=2 (runID: Recon_SpeedSweep_Zrp_k1-12-20260425-08:11:43-30359)
-Recon_SpeedSweep_Zrp_k1 run #14: $maxSpeed=30, $repetition=4 (runID: Recon_SpeedSweep_Zrp_k1-14-20260425-08:11:43-30364)
-Recon_SpeedSweep_Zrp_k1 run #2: $maxSpeed=10, $repetition=2 (runID: Recon_SpeedSweep_Zrp_k1-2-20260425-08:11:43-30341)
-Recon_SpeedSweep_Zrp_k1 run #0: $maxSpeed=10, $repetition=0 (runID: Recon_SpeedSweep_Zrp_k1-0-20260425-08:11:43-30338)
-Recon_SpeedSweep_Zrp_k1 run #16: $maxSpeed=30, $repetition=6 (runID: Recon_SpeedSweep_Zrp_k1-16-20260425-08:11:43-30365)
-Recon_SpeedSweep_Zrp_k1 run #22: $maxSpeed=50, $repetition=2 (runID: Recon_SpeedSweep_Zrp_k1-22-20260425-08:11:43-30370)
-Recon_SpeedSweep_Zrp_k1 run #6: $maxSpeed=10, $repetition=6 (runID: Recon_SpeedSweep_Zrp_k1-6-20260425-08:11:43-30345)
-Recon_SpeedSweep_Zrp_k1 run #10: $maxSpeed=30, $repetition=0 (runID: Recon_SpeedSweep_Zrp_k1-10-20260425-08:11:43-30352)
-Recon_SpeedSweep_Zrp_k1 run #18: $maxSpeed=30, $repetition=8 (runID: Recon_SpeedSweep_Zrp_k1-18-20260425-08:11:43-30369)
-Recon_SpeedSweep_Zrp_k1 run #28: $maxSpeed=50, $repetition=8 (runID: Recon_SpeedSweep_Zrp_k1-28-20260425-08:11:43-30377)
-Recon_SpeedSweep_Zrp_k1 run #20: $maxSpeed=50, $repetition=0 (runID: Recon_SpeedSweep_Zrp_k1-20-20260425-08:11:43-30373)
-Recon_SpeedSweep_Zrp_k1 run #17: $maxSpeed=30, $repetition=7 (runID: Recon_SpeedSweep_Zrp_k1-17-20260425-08:25:24-30365)
-Recon_SpeedSweep_Zrp_k1 run #7: $maxSpeed=10, $repetition=7 (runID: Recon_SpeedSweep_Zrp_k1-7-20260425-08:32:24-30345)
-Recon_SpeedSweep_Zrp_k1 run #9: $maxSpeed=10, $repetition=9 (runID: Recon_SpeedSweep_Zrp_k1-9-20260425-08:33:34-30350)
-Recon_SpeedSweep_Zrp_k1 run #1: $maxSpeed=10, $repetition=1 (runID: Recon_SpeedSweep_Zrp_k1-1-20260425-08:36:32-30338)
-Recon_SpeedSweep_Zrp_k1 run #29: $maxSpeed=50, $repetition=9 (runID: Recon_SpeedSweep_Zrp_k1-29-20260425-08:39:03-30377)
-Recon_SpeedSweep_Zrp_k1 run #19: $maxSpeed=30, $repetition=9 (runID: Recon_SpeedSweep_Zrp_k1-19-20260425-08:39:16-30369)
-Recon_SpeedSweep_Zrp_k1 run #15: $maxSpeed=30, $repetition=5 (runID: Recon_SpeedSweep_Zrp_k1-15-20260425-08:39:30-30364)
-Recon_SpeedSweep_Zrp_k1 run #11: $maxSpeed=30, $repetition=1 (runID: Recon_SpeedSweep_Zrp_k1-11-20260425-08:41:23-30352)
-Recon_SpeedSweep_Zrp_k1 run #13: $maxSpeed=30, $repetition=3 (runID: Recon_SpeedSweep_Zrp_k1-13-20260425-08:41:45-30359)
-Recon_SpeedSweep_Zrp_k1 run #21: $maxSpeed=50, $repetition=1 (runID: Recon_SpeedSweep_Zrp_k1-21-20260425-08:42:49-30373)
-Recon_SpeedSweep_Zrp_k1 run #27: $maxSpeed=50, $repetition=7 (runID: Recon_SpeedSweep_Zrp_k1-27-20260425-08:44:49-30375)
-Recon_SpeedSweep_Zrp_k1 run #25: $maxSpeed=50, $repetition=5 (runID: Recon_SpeedSweep_Zrp_k1-25-20260425-08:46:04-30374)
-Recon_SpeedSweep_Zrp_k1 run #5: $maxSpeed=10, $repetition=5 (runID: Recon_SpeedSweep_Zrp_k1-5-20260425-08:47:23-30344)
-Recon_SpeedSweep_Zrp_k1 run #23: $maxSpeed=50, $repetition=3 (runID: Recon_SpeedSweep_Zrp_k1-23-20260425-08:48:31-30370)
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-Recon_SpeedSweep_Zrp_k1 run #3: $maxSpeed=10, $repetition=3 (runID: Recon_SpeedSweep_Zrp_k1-3-20260425-08:55:40-30341)
 
 Run statistics: total 2, successful 2
 
@@ -318,60 +170,49 @@ Run statistics: total 2, successful 2
 
 Run statistics: total 2, successful 2
 All runs completed.
-[ok] FanetRecon / Recon_SpeedSweep_Zrp_k1  (marked done)
+[ok] FanetSar / Sar_SpeedSweep_StabilityZrp  (marked done)
+[skip] FanetSar / Sar_NodeSweep_Zrp_k1  (marker: FanetSar/results/.done/Sar_NodeSweep_Zrp_k1.marker)
+[skip] FanetSar / Sar_SpeedSweep_Zrp_k1  (marker: FanetSar/results/.done/Sar_SpeedSweep_Zrp_k1.marker)
+[skip] FanetSar / Sar_NodeSweep_Zrp_k2  (marker: FanetSar/results/.done/Sar_NodeSweep_Zrp_k2.marker)
+[skip] FanetSar / Sar_SpeedSweep_Zrp_k2  (marker: FanetSar/results/.done/Sar_SpeedSweep_Zrp_k2.marker)
 ==========================================================
- Running: FanetRecon -> Recon_NodeSweep_Zrp_k2
+ Running: FanetSar -> Sar_NodeSweep_Zrp_k3
 ==========================================================
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k2 -s --cmdenv-redirect-output=true -r 0,1
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k2 -s --cmdenv-redirect-output=true -r 2,3
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k2 -s --cmdenv-redirect-output=true -r 4,5
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k2 -s --cmdenv-redirect-output=true -r 6,7
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k2 -s --cmdenv-redirect-output=true -r 8,9
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k2 -s --cmdenv-redirect-output=true -r 10,11
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k2 -s --cmdenv-redirect-output=true -r 12,13
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k2 -s --cmdenv-redirect-output=true -r 14,15
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k2 -s --cmdenv-redirect-output=true -r 16,17
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k2 -s --cmdenv-redirect-output=true -r 18,19
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k2 -s --cmdenv-redirect-output=true -r 20,21
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k2 -s --cmdenv-redirect-output=true -r 22,23
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k2 -s --cmdenv-redirect-output=true -r 24,25
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k2 -s --cmdenv-redirect-output=true -r 26,27
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k2 -s --cmdenv-redirect-output=true -r 28,29
-Recon_NodeSweep_Zrp_k2 run #28: $numNodes=50, $repetition=8 (runID: Recon_NodeSweep_Zrp_k2-28-20260425-09:17:53-30435)
-Recon_NodeSweep_Zrp_k2 run #16: $numNodes=30, $repetition=6 (runID: Recon_NodeSweep_Zrp_k2-16-20260425-09:17:53-30423)
-Recon_NodeSweep_Zrp_k2 run #2: $numNodes=10, $repetition=2 (runID: Recon_NodeSweep_Zrp_k2-2-20260425-09:17:53-30400)
-Recon_NodeSweep_Zrp_k2 run #18: $numNodes=30, $repetition=8 (runID: Recon_NodeSweep_Zrp_k2-18-20260425-09:17:53-30421)
-Recon_NodeSweep_Zrp_k2 run #8: $numNodes=10, $repetition=8 (runID: Recon_NodeSweep_Zrp_k2-8-20260425-09:17:53-30413)
-Recon_NodeSweep_Zrp_k2 run #6: $numNodes=10, $repetition=6 (runID: Recon_NodeSweep_Zrp_k2-6-20260425-09:17:53-30406)
-Recon_NodeSweep_Zrp_k2 run #0: $numNodes=10, $repetition=0 (runID: Recon_NodeSweep_Zrp_k2-0-20260425-09:17:53-30401)
-Recon_NodeSweep_Zrp_k2 run #4: $numNodes=10, $repetition=4 (runID: Recon_NodeSweep_Zrp_k2-4-20260425-09:17:53-30404)
-Recon_NodeSweep_Zrp_k2 run #22: $numNodes=50, $repetition=2 (runID: Recon_NodeSweep_Zrp_k2-22-20260425-09:17:53-30430)
-Recon_NodeSweep_Zrp_k2 run #14: $numNodes=30, $repetition=4 (runID: Recon_NodeSweep_Zrp_k2-14-20260425-09:17:53-30415)
-Recon_NodeSweep_Zrp_k2 run #26: $numNodes=50, $repetition=6 (runID: Recon_NodeSweep_Zrp_k2-26-20260425-09:17:53-30433)
-Recon_NodeSweep_Zrp_k2 run #20: $numNodes=50, $repetition=0 (runID: Recon_NodeSweep_Zrp_k2-20-20260425-09:17:53-30428)
-Recon_NodeSweep_Zrp_k2 run #24: $numNodes=50, $repetition=4 (runID: Recon_NodeSweep_Zrp_k2-24-20260425-09:17:53-30434)
-Recon_NodeSweep_Zrp_k2 run #12: $numNodes=30, $repetition=2 (runID: Recon_NodeSweep_Zrp_k2-12-20260425-09:17:53-30414)
-Recon_NodeSweep_Zrp_k2 run #10: $numNodes=30, $repetition=0 (runID: Recon_NodeSweep_Zrp_k2-10-20260425-09:17:53-30412)
-Recon_NodeSweep_Zrp_k2 run #5: $numNodes=10, $repetition=5 (runID: Recon_NodeSweep_Zrp_k2-5-20260425-09:18:10-30404)
-Recon_NodeSweep_Zrp_k2 run #3: $numNodes=10, $repetition=3 (runID: Recon_NodeSweep_Zrp_k2-3-20260425-09:18:10-30400)
-Recon_NodeSweep_Zrp_k2 run #7: $numNodes=10, $repetition=7 (runID: Recon_NodeSweep_Zrp_k2-7-20260425-09:18:20-30406)
-Recon_NodeSweep_Zrp_k2 run #1: $numNodes=10, $repetition=1 (runID: Recon_NodeSweep_Zrp_k2-1-20260425-09:18:29-30401)
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-Recon_NodeSweep_Zrp_k2 run #9: $numNodes=10, $repetition=9 (runID: Recon_NodeSweep_Zrp_k2-9-20260425-09:18:43-30413)
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-Recon_NodeSweep_Zrp_k2 run #15: $numNodes=30, $repetition=5 (runID: Recon_NodeSweep_Zrp_k2-15-20260425-09:26:41-30415)
-Recon_NodeSweep_Zrp_k2 run #11: $numNodes=30, $repetition=1 (runID: Recon_NodeSweep_Zrp_k2-11-20260425-09:29:28-30412)
-Recon_NodeSweep_Zrp_k2 run #17: $numNodes=30, $repetition=7 (runID: Recon_NodeSweep_Zrp_k2-17-20260425-09:32:43-30423)
-Recon_NodeSweep_Zrp_k2 run #19: $numNodes=30, $repetition=9 (runID: Recon_NodeSweep_Zrp_k2-19-20260425-09:34:43-30421)
-Recon_NodeSweep_Zrp_k2 run #13: $numNodes=30, $repetition=3 (runID: Recon_NodeSweep_Zrp_k2-13-20260425-09:39:48-30414)
+./run -u Cmdenv -c Sar_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 0,1
+./run -u Cmdenv -c Sar_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 2,3
+./run -u Cmdenv -c Sar_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 4,5
+./run -u Cmdenv -c Sar_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 6,7
+./run -u Cmdenv -c Sar_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 8,9
+./run -u Cmdenv -c Sar_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 10,11
+./run -u Cmdenv -c Sar_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 12,13
+./run -u Cmdenv -c Sar_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 14,15
+./run -u Cmdenv -c Sar_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 16,17
+./run -u Cmdenv -c Sar_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 18,19
+./run -u Cmdenv -c Sar_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 20,21
+./run -u Cmdenv -c Sar_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 22,23
+./run -u Cmdenv -c Sar_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 24,25
+./run -u Cmdenv -c Sar_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 26,27
+./run -u Cmdenv -c Sar_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 28,29
+Sar_NodeSweep_Zrp_k3 run #8: $numNodes=10, $repetition=8 (runID: Sar_NodeSweep_Zrp_k3-8-20260502-02:19:25-22867)
+Sar_NodeSweep_Zrp_k3 run #14: $numNodes=30, $repetition=4 (runID: Sar_NodeSweep_Zrp_k3-14-20260502-02:19:25-22874)
+Sar_NodeSweep_Zrp_k3 run #16: $numNodes=30, $repetition=6 (runID: Sar_NodeSweep_Zrp_k3-16-20260502-02:19:25-22878)
+Sar_NodeSweep_Zrp_k3 run #4: $numNodes=10, $repetition=4 (runID: Sar_NodeSweep_Zrp_k3-4-20260502-02:19:25-22859)
+Sar_NodeSweep_Zrp_k3 run #24: $numNodes=50, $repetition=4 (runID: Sar_NodeSweep_Zrp_k3-24-20260502-02:19:25-22888)
+Sar_NodeSweep_Zrp_k3 run #26: $numNodes=50, $repetition=6 (runID: Sar_NodeSweep_Zrp_k3-26-20260502-02:19:25-22891)
+Sar_NodeSweep_Zrp_k3 run #2: $numNodes=10, $repetition=2 (runID: Sar_NodeSweep_Zrp_k3-2-20260502-02:19:25-22857)
+Sar_NodeSweep_Zrp_k3 run #10: $numNodes=30, $repetition=0 (runID: Sar_NodeSweep_Zrp_k3-10-20260502-02:19:25-22868)
+Sar_NodeSweep_Zrp_k3 run #6: $numNodes=10, $repetition=6 (runID: Sar_NodeSweep_Zrp_k3-6-20260502-02:19:25-22864)
+Sar_NodeSweep_Zrp_k3 run #0: $numNodes=10, $repetition=0 (runID: Sar_NodeSweep_Zrp_k3-0-20260502-02:19:25-22855)
+Sar_NodeSweep_Zrp_k3 run #22: $numNodes=50, $repetition=2 (runID: Sar_NodeSweep_Zrp_k3-22-20260502-02:19:25-22886)
+Sar_NodeSweep_Zrp_k3 run #18: $numNodes=30, $repetition=8 (runID: Sar_NodeSweep_Zrp_k3-18-20260502-02:19:25-22883)
+Sar_NodeSweep_Zrp_k3 run #28: $numNodes=50, $repetition=8 (runID: Sar_NodeSweep_Zrp_k3-28-20260502-02:19:25-22892)
+Sar_NodeSweep_Zrp_k3 run #20: $numNodes=50, $repetition=0 (runID: Sar_NodeSweep_Zrp_k3-20-20260502-02:19:25-22885)
+Sar_NodeSweep_Zrp_k3 run #12: $numNodes=30, $repetition=2 (runID: Sar_NodeSweep_Zrp_k3-12-20260502-02:19:25-22871)
+Sar_NodeSweep_Zrp_k3 run #5: $numNodes=10, $repetition=5 (runID: Sar_NodeSweep_Zrp_k3-5-20260502-02:19:45-22859)
+Sar_NodeSweep_Zrp_k3 run #1: $numNodes=10, $repetition=1 (runID: Sar_NodeSweep_Zrp_k3-1-20260502-02:19:49-22855)
+Sar_NodeSweep_Zrp_k3 run #9: $numNodes=10, $repetition=9 (runID: Sar_NodeSweep_Zrp_k3-9-20260502-02:19:49-22867)
+Sar_NodeSweep_Zrp_k3 run #3: $numNodes=10, $repetition=3 (runID: Sar_NodeSweep_Zrp_k3-3-20260502-02:19:50-22857)
+Sar_NodeSweep_Zrp_k3 run #7: $numNodes=10, $repetition=7 (runID: Sar_NodeSweep_Zrp_k3-7-20260502-02:19:51-22864)
 
 Run statistics: total 2, successful 2
 
@@ -382,11 +223,26 @@ Run statistics: total 2, successful 2
 Run statistics: total 2, successful 2
 
 Run statistics: total 2, successful 2
-Recon_NodeSweep_Zrp_k2 run #27: $numNodes=50, $repetition=7 (runID: Recon_NodeSweep_Zrp_k2-27-20260425-09:54:36-30433)
-Recon_NodeSweep_Zrp_k2 run #25: $numNodes=50, $repetition=5 (runID: Recon_NodeSweep_Zrp_k2-25-20260425-09:55:54-30434)
-Recon_NodeSweep_Zrp_k2 run #29: $numNodes=50, $repetition=9 (runID: Recon_NodeSweep_Zrp_k2-29-20260425-09:56:29-30435)
-Recon_NodeSweep_Zrp_k2 run #21: $numNodes=50, $repetition=1 (runID: Recon_NodeSweep_Zrp_k2-21-20260425-09:58:23-30428)
-Recon_NodeSweep_Zrp_k2 run #23: $numNodes=50, $repetition=3 (runID: Recon_NodeSweep_Zrp_k2-23-20260425-10:04:33-30430)
+Sar_NodeSweep_Zrp_k3 run #11: $numNodes=30, $repetition=1 (runID: Sar_NodeSweep_Zrp_k3-11-20260502-02:24:10-22868)
+Sar_NodeSweep_Zrp_k3 run #15: $numNodes=30, $repetition=5 (runID: Sar_NodeSweep_Zrp_k3-15-20260502-02:24:14-22874)
+Sar_NodeSweep_Zrp_k3 run #19: $numNodes=30, $repetition=9 (runID: Sar_NodeSweep_Zrp_k3-19-20260502-02:24:44-22883)
+Sar_NodeSweep_Zrp_k3 run #13: $numNodes=30, $repetition=3 (runID: Sar_NodeSweep_Zrp_k3-13-20260502-02:24:54-22871)
+Sar_NodeSweep_Zrp_k3 run #17: $numNodes=30, $repetition=7 (runID: Sar_NodeSweep_Zrp_k3-17-20260502-02:25:18-22878)
+
+Run statistics: total 2, successful 2
+
+Run statistics: total 2, successful 2
+
+Run statistics: total 2, successful 2
+
+Run statistics: total 2, successful 2
+
+Run statistics: total 2, successful 2
+Sar_NodeSweep_Zrp_k3 run #21: $numNodes=50, $repetition=1 (runID: Sar_NodeSweep_Zrp_k3-21-20260502-02:34:41-22885)
+Sar_NodeSweep_Zrp_k3 run #23: $numNodes=50, $repetition=3 (runID: Sar_NodeSweep_Zrp_k3-23-20260502-02:35:33-22886)
+Sar_NodeSweep_Zrp_k3 run #25: $numNodes=50, $repetition=5 (runID: Sar_NodeSweep_Zrp_k3-25-20260502-02:35:49-22888)
+Sar_NodeSweep_Zrp_k3 run #29: $numNodes=50, $repetition=9 (runID: Sar_NodeSweep_Zrp_k3-29-20260502-02:36:29-22892)
+Sar_NodeSweep_Zrp_k3 run #27: $numNodes=50, $repetition=7 (runID: Sar_NodeSweep_Zrp_k3-27-20260502-02:37:16-22891)
 
 Run statistics: total 2, successful 2
 
@@ -398,61 +254,54 @@ Run statistics: total 2, successful 2
 
 Run statistics: total 2, successful 2
 All runs completed.
-[ok] FanetRecon / Recon_NodeSweep_Zrp_k2  (marked done)
+[ok] FanetSar / Sar_NodeSweep_Zrp_k3  (marked done)
 ==========================================================
- Running: FanetRecon -> Recon_SpeedSweep_Zrp_k2
+ Running: FanetSar -> Sar_SpeedSweep_Zrp_k3
 ==========================================================
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k2 -s --cmdenv-redirect-output=true -r 0,1
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k2 -s --cmdenv-redirect-output=true -r 2,3
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k2 -s --cmdenv-redirect-output=true -r 4,5
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k2 -s --cmdenv-redirect-output=true -r 6,7
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k2 -s --cmdenv-redirect-output=true -r 8,9
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k2 -s --cmdenv-redirect-output=true -r 10,11
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k2 -s --cmdenv-redirect-output=true -r 12,13
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k2 -s --cmdenv-redirect-output=true -r 14,15
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k2 -s --cmdenv-redirect-output=true -r 16,17
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k2 -s --cmdenv-redirect-output=true -r 18,19
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k2 -s --cmdenv-redirect-output=true -r 20,21
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k2 -s --cmdenv-redirect-output=true -r 22,23
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k2 -s --cmdenv-redirect-output=true -r 24,25
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k2 -s --cmdenv-redirect-output=true -r 26,27
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k2 -s --cmdenv-redirect-output=true -r 28,29
-Recon_SpeedSweep_Zrp_k2 run #2: $maxSpeed=10, $repetition=2 (runID: Recon_SpeedSweep_Zrp_k2-2-20260425-10:32:11-30459)
-Recon_SpeedSweep_Zrp_k2 run #4: $maxSpeed=10, $repetition=4 (runID: Recon_SpeedSweep_Zrp_k2-4-20260425-10:32:11-30460)
-Recon_SpeedSweep_Zrp_k2 run #8: $maxSpeed=10, $repetition=8 (runID: Recon_SpeedSweep_Zrp_k2-8-20260425-10:32:11-30470)
-Recon_SpeedSweep_Zrp_k2 run #24: $maxSpeed=50, $repetition=4 (runID: Recon_SpeedSweep_Zrp_k2-24-20260425-10:32:11-30491)
-Recon_SpeedSweep_Zrp_k2 run #10: $maxSpeed=30, $repetition=0 (runID: Recon_SpeedSweep_Zrp_k2-10-20260425-10:32:11-30471)
-Recon_SpeedSweep_Zrp_k2 run #6: $maxSpeed=10, $repetition=6 (runID: Recon_SpeedSweep_Zrp_k2-6-20260425-10:32:11-30466)
-Recon_SpeedSweep_Zrp_k2 run #14: $maxSpeed=30, $repetition=4 (runID: Recon_SpeedSweep_Zrp_k2-14-20260425-10:32:11-30475)
-Recon_SpeedSweep_Zrp_k2 run #20: $maxSpeed=50, $repetition=0 (runID: Recon_SpeedSweep_Zrp_k2-20-20260425-10:32:11-30487)
-Recon_SpeedSweep_Zrp_k2 run #26: $maxSpeed=50, $repetition=6 (runID: Recon_SpeedSweep_Zrp_k2-26-20260425-10:32:11-30492)
-Recon_SpeedSweep_Zrp_k2 run #16: $maxSpeed=30, $repetition=6 (runID: Recon_SpeedSweep_Zrp_k2-16-20260425-10:32:11-30476)
-Recon_SpeedSweep_Zrp_k2 run #22: $maxSpeed=50, $repetition=2 (runID: Recon_SpeedSweep_Zrp_k2-22-20260425-10:32:11-30484)
-Recon_SpeedSweep_Zrp_k2 run #12: $maxSpeed=30, $repetition=2 (runID: Recon_SpeedSweep_Zrp_k2-12-20260425-10:32:11-30472)
-Recon_SpeedSweep_Zrp_k2 run #0: $maxSpeed=10, $repetition=0 (runID: Recon_SpeedSweep_Zrp_k2-0-20260425-10:32:11-30461)
-Recon_SpeedSweep_Zrp_k2 run #28: $maxSpeed=50, $repetition=8 (runID: Recon_SpeedSweep_Zrp_k2-28-20260425-10:32:11-30493)
-Recon_SpeedSweep_Zrp_k2 run #18: $maxSpeed=30, $repetition=8 (runID: Recon_SpeedSweep_Zrp_k2-18-20260425-10:32:11-30481)
-Recon_SpeedSweep_Zrp_k2 run #1: $maxSpeed=10, $repetition=1 (runID: Recon_SpeedSweep_Zrp_k2-1-20260425-10:42:23-30461)
-Recon_SpeedSweep_Zrp_k2 run #5: $maxSpeed=10, $repetition=5 (runID: Recon_SpeedSweep_Zrp_k2-5-20260425-10:42:38-30460)
-Recon_SpeedSweep_Zrp_k2 run #15: $maxSpeed=30, $repetition=5 (runID: Recon_SpeedSweep_Zrp_k2-15-20260425-10:43:42-30475)
-Recon_SpeedSweep_Zrp_k2 run #9: $maxSpeed=10, $repetition=9 (runID: Recon_SpeedSweep_Zrp_k2-9-20260425-10:45:09-30470)
-Recon_SpeedSweep_Zrp_k2 run #11: $maxSpeed=30, $repetition=1 (runID: Recon_SpeedSweep_Zrp_k2-11-20260425-10:47:20-30471)
-Recon_SpeedSweep_Zrp_k2 run #7: $maxSpeed=10, $repetition=7 (runID: Recon_SpeedSweep_Zrp_k2-7-20260425-10:47:25-30466)
-Recon_SpeedSweep_Zrp_k2 run #27: $maxSpeed=50, $repetition=7 (runID: Recon_SpeedSweep_Zrp_k2-27-20260425-10:47:36-30492)
-Recon_SpeedSweep_Zrp_k2 run #29: $maxSpeed=50, $repetition=9 (runID: Recon_SpeedSweep_Zrp_k2-29-20260425-10:47:57-30493)
-Recon_SpeedSweep_Zrp_k2 run #23: $maxSpeed=50, $repetition=3 (runID: Recon_SpeedSweep_Zrp_k2-23-20260425-10:48:06-30484)
-
-Run statistics: total 2, successful 2
-Recon_SpeedSweep_Zrp_k2 run #21: $maxSpeed=50, $repetition=1 (runID: Recon_SpeedSweep_Zrp_k2-21-20260425-10:49:26-30487)
-Recon_SpeedSweep_Zrp_k2 run #17: $maxSpeed=30, $repetition=7 (runID: Recon_SpeedSweep_Zrp_k2-17-20260425-10:51:34-30476)
-Recon_SpeedSweep_Zrp_k2 run #25: $maxSpeed=50, $repetition=5 (runID: Recon_SpeedSweep_Zrp_k2-25-20260425-10:51:54-30491)
-
-Run statistics: total 2, successful 2
-Recon_SpeedSweep_Zrp_k2 run #19: $maxSpeed=30, $repetition=9 (runID: Recon_SpeedSweep_Zrp_k2-19-20260425-10:54:03-30481)
-
-Run statistics: total 2, successful 2
-Recon_SpeedSweep_Zrp_k2 run #3: $maxSpeed=10, $repetition=3 (runID: Recon_SpeedSweep_Zrp_k2-3-20260425-10:56:23-30459)
-Recon_SpeedSweep_Zrp_k2 run #13: $maxSpeed=30, $repetition=3 (runID: Recon_SpeedSweep_Zrp_k2-13-20260425-10:59:34-30472)
+./run -u Cmdenv -c Sar_SpeedSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 0,1
+./run -u Cmdenv -c Sar_SpeedSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 2,3
+./run -u Cmdenv -c Sar_SpeedSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 4,5
+./run -u Cmdenv -c Sar_SpeedSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 6,7
+./run -u Cmdenv -c Sar_SpeedSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 8,9
+./run -u Cmdenv -c Sar_SpeedSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 10,11
+./run -u Cmdenv -c Sar_SpeedSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 12,13
+./run -u Cmdenv -c Sar_SpeedSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 14,15
+./run -u Cmdenv -c Sar_SpeedSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 16,17
+./run -u Cmdenv -c Sar_SpeedSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 18,19
+./run -u Cmdenv -c Sar_SpeedSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 20,21
+./run -u Cmdenv -c Sar_SpeedSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 22,23
+./run -u Cmdenv -c Sar_SpeedSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 24,25
+./run -u Cmdenv -c Sar_SpeedSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 26,27
+./run -u Cmdenv -c Sar_SpeedSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 28,29
+Sar_SpeedSweep_Zrp_k3 run #24: $maxSpeed=50, $repetition=4 (runID: Sar_SpeedSweep_Zrp_k3-24-20260502-03:10:45-22947)
+Sar_SpeedSweep_Zrp_k3 run #26: $maxSpeed=50, $repetition=6 (runID: Sar_SpeedSweep_Zrp_k3-26-20260502-03:10:45-22949)
+Sar_SpeedSweep_Zrp_k3 run #4: $maxSpeed=10, $repetition=4 (runID: Sar_SpeedSweep_Zrp_k3-4-20260502-03:10:45-22916)
+Sar_SpeedSweep_Zrp_k3 run #14: $maxSpeed=30, $repetition=4 (runID: Sar_SpeedSweep_Zrp_k3-14-20260502-03:10:46-22934)
+Sar_SpeedSweep_Zrp_k3 run #10: $maxSpeed=30, $repetition=0 (runID: Sar_SpeedSweep_Zrp_k3-10-20260502-03:10:46-22928)
+Sar_SpeedSweep_Zrp_k3 run #22: $maxSpeed=50, $repetition=2 (runID: Sar_SpeedSweep_Zrp_k3-22-20260502-03:10:46-22944)
+Sar_SpeedSweep_Zrp_k3 run #0: $maxSpeed=10, $repetition=0 (runID: Sar_SpeedSweep_Zrp_k3-0-20260502-03:10:46-22913)
+Sar_SpeedSweep_Zrp_k3 run #18: $maxSpeed=30, $repetition=8 (runID: Sar_SpeedSweep_Zrp_k3-18-20260502-03:10:46-22940)
+Sar_SpeedSweep_Zrp_k3 run #6: $maxSpeed=10, $repetition=6 (runID: Sar_SpeedSweep_Zrp_k3-6-20260502-03:10:46-22925)
+Sar_SpeedSweep_Zrp_k3 run #8: $maxSpeed=10, $repetition=8 (runID: Sar_SpeedSweep_Zrp_k3-8-20260502-03:10:46-22924)
+Sar_SpeedSweep_Zrp_k3 run #20: $maxSpeed=50, $repetition=0 (runID: Sar_SpeedSweep_Zrp_k3-20-20260502-03:10:46-22942)
+Sar_SpeedSweep_Zrp_k3 run #28: $maxSpeed=50, $repetition=8 (runID: Sar_SpeedSweep_Zrp_k3-28-20260502-03:10:46-22950)
+Sar_SpeedSweep_Zrp_k3 run #12: $maxSpeed=30, $repetition=2 (runID: Sar_SpeedSweep_Zrp_k3-12-20260502-03:10:46-22929)
+Sar_SpeedSweep_Zrp_k3 run #2: $maxSpeed=10, $repetition=2 (runID: Sar_SpeedSweep_Zrp_k3-2-20260502-03:10:46-22918)
+Sar_SpeedSweep_Zrp_k3 run #16: $maxSpeed=30, $repetition=6 (runID: Sar_SpeedSweep_Zrp_k3-16-20260502-03:10:46-22936)
+Sar_SpeedSweep_Zrp_k3 run #5: $maxSpeed=10, $repetition=5 (runID: Sar_SpeedSweep_Zrp_k3-5-20260502-03:15:06-22916)
+Sar_SpeedSweep_Zrp_k3 run #3: $maxSpeed=10, $repetition=3 (runID: Sar_SpeedSweep_Zrp_k3-3-20260502-03:15:23-22918)
+Sar_SpeedSweep_Zrp_k3 run #11: $maxSpeed=30, $repetition=1 (runID: Sar_SpeedSweep_Zrp_k3-11-20260502-03:16:44-22928)
+Sar_SpeedSweep_Zrp_k3 run #15: $maxSpeed=30, $repetition=5 (runID: Sar_SpeedSweep_Zrp_k3-15-20260502-03:16:49-22934)
+Sar_SpeedSweep_Zrp_k3 run #1: $maxSpeed=10, $repetition=1 (runID: Sar_SpeedSweep_Zrp_k3-1-20260502-03:16:58-22913)
+Sar_SpeedSweep_Zrp_k3 run #7: $maxSpeed=10, $repetition=7 (runID: Sar_SpeedSweep_Zrp_k3-7-20260502-03:17:05-22925)
+Sar_SpeedSweep_Zrp_k3 run #19: $maxSpeed=30, $repetition=9 (runID: Sar_SpeedSweep_Zrp_k3-19-20260502-03:17:28-22940)
+Sar_SpeedSweep_Zrp_k3 run #23: $maxSpeed=50, $repetition=3 (runID: Sar_SpeedSweep_Zrp_k3-23-20260502-03:17:30-22944)
+Sar_SpeedSweep_Zrp_k3 run #13: $maxSpeed=30, $repetition=3 (runID: Sar_SpeedSweep_Zrp_k3-13-20260502-03:17:39-22929)
+Sar_SpeedSweep_Zrp_k3 run #17: $maxSpeed=30, $repetition=7 (runID: Sar_SpeedSweep_Zrp_k3-17-20260502-03:18:13-22936)
+Sar_SpeedSweep_Zrp_k3 run #21: $maxSpeed=50, $repetition=1 (runID: Sar_SpeedSweep_Zrp_k3-21-20260502-03:18:20-22942)
+Sar_SpeedSweep_Zrp_k3 run #25: $maxSpeed=50, $repetition=5 (runID: Sar_SpeedSweep_Zrp_k3-25-20260502-03:18:34-22947)
+Sar_SpeedSweep_Zrp_k3 run #29: $maxSpeed=50, $repetition=9 (runID: Sar_SpeedSweep_Zrp_k3-29-20260502-03:20:05-22950)
+Sar_SpeedSweep_Zrp_k3 run #27: $maxSpeed=50, $repetition=7 (runID: Sar_SpeedSweep_Zrp_k3-27-20260502-03:20:09-22949)
 
 Run statistics: total 2, successful 2
 
@@ -467,6 +316,93 @@ Run statistics: total 2, successful 2
 Run statistics: total 2, successful 2
 
 Run statistics: total 2, successful 2
+
+Run statistics: total 2, successful 2
+
+Run statistics: total 2, successful 2
+
+Run statistics: total 2, successful 2
+
+Run statistics: total 2, successful 2
+
+Run statistics: total 2, successful 2
+
+Run statistics: total 2, successful 2
+
+Run statistics: total 2, successful 2
+Sar_SpeedSweep_Zrp_k3 run #9: $maxSpeed=10, $repetition=9 (runID: Sar_SpeedSweep_Zrp_k3-9-20260502-03:32:32-22924)
+
+Run statistics: total 2, successful 2
+All runs completed.
+[ok] FanetSar / Sar_SpeedSweep_Zrp_k3  (marked done)
+==========================================================
+ Running: FanetSar -> Sar_NodeSweep_Aodv
+==========================================================
+./run -u Cmdenv -c Sar_NodeSweep_Aodv -s --cmdenv-redirect-output=true -r 0,1
+./run -u Cmdenv -c Sar_NodeSweep_Aodv -s --cmdenv-redirect-output=true -r 2,3
+./run -u Cmdenv -c Sar_NodeSweep_Aodv -s --cmdenv-redirect-output=true -r 4,5
+./run -u Cmdenv -c Sar_NodeSweep_Aodv -s --cmdenv-redirect-output=true -r 6,7
+./run -u Cmdenv -c Sar_NodeSweep_Aodv -s --cmdenv-redirect-output=true -r 8,9
+./run -u Cmdenv -c Sar_NodeSweep_Aodv -s --cmdenv-redirect-output=true -r 10,11
+./run -u Cmdenv -c Sar_NodeSweep_Aodv -s --cmdenv-redirect-output=true -r 12,13
+./run -u Cmdenv -c Sar_NodeSweep_Aodv -s --cmdenv-redirect-output=true -r 14,15
+./run -u Cmdenv -c Sar_NodeSweep_Aodv -s --cmdenv-redirect-output=true -r 16,17
+./run -u Cmdenv -c Sar_NodeSweep_Aodv -s --cmdenv-redirect-output=true -r 18,19
+./run -u Cmdenv -c Sar_NodeSweep_Aodv -s --cmdenv-redirect-output=true -r 20,21
+./run -u Cmdenv -c Sar_NodeSweep_Aodv -s --cmdenv-redirect-output=true -r 22,23
+./run -u Cmdenv -c Sar_NodeSweep_Aodv -s --cmdenv-redirect-output=true -r 24,25
+./run -u Cmdenv -c Sar_NodeSweep_Aodv -s --cmdenv-redirect-output=true -r 26,27
+./run -u Cmdenv -c Sar_NodeSweep_Aodv -s --cmdenv-redirect-output=true -r 28,29
+Sar_NodeSweep_Aodv run #18: $numNodes=30, $repetition=8 (runID: Sar_NodeSweep_Aodv-18-20260502-03:35:33-22995)
+Sar_NodeSweep_Aodv run #12: $numNodes=30, $repetition=2 (runID: Sar_NodeSweep_Aodv-12-20260502-03:35:33-22989)
+Sar_NodeSweep_Aodv run #0: $numNodes=10, $repetition=0 (runID: Sar_NodeSweep_Aodv-0-20260502-03:35:33-22971)
+Sar_NodeSweep_Aodv run #24: $numNodes=50, $repetition=4 (runID: Sar_NodeSweep_Aodv-24-20260502-03:35:33-23003)
+Sar_NodeSweep_Aodv run #14: $numNodes=30, $repetition=4 (runID: Sar_NodeSweep_Aodv-14-20260502-03:35:33-22994)
+Sar_NodeSweep_Aodv run #8: $numNodes=10, $repetition=8 (runID: Sar_NodeSweep_Aodv-8-20260502-03:35:33-22978)
+Sar_NodeSweep_Aodv run #2: $numNodes=10, $repetition=2 (runID: Sar_NodeSweep_Aodv-2-20260502-03:35:33-22977)
+Sar_NodeSweep_Aodv run #28: $numNodes=50, $repetition=8 (runID: Sar_NodeSweep_Aodv-28-20260502-03:35:33-23008)
+Sar_NodeSweep_Aodv run #6: $numNodes=10, $repetition=6 (runID: Sar_NodeSweep_Aodv-6-20260502-03:35:33-22979)
+Sar_NodeSweep_Aodv run #26: $numNodes=50, $repetition=6 (runID: Sar_NodeSweep_Aodv-26-20260502-03:35:33-23007)
+Sar_NodeSweep_Aodv run #10: $numNodes=30, $repetition=0 (runID: Sar_NodeSweep_Aodv-10-20260502-03:35:33-22983)
+Sar_NodeSweep_Aodv run #4: $numNodes=10, $repetition=4 (runID: Sar_NodeSweep_Aodv-4-20260502-03:35:33-22976)
+Sar_NodeSweep_Aodv run #16: $numNodes=30, $repetition=6 (runID: Sar_NodeSweep_Aodv-16-20260502-03:35:33-22997)
+Sar_NodeSweep_Aodv run #20: $numNodes=50, $repetition=0 (runID: Sar_NodeSweep_Aodv-20-20260502-03:35:33-22998)
+Sar_NodeSweep_Aodv run #22: $numNodes=50, $repetition=2 (runID: Sar_NodeSweep_Aodv-22-20260502-03:35:33-23005)
+Sar_NodeSweep_Aodv run #1: $numNodes=10, $repetition=1 (runID: Sar_NodeSweep_Aodv-1-20260502-03:35:51-22971)
+Sar_NodeSweep_Aodv run #5: $numNodes=10, $repetition=5 (runID: Sar_NodeSweep_Aodv-5-20260502-03:35:54-22976)
+Sar_NodeSweep_Aodv run #3: $numNodes=10, $repetition=3 (runID: Sar_NodeSweep_Aodv-3-20260502-03:35:56-22977)
+Sar_NodeSweep_Aodv run #9: $numNodes=10, $repetition=9 (runID: Sar_NodeSweep_Aodv-9-20260502-03:36:01-22978)
+Sar_NodeSweep_Aodv run #7: $numNodes=10, $repetition=7 (runID: Sar_NodeSweep_Aodv-7-20260502-03:36:02-22979)
+
+Run statistics: total 2, successful 2
+
+Run statistics: total 2, successful 2
+
+Run statistics: total 2, successful 2
+
+Run statistics: total 2, successful 2
+
+Run statistics: total 2, successful 2
+Sar_NodeSweep_Aodv run #11: $numNodes=30, $repetition=1 (runID: Sar_NodeSweep_Aodv-11-20260502-03:40:28-22983)
+Sar_NodeSweep_Aodv run #15: $numNodes=30, $repetition=5 (runID: Sar_NodeSweep_Aodv-15-20260502-03:41:57-22994)
+Sar_NodeSweep_Aodv run #19: $numNodes=30, $repetition=9 (runID: Sar_NodeSweep_Aodv-19-20260502-03:42:58-22995)
+Sar_NodeSweep_Aodv run #17: $numNodes=30, $repetition=7 (runID: Sar_NodeSweep_Aodv-17-20260502-03:43:33-22997)
+
+Run statistics: total 2, successful 2
+
+Run statistics: total 2, successful 2
+
+Run statistics: total 2, successful 2
+
+Run statistics: total 2, successful 2
+Sar_NodeSweep_Aodv run #13: $numNodes=30, $repetition=3 (runID: Sar_NodeSweep_Aodv-13-20260502-03:53:03-22989)
+Sar_NodeSweep_Aodv run #21: $numNodes=50, $repetition=1 (runID: Sar_NodeSweep_Aodv-21-20260502-03:54:33-22998)
+
+Run statistics: total 2, successful 2
+Sar_NodeSweep_Aodv run #25: $numNodes=50, $repetition=5 (runID: Sar_NodeSweep_Aodv-25-20260502-04:00:07-23003)
+Sar_NodeSweep_Aodv run #27: $numNodes=50, $repetition=7 (runID: Sar_NodeSweep_Aodv-27-20260502-04:04:14-23007)
+Sar_NodeSweep_Aodv run #23: $numNodes=50, $repetition=3 (runID: Sar_NodeSweep_Aodv-23-20260502-04:05:21-23005)
+Sar_NodeSweep_Aodv run #29: $numNodes=50, $repetition=9 (runID: Sar_NodeSweep_Aodv-29-20260502-04:16:16-23008)
 
 Run statistics: total 2, successful 2
 
@@ -478,45 +414,48 @@ Run statistics: total 2, successful 2
 
 Run statistics: total 2, successful 2
 All runs completed.
-[ok] FanetRecon / Recon_SpeedSweep_Zrp_k2  (marked done)
+[ok] FanetSar / Sar_NodeSweep_Aodv  (marked done)
+[skip] FanetSar / Sar_SpeedSweep_Aodv  (marker: FanetSar/results/.done/Sar_SpeedSweep_Aodv.marker)
+[skip] FanetSar / Sar_NodeSweep_Olsr  (marker: FanetSar/results/.done/Sar_NodeSweep_Olsr.marker)
+[skip] FanetSar / Sar_SpeedSweep_Olsr  (marker: FanetSar/results/.done/Sar_SpeedSweep_Olsr.marker)
 ==========================================================
- Running: FanetRecon -> Recon_NodeSweep_Zrp_k3
+ Running: FanetStress -> Stress_NodeSweep_StabilityZrp
 ==========================================================
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 0,1
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 2,3
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 4,5
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 6,7
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 8,9
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 10,11
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 12,13
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 14,15
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 16,17
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 18,19
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 20,21
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 22,23
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 24,25
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 26,27
-./run -u Cmdenv -c Recon_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 28,29
-Recon_NodeSweep_Zrp_k3 run #12: $numNodes=30, $repetition=2 (runID: Recon_NodeSweep_Zrp_k3-12-20260425-11:13:30-30529)
-Recon_NodeSweep_Zrp_k3 run #0: $numNodes=10, $repetition=0 (runID: Recon_NodeSweep_Zrp_k3-0-20260425-11:13:30-30513)
-Recon_NodeSweep_Zrp_k3 run #22: $numNodes=50, $repetition=2 (runID: Recon_NodeSweep_Zrp_k3-22-20260425-11:13:30-30545)
-Recon_NodeSweep_Zrp_k3 run #2: $numNodes=10, $repetition=2 (runID: Recon_NodeSweep_Zrp_k3-2-20260425-11:13:30-30515)
-Recon_NodeSweep_Zrp_k3 run #6: $numNodes=10, $repetition=6 (runID: Recon_NodeSweep_Zrp_k3-6-20260425-11:13:30-30525)
-Recon_NodeSweep_Zrp_k3 run #14: $numNodes=30, $repetition=4 (runID: Recon_NodeSweep_Zrp_k3-14-20260425-11:13:30-30531)
-Recon_NodeSweep_Zrp_k3 run #16: $numNodes=30, $repetition=6 (runID: Recon_NodeSweep_Zrp_k3-16-20260425-11:13:30-30539)
-Recon_NodeSweep_Zrp_k3 run #20: $numNodes=50, $repetition=0 (runID: Recon_NodeSweep_Zrp_k3-20-20260425-11:13:30-30544)
-Recon_NodeSweep_Zrp_k3 run #26: $numNodes=50, $repetition=6 (runID: Recon_NodeSweep_Zrp_k3-26-20260425-11:13:30-30551)
-Recon_NodeSweep_Zrp_k3 run #28: $numNodes=50, $repetition=8 (runID: Recon_NodeSweep_Zrp_k3-28-20260425-11:13:30-30550)
-Recon_NodeSweep_Zrp_k3 run #24: $numNodes=50, $repetition=4 (runID: Recon_NodeSweep_Zrp_k3-24-20260425-11:13:30-30547)
-Recon_NodeSweep_Zrp_k3 run #10: $numNodes=30, $repetition=0 (runID: Recon_NodeSweep_Zrp_k3-10-20260425-11:13:30-30530)
-Recon_NodeSweep_Zrp_k3 run #4: $numNodes=10, $repetition=4 (runID: Recon_NodeSweep_Zrp_k3-4-20260425-11:13:30-30518)
-Recon_NodeSweep_Zrp_k3 run #18: $numNodes=30, $repetition=8 (runID: Recon_NodeSweep_Zrp_k3-18-20260425-11:13:30-30538)
-Recon_NodeSweep_Zrp_k3 run #8: $numNodes=10, $repetition=8 (runID: Recon_NodeSweep_Zrp_k3-8-20260425-11:13:30-30524)
-Recon_NodeSweep_Zrp_k3 run #3: $numNodes=10, $repetition=3 (runID: Recon_NodeSweep_Zrp_k3-3-20260425-11:13:56-30515)
-Recon_NodeSweep_Zrp_k3 run #5: $numNodes=10, $repetition=5 (runID: Recon_NodeSweep_Zrp_k3-5-20260425-11:13:59-30518)
-Recon_NodeSweep_Zrp_k3 run #7: $numNodes=10, $repetition=7 (runID: Recon_NodeSweep_Zrp_k3-7-20260425-11:14:10-30525)
-Recon_NodeSweep_Zrp_k3 run #1: $numNodes=10, $repetition=1 (runID: Recon_NodeSweep_Zrp_k3-1-20260425-11:14:20-30513)
-Recon_NodeSweep_Zrp_k3 run #9: $numNodes=10, $repetition=9 (runID: Recon_NodeSweep_Zrp_k3-9-20260425-11:14:31-30524)
+./run -u Cmdenv -c Stress_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 0,1
+./run -u Cmdenv -c Stress_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 2,3
+./run -u Cmdenv -c Stress_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 4,5
+./run -u Cmdenv -c Stress_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 6,7
+./run -u Cmdenv -c Stress_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 8,9
+./run -u Cmdenv -c Stress_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 10,11
+./run -u Cmdenv -c Stress_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 12,13
+./run -u Cmdenv -c Stress_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 14,15
+./run -u Cmdenv -c Stress_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 16,17
+./run -u Cmdenv -c Stress_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 18,19
+./run -u Cmdenv -c Stress_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 20,21
+./run -u Cmdenv -c Stress_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 22,23
+./run -u Cmdenv -c Stress_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 24,25
+./run -u Cmdenv -c Stress_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 26,27
+./run -u Cmdenv -c Stress_NodeSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 28,29
+Stress_NodeSweep_StabilityZrp run #12: $numNodes=30, $repetition=2 (runID: Stress_NodeSweep_StabilityZrp-12-20260502-04:47:38-23053)
+Stress_NodeSweep_StabilityZrp run #22: $numNodes=50, $repetition=2 (runID: Stress_NodeSweep_StabilityZrp-22-20260502-04:47:38-23070)
+Stress_NodeSweep_StabilityZrp run #20: $numNodes=50, $repetition=0 (runID: Stress_NodeSweep_StabilityZrp-20-20260502-04:47:38-23068)
+Stress_NodeSweep_StabilityZrp run #6: $numNodes=10, $repetition=6 (runID: Stress_NodeSweep_StabilityZrp-6-20260502-04:47:38-23044)
+Stress_NodeSweep_StabilityZrp run #8: $numNodes=10, $repetition=8 (runID: Stress_NodeSweep_StabilityZrp-8-20260502-04:47:38-23052)
+Stress_NodeSweep_StabilityZrp run #4: $numNodes=10, $repetition=4 (runID: Stress_NodeSweep_StabilityZrp-4-20260502-04:47:38-23041)
+Stress_NodeSweep_StabilityZrp run #18: $numNodes=30, $repetition=8 (runID: Stress_NodeSweep_StabilityZrp-18-20260502-04:47:38-23063)
+Stress_NodeSweep_StabilityZrp run #10: $numNodes=30, $repetition=0 (runID: Stress_NodeSweep_StabilityZrp-10-20260502-04:47:38-23049)
+Stress_NodeSweep_StabilityZrp run #0: $numNodes=10, $repetition=0 (runID: Stress_NodeSweep_StabilityZrp-0-20260502-04:47:38-23037)
+Stress_NodeSweep_StabilityZrp run #2: $numNodes=10, $repetition=2 (runID: Stress_NodeSweep_StabilityZrp-2-20260502-04:47:38-23039)
+Stress_NodeSweep_StabilityZrp run #16: $numNodes=30, $repetition=6 (runID: Stress_NodeSweep_StabilityZrp-16-20260502-04:47:38-23058)
+Stress_NodeSweep_StabilityZrp run #14: $numNodes=30, $repetition=4 (runID: Stress_NodeSweep_StabilityZrp-14-20260502-04:47:38-23056)
+Stress_NodeSweep_StabilityZrp run #24: $numNodes=50, $repetition=4 (runID: Stress_NodeSweep_StabilityZrp-24-20260502-04:47:38-23071)
+Stress_NodeSweep_StabilityZrp run #26: $numNodes=50, $repetition=6 (runID: Stress_NodeSweep_StabilityZrp-26-20260502-04:47:38-23073)
+Stress_NodeSweep_StabilityZrp run #28: $numNodes=50, $repetition=8 (runID: Stress_NodeSweep_StabilityZrp-28-20260502-04:47:38-23074)
+Stress_NodeSweep_StabilityZrp run #7: $numNodes=10, $repetition=7 (runID: Stress_NodeSweep_StabilityZrp-7-20260502-04:48:38-23044)
+Stress_NodeSweep_StabilityZrp run #1: $numNodes=10, $repetition=1 (runID: Stress_NodeSweep_StabilityZrp-1-20260502-04:48:39-23037)
+Stress_NodeSweep_StabilityZrp run #5: $numNodes=10, $repetition=5 (runID: Stress_NodeSweep_StabilityZrp-5-20260502-04:48:40-23041)
+Stress_NodeSweep_StabilityZrp run #9: $numNodes=10, $repetition=9 (runID: Stress_NodeSweep_StabilityZrp-9-20260502-04:48:41-23052)
+Stress_NodeSweep_StabilityZrp run #3: $numNodes=10, $repetition=3 (runID: Stress_NodeSweep_StabilityZrp-3-20260502-04:48:42-23039)
 
 Run statistics: total 2, successful 2
 
@@ -527,11 +466,11 @@ Run statistics: total 2, successful 2
 Run statistics: total 2, successful 2
 
 Run statistics: total 2, successful 2
-Recon_NodeSweep_Zrp_k3 run #17: $numNodes=30, $repetition=7 (runID: Recon_NodeSweep_Zrp_k3-17-20260425-11:20:48-30539)
-Recon_NodeSweep_Zrp_k3 run #11: $numNodes=30, $repetition=1 (runID: Recon_NodeSweep_Zrp_k3-11-20260425-11:22:20-30530)
-Recon_NodeSweep_Zrp_k3 run #15: $numNodes=30, $repetition=5 (runID: Recon_NodeSweep_Zrp_k3-15-20260425-11:22:34-30531)
-Recon_NodeSweep_Zrp_k3 run #13: $numNodes=30, $repetition=3 (runID: Recon_NodeSweep_Zrp_k3-13-20260425-11:24:46-30529)
-Recon_NodeSweep_Zrp_k3 run #19: $numNodes=30, $repetition=9 (runID: Recon_NodeSweep_Zrp_k3-19-20260425-11:25:56-30538)
+Stress_NodeSweep_StabilityZrp run #19: $numNodes=30, $repetition=9 (runID: Stress_NodeSweep_StabilityZrp-19-20260502-04:59:41-23063)
+Stress_NodeSweep_StabilityZrp run #11: $numNodes=30, $repetition=1 (runID: Stress_NodeSweep_StabilityZrp-11-20260502-04:59:48-23049)
+Stress_NodeSweep_StabilityZrp run #13: $numNodes=30, $repetition=3 (runID: Stress_NodeSweep_StabilityZrp-13-20260502-05:00:13-23053)
+Stress_NodeSweep_StabilityZrp run #15: $numNodes=30, $repetition=5 (runID: Stress_NodeSweep_StabilityZrp-15-20260502-05:00:23-23056)
+Stress_NodeSweep_StabilityZrp run #17: $numNodes=30, $repetition=7 (runID: Stress_NodeSweep_StabilityZrp-17-20260502-05:00:33-23058)
 
 Run statistics: total 2, successful 2
 
@@ -542,11 +481,11 @@ Run statistics: total 2, successful 2
 Run statistics: total 2, successful 2
 
 Run statistics: total 2, successful 2
-Recon_NodeSweep_Zrp_k3 run #25: $numNodes=50, $repetition=5 (runID: Recon_NodeSweep_Zrp_k3-25-20260425-11:43:16-30547)
-Recon_NodeSweep_Zrp_k3 run #27: $numNodes=50, $repetition=7 (runID: Recon_NodeSweep_Zrp_k3-27-20260425-11:43:37-30551)
-Recon_NodeSweep_Zrp_k3 run #21: $numNodes=50, $repetition=1 (runID: Recon_NodeSweep_Zrp_k3-21-20260425-11:44:27-30544)
-Recon_NodeSweep_Zrp_k3 run #29: $numNodes=50, $repetition=9 (runID: Recon_NodeSweep_Zrp_k3-29-20260425-11:44:35-30550)
-Recon_NodeSweep_Zrp_k3 run #23: $numNodes=50, $repetition=3 (runID: Recon_NodeSweep_Zrp_k3-23-20260425-11:45:33-30545)
+Stress_NodeSweep_StabilityZrp run #21: $numNodes=50, $repetition=1 (runID: Stress_NodeSweep_StabilityZrp-21-20260502-05:33:14-23068)
+Stress_NodeSweep_StabilityZrp run #23: $numNodes=50, $repetition=3 (runID: Stress_NodeSweep_StabilityZrp-23-20260502-05:35:55-23070)
+Stress_NodeSweep_StabilityZrp run #29: $numNodes=50, $repetition=9 (runID: Stress_NodeSweep_StabilityZrp-29-20260502-05:35:58-23074)
+Stress_NodeSweep_StabilityZrp run #25: $numNodes=50, $repetition=5 (runID: Stress_NodeSweep_StabilityZrp-25-20260502-05:36:47-23071)
+Stress_NodeSweep_StabilityZrp run #27: $numNodes=50, $repetition=7 (runID: Stress_NodeSweep_StabilityZrp-27-20260502-05:37:34-23073)
 
 Run statistics: total 2, successful 2
 
@@ -558,215 +497,55 @@ Run statistics: total 2, successful 2
 
 Run statistics: total 2, successful 2
 All runs completed.
-[ok] FanetRecon / Recon_NodeSweep_Zrp_k3  (marked done)
+[ok] FanetStress / Stress_NodeSweep_StabilityZrp  (marked done)
 ==========================================================
- Running: FanetRecon -> Recon_SpeedSweep_Zrp_k3
+ Running: FanetStress -> Stress_SpeedSweep_StabilityZrp
 ==========================================================
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 0,1
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 2,3
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 4,5
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 6,7
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 8,9
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 10,11
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 12,13
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 14,15
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 16,17
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 18,19
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 20,21
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 22,23
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 24,25
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 26,27
-./run -u Cmdenv -c Recon_SpeedSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 28,29
-Recon_SpeedSweep_Zrp_k3 run #20: $maxSpeed=50, $repetition=0 (runID: Recon_SpeedSweep_Zrp_k3-20-20260425-12:12:11-30599)
-Recon_SpeedSweep_Zrp_k3 run #6: $maxSpeed=10, $repetition=6 (runID: Recon_SpeedSweep_Zrp_k3-6-20260425-12:12:11-30581)
-Recon_SpeedSweep_Zrp_k3 run #16: $maxSpeed=30, $repetition=6 (runID: Recon_SpeedSweep_Zrp_k3-16-20260425-12:12:11-30594)
-Recon_SpeedSweep_Zrp_k3 run #0: $maxSpeed=10, $repetition=0 (runID: Recon_SpeedSweep_Zrp_k3-0-20260425-12:12:11-30572)
-Recon_SpeedSweep_Zrp_k3 run #10: $maxSpeed=30, $repetition=0 (runID: Recon_SpeedSweep_Zrp_k3-10-20260425-12:12:11-30585)
-Recon_SpeedSweep_Zrp_k3 run #4: $maxSpeed=10, $repetition=4 (runID: Recon_SpeedSweep_Zrp_k3-4-20260425-12:12:11-30580)
-Recon_SpeedSweep_Zrp_k3 run #22: $maxSpeed=50, $repetition=2 (runID: Recon_SpeedSweep_Zrp_k3-22-20260425-12:12:11-30605)
-Recon_SpeedSweep_Zrp_k3 run #24: $maxSpeed=50, $repetition=4 (runID: Recon_SpeedSweep_Zrp_k3-24-20260425-12:12:11-30606)
-Recon_SpeedSweep_Zrp_k3 run #2: $maxSpeed=10, $repetition=2 (runID: Recon_SpeedSweep_Zrp_k3-2-20260425-12:12:11-30576)
-Recon_SpeedSweep_Zrp_k3 run #28: $maxSpeed=50, $repetition=8 (runID: Recon_SpeedSweep_Zrp_k3-28-20260425-12:12:11-30609)
-Recon_SpeedSweep_Zrp_k3 run #18: $maxSpeed=30, $repetition=8 (runID: Recon_SpeedSweep_Zrp_k3-18-20260425-12:12:11-30597)
-Recon_SpeedSweep_Zrp_k3 run #12: $maxSpeed=30, $repetition=2 (runID: Recon_SpeedSweep_Zrp_k3-12-20260425-12:12:11-30588)
-Recon_SpeedSweep_Zrp_k3 run #26: $maxSpeed=50, $repetition=6 (runID: Recon_SpeedSweep_Zrp_k3-26-20260425-12:12:11-30607)
-Recon_SpeedSweep_Zrp_k3 run #14: $maxSpeed=30, $repetition=4 (runID: Recon_SpeedSweep_Zrp_k3-14-20260425-12:12:11-30592)
-Recon_SpeedSweep_Zrp_k3 run #8: $maxSpeed=10, $repetition=8 (runID: Recon_SpeedSweep_Zrp_k3-8-20260425-12:12:11-30584)
-Recon_SpeedSweep_Zrp_k3 run #17: $maxSpeed=30, $repetition=7 (runID: Recon_SpeedSweep_Zrp_k3-17-20260425-12:21:23-30594)
-Recon_SpeedSweep_Zrp_k3 run #21: $maxSpeed=50, $repetition=1 (runID: Recon_SpeedSweep_Zrp_k3-21-20260425-12:22:17-30599)
-Recon_SpeedSweep_Zrp_k3 run #27: $maxSpeed=50, $repetition=7 (runID: Recon_SpeedSweep_Zrp_k3-27-20260425-12:23:07-30607)
-Recon_SpeedSweep_Zrp_k3 run #11: $maxSpeed=30, $repetition=1 (runID: Recon_SpeedSweep_Zrp_k3-11-20260425-12:23:31-30585)
-Recon_SpeedSweep_Zrp_k3 run #15: $maxSpeed=30, $repetition=5 (runID: Recon_SpeedSweep_Zrp_k3-15-20260425-12:23:44-30592)
-Recon_SpeedSweep_Zrp_k3 run #23: $maxSpeed=50, $repetition=3 (runID: Recon_SpeedSweep_Zrp_k3-23-20260425-12:24:44-30605)
-Recon_SpeedSweep_Zrp_k3 run #29: $maxSpeed=50, $repetition=9 (runID: Recon_SpeedSweep_Zrp_k3-29-20260425-12:24:44-30609)
-Recon_SpeedSweep_Zrp_k3 run #9: $maxSpeed=10, $repetition=9 (runID: Recon_SpeedSweep_Zrp_k3-9-20260425-12:24:54-30584)
-Recon_SpeedSweep_Zrp_k3 run #25: $maxSpeed=50, $repetition=5 (runID: Recon_SpeedSweep_Zrp_k3-25-20260425-12:25:03-30606)
-Recon_SpeedSweep_Zrp_k3 run #5: $maxSpeed=10, $repetition=5 (runID: Recon_SpeedSweep_Zrp_k3-5-20260425-12:26:09-30580)
-Recon_SpeedSweep_Zrp_k3 run #1: $maxSpeed=10, $repetition=1 (runID: Recon_SpeedSweep_Zrp_k3-1-20260425-12:26:19-30572)
-Recon_SpeedSweep_Zrp_k3 run #7: $maxSpeed=10, $repetition=7 (runID: Recon_SpeedSweep_Zrp_k3-7-20260425-12:26:20-30581)
-Recon_SpeedSweep_Zrp_k3 run #13: $maxSpeed=30, $repetition=3 (runID: Recon_SpeedSweep_Zrp_k3-13-20260425-12:26:47-30588)
-Recon_SpeedSweep_Zrp_k3 run #19: $maxSpeed=30, $repetition=9 (runID: Recon_SpeedSweep_Zrp_k3-19-20260425-12:28:22-30597)
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-Recon_SpeedSweep_Zrp_k3 run #3: $maxSpeed=10, $repetition=3 (runID: Recon_SpeedSweep_Zrp_k3-3-20260425-12:34:33-30576)
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-All runs completed.
-[ok] FanetRecon / Recon_SpeedSweep_Zrp_k3  (marked done)
-==========================================================
- Running: FanetRecon -> Recon_NodeSweep_Aodv
-==========================================================
-./run -u Cmdenv -c Recon_NodeSweep_Aodv -s --cmdenv-redirect-output=true -r 0,1
-./run -u Cmdenv -c Recon_NodeSweep_Aodv -s --cmdenv-redirect-output=true -r 2,3
-./run -u Cmdenv -c Recon_NodeSweep_Aodv -s --cmdenv-redirect-output=true -r 4,5
-./run -u Cmdenv -c Recon_NodeSweep_Aodv -s --cmdenv-redirect-output=true -r 6,7
-./run -u Cmdenv -c Recon_NodeSweep_Aodv -s --cmdenv-redirect-output=true -r 8,9
-./run -u Cmdenv -c Recon_NodeSweep_Aodv -s --cmdenv-redirect-output=true -r 10,11
-./run -u Cmdenv -c Recon_NodeSweep_Aodv -s --cmdenv-redirect-output=true -r 12,13
-./run -u Cmdenv -c Recon_NodeSweep_Aodv -s --cmdenv-redirect-output=true -r 14,15
-./run -u Cmdenv -c Recon_NodeSweep_Aodv -s --cmdenv-redirect-output=true -r 16,17
-./run -u Cmdenv -c Recon_NodeSweep_Aodv -s --cmdenv-redirect-output=true -r 18,19
-./run -u Cmdenv -c Recon_NodeSweep_Aodv -s --cmdenv-redirect-output=true -r 20,21
-./run -u Cmdenv -c Recon_NodeSweep_Aodv -s --cmdenv-redirect-output=true -r 22,23
-./run -u Cmdenv -c Recon_NodeSweep_Aodv -s --cmdenv-redirect-output=true -r 24,25
-./run -u Cmdenv -c Recon_NodeSweep_Aodv -s --cmdenv-redirect-output=true -r 26,27
-./run -u Cmdenv -c Recon_NodeSweep_Aodv -s --cmdenv-redirect-output=true -r 28,29
-Recon_NodeSweep_Aodv run #16: $numNodes=30, $repetition=6 (runID: Recon_NodeSweep_Aodv-16-20260425-12:44:14-30652)
-Recon_NodeSweep_Aodv run #20: $numNodes=50, $repetition=0 (runID: Recon_NodeSweep_Aodv-20-20260425-12:44:14-30656)
-Recon_NodeSweep_Aodv run #26: $numNodes=50, $repetition=6 (runID: Recon_NodeSweep_Aodv-26-20260425-12:44:14-30666)
-Recon_NodeSweep_Aodv run #10: $numNodes=30, $repetition=0 (runID: Recon_NodeSweep_Aodv-10-20260425-12:44:14-30643)
-Recon_NodeSweep_Aodv run #18: $numNodes=30, $repetition=8 (runID: Recon_NodeSweep_Aodv-18-20260425-12:44:14-30655)
-Recon_NodeSweep_Aodv run #12: $numNodes=30, $repetition=2 (runID: Recon_NodeSweep_Aodv-12-20260425-12:44:14-30646)
-Recon_NodeSweep_Aodv run #28: $numNodes=50, $repetition=8 (runID: Recon_NodeSweep_Aodv-28-20260425-12:44:14-30667)
-Recon_NodeSweep_Aodv run #2: $numNodes=10, $repetition=2 (runID: Recon_NodeSweep_Aodv-2-20260425-12:44:14-30631)
-Recon_NodeSweep_Aodv run #8: $numNodes=10, $repetition=8 (runID: Recon_NodeSweep_Aodv-8-20260425-12:44:14-30642)
-Recon_NodeSweep_Aodv run #14: $numNodes=30, $repetition=4 (runID: Recon_NodeSweep_Aodv-14-20260425-12:44:14-30647)
-Recon_NodeSweep_Aodv run #22: $numNodes=50, $repetition=2 (runID: Recon_NodeSweep_Aodv-22-20260425-12:44:14-30663)
-Recon_NodeSweep_Aodv run #6: $numNodes=10, $repetition=6 (runID: Recon_NodeSweep_Aodv-6-20260425-12:44:14-30639)
-Recon_NodeSweep_Aodv run #4: $numNodes=10, $repetition=4 (runID: Recon_NodeSweep_Aodv-4-20260425-12:44:14-30635)
-Recon_NodeSweep_Aodv run #0: $numNodes=10, $repetition=0 (runID: Recon_NodeSweep_Aodv-0-20260425-12:44:14-30630)
-Recon_NodeSweep_Aodv run #24: $numNodes=50, $repetition=4 (runID: Recon_NodeSweep_Aodv-24-20260425-12:44:14-30665)
-Recon_NodeSweep_Aodv run #3: $numNodes=10, $repetition=3 (runID: Recon_NodeSweep_Aodv-3-20260425-12:44:29-30631)
-Recon_NodeSweep_Aodv run #5: $numNodes=10, $repetition=5 (runID: Recon_NodeSweep_Aodv-5-20260425-12:44:30-30635)
-Recon_NodeSweep_Aodv run #9: $numNodes=10, $repetition=9 (runID: Recon_NodeSweep_Aodv-9-20260425-12:44:35-30642)
-Recon_NodeSweep_Aodv run #7: $numNodes=10, $repetition=7 (runID: Recon_NodeSweep_Aodv-7-20260425-12:44:36-30639)
-Recon_NodeSweep_Aodv run #1: $numNodes=10, $repetition=1 (runID: Recon_NodeSweep_Aodv-1-20260425-12:44:46-30630)
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-Recon_NodeSweep_Aodv run #11: $numNodes=30, $repetition=1 (runID: Recon_NodeSweep_Aodv-11-20260425-12:50:49-30643)
-Recon_NodeSweep_Aodv run #17: $numNodes=30, $repetition=7 (runID: Recon_NodeSweep_Aodv-17-20260425-12:51:02-30652)
-Recon_NodeSweep_Aodv run #15: $numNodes=30, $repetition=5 (runID: Recon_NodeSweep_Aodv-15-20260425-12:52:40-30647)
-Recon_NodeSweep_Aodv run #13: $numNodes=30, $repetition=3 (runID: Recon_NodeSweep_Aodv-13-20260425-12:53:10-30646)
-Recon_NodeSweep_Aodv run #19: $numNodes=30, $repetition=9 (runID: Recon_NodeSweep_Aodv-19-20260425-12:54:44-30655)
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-Recon_NodeSweep_Aodv run #29: $numNodes=50, $repetition=9 (runID: Recon_NodeSweep_Aodv-29-20260425-13:27:17-30667)
-Recon_NodeSweep_Aodv run #21: $numNodes=50, $repetition=1 (runID: Recon_NodeSweep_Aodv-21-20260425-13:27:19-30656)
-Recon_NodeSweep_Aodv run #23: $numNodes=50, $repetition=3 (runID: Recon_NodeSweep_Aodv-23-20260425-13:29:30-30663)
-Recon_NodeSweep_Aodv run #27: $numNodes=50, $repetition=7 (runID: Recon_NodeSweep_Aodv-27-20260425-13:29:52-30666)
-Recon_NodeSweep_Aodv run #25: $numNodes=50, $repetition=5 (runID: Recon_NodeSweep_Aodv-25-20260425-13:32:47-30665)
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-All runs completed.
-[ok] FanetRecon / Recon_NodeSweep_Aodv  (marked done)
-==========================================================
- Running: FanetRecon -> Recon_SpeedSweep_Aodv
-==========================================================
-./run -u Cmdenv -c Recon_SpeedSweep_Aodv -s --cmdenv-redirect-output=true -r 0,1
-./run -u Cmdenv -c Recon_SpeedSweep_Aodv -s --cmdenv-redirect-output=true -r 2,3
-./run -u Cmdenv -c Recon_SpeedSweep_Aodv -s --cmdenv-redirect-output=true -r 4,5
-./run -u Cmdenv -c Recon_SpeedSweep_Aodv -s --cmdenv-redirect-output=true -r 6,7
-./run -u Cmdenv -c Recon_SpeedSweep_Aodv -s --cmdenv-redirect-output=true -r 8,9
-./run -u Cmdenv -c Recon_SpeedSweep_Aodv -s --cmdenv-redirect-output=true -r 10,11
-./run -u Cmdenv -c Recon_SpeedSweep_Aodv -s --cmdenv-redirect-output=true -r 12,13
-./run -u Cmdenv -c Recon_SpeedSweep_Aodv -s --cmdenv-redirect-output=true -r 14,15
-./run -u Cmdenv -c Recon_SpeedSweep_Aodv -s --cmdenv-redirect-output=true -r 16,17
-./run -u Cmdenv -c Recon_SpeedSweep_Aodv -s --cmdenv-redirect-output=true -r 18,19
-./run -u Cmdenv -c Recon_SpeedSweep_Aodv -s --cmdenv-redirect-output=true -r 20,21
-./run -u Cmdenv -c Recon_SpeedSweep_Aodv -s --cmdenv-redirect-output=true -r 22,23
-./run -u Cmdenv -c Recon_SpeedSweep_Aodv -s --cmdenv-redirect-output=true -r 24,25
-./run -u Cmdenv -c Recon_SpeedSweep_Aodv -s --cmdenv-redirect-output=true -r 26,27
-./run -u Cmdenv -c Recon_SpeedSweep_Aodv -s --cmdenv-redirect-output=true -r 28,29
-Recon_SpeedSweep_Aodv run #0: $maxSpeed=10, $repetition=0 (runID: Recon_SpeedSweep_Aodv-0-20260425-14:21:18-30929)
-Recon_SpeedSweep_Aodv run #6: $maxSpeed=10, $repetition=6 (runID: Recon_SpeedSweep_Aodv-6-20260425-14:21:18-30939)
-Recon_SpeedSweep_Aodv run #4: $maxSpeed=10, $repetition=4 (runID: Recon_SpeedSweep_Aodv-4-20260425-14:21:18-30938)
-Recon_SpeedSweep_Aodv run #16: $maxSpeed=30, $repetition=6 (runID: Recon_SpeedSweep_Aodv-16-20260425-14:21:18-30956)
-Recon_SpeedSweep_Aodv run #14: $maxSpeed=30, $repetition=4 (runID: Recon_SpeedSweep_Aodv-14-20260425-14:21:18-30948)
-Recon_SpeedSweep_Aodv run #28: $maxSpeed=50, $repetition=8 (runID: Recon_SpeedSweep_Aodv-28-20260425-14:21:18-30968)
-Recon_SpeedSweep_Aodv run #22: $maxSpeed=50, $repetition=2 (runID: Recon_SpeedSweep_Aodv-22-20260425-14:21:18-30962)
-Recon_SpeedSweep_Aodv run #10: $maxSpeed=30, $repetition=0 (runID: Recon_SpeedSweep_Aodv-10-20260425-14:21:18-30946)
-Recon_SpeedSweep_Aodv run #18: $maxSpeed=30, $repetition=8 (runID: Recon_SpeedSweep_Aodv-18-20260425-14:21:18-30955)
-Recon_SpeedSweep_Aodv run #8: $maxSpeed=10, $repetition=8 (runID: Recon_SpeedSweep_Aodv-8-20260425-14:21:18-30940)
-Recon_SpeedSweep_Aodv run #26: $maxSpeed=50, $repetition=6 (runID: Recon_SpeedSweep_Aodv-26-20260425-14:21:18-30967)
-Recon_SpeedSweep_Aodv run #12: $maxSpeed=30, $repetition=2 (runID: Recon_SpeedSweep_Aodv-12-20260425-14:21:18-30950)
-Recon_SpeedSweep_Aodv run #20: $maxSpeed=50, $repetition=0 (runID: Recon_SpeedSweep_Aodv-20-20260425-14:21:18-30960)
-Recon_SpeedSweep_Aodv run #2: $maxSpeed=10, $repetition=2 (runID: Recon_SpeedSweep_Aodv-2-20260425-14:21:18-30935)
-Recon_SpeedSweep_Aodv run #24: $maxSpeed=50, $repetition=4 (runID: Recon_SpeedSweep_Aodv-24-20260425-14:21:18-30965)
-Recon_SpeedSweep_Aodv run #11: $maxSpeed=30, $repetition=1 (runID: Recon_SpeedSweep_Aodv-11-20260425-14:31:34-30946)
-Recon_SpeedSweep_Aodv run #17: $maxSpeed=30, $repetition=7 (runID: Recon_SpeedSweep_Aodv-17-20260425-14:31:38-30956)
-Recon_SpeedSweep_Aodv run #3: $maxSpeed=10, $repetition=3 (runID: Recon_SpeedSweep_Aodv-3-20260425-14:31:40-30935)
-Recon_SpeedSweep_Aodv run #21: $maxSpeed=50, $repetition=1 (runID: Recon_SpeedSweep_Aodv-21-20260425-14:32:49-30960)
-Recon_SpeedSweep_Aodv run #5: $maxSpeed=10, $repetition=5 (runID: Recon_SpeedSweep_Aodv-5-20260425-14:32:58-30938)
-Recon_SpeedSweep_Aodv run #9: $maxSpeed=10, $repetition=9 (runID: Recon_SpeedSweep_Aodv-9-20260425-14:33:39-30940)
-Recon_SpeedSweep_Aodv run #1: $maxSpeed=10, $repetition=1 (runID: Recon_SpeedSweep_Aodv-1-20260425-14:33:39-30929)
-Recon_SpeedSweep_Aodv run #15: $maxSpeed=30, $repetition=5 (runID: Recon_SpeedSweep_Aodv-15-20260425-14:34:20-30948)
-Recon_SpeedSweep_Aodv run #7: $maxSpeed=10, $repetition=7 (runID: Recon_SpeedSweep_Aodv-7-20260425-14:34:29-30939)
-Recon_SpeedSweep_Aodv run #23: $maxSpeed=50, $repetition=3 (runID: Recon_SpeedSweep_Aodv-23-20260425-14:34:49-30962)
-Recon_SpeedSweep_Aodv run #27: $maxSpeed=50, $repetition=7 (runID: Recon_SpeedSweep_Aodv-27-20260425-14:35:12-30967)
-Recon_SpeedSweep_Aodv run #13: $maxSpeed=30, $repetition=3 (runID: Recon_SpeedSweep_Aodv-13-20260425-14:35:17-30950)
-Recon_SpeedSweep_Aodv run #25: $maxSpeed=50, $repetition=5 (runID: Recon_SpeedSweep_Aodv-25-20260425-14:37:10-30965)
-Recon_SpeedSweep_Aodv run #19: $maxSpeed=30, $repetition=9 (runID: Recon_SpeedSweep_Aodv-19-20260425-14:37:57-30955)
-Recon_SpeedSweep_Aodv run #29: $maxSpeed=50, $repetition=9 (runID: Recon_SpeedSweep_Aodv-29-20260425-14:38:08-30968)
+./run -u Cmdenv -c Stress_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 0,1
+./run -u Cmdenv -c Stress_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 2,3
+./run -u Cmdenv -c Stress_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 4,5
+./run -u Cmdenv -c Stress_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 6,7
+./run -u Cmdenv -c Stress_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 8,9
+./run -u Cmdenv -c Stress_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 10,11
+./run -u Cmdenv -c Stress_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 12,13
+./run -u Cmdenv -c Stress_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 14,15
+./run -u Cmdenv -c Stress_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 16,17
+./run -u Cmdenv -c Stress_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 18,19
+./run -u Cmdenv -c Stress_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 20,21
+./run -u Cmdenv -c Stress_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 22,23
+./run -u Cmdenv -c Stress_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 24,25
+./run -u Cmdenv -c Stress_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 26,27
+./run -u Cmdenv -c Stress_SpeedSweep_StabilityZrp -s --cmdenv-redirect-output=true -r 28,29
+Stress_SpeedSweep_StabilityZrp run #18: $maxSpeed=30, $repetition=8 (runID: Stress_SpeedSweep_StabilityZrp-18-20260502-07:24:31-23118)
+Stress_SpeedSweep_StabilityZrp run #4: $maxSpeed=10, $repetition=4 (runID: Stress_SpeedSweep_StabilityZrp-4-20260502-07:24:31-23101)
+Stress_SpeedSweep_StabilityZrp run #10: $maxSpeed=30, $repetition=0 (runID: Stress_SpeedSweep_StabilityZrp-10-20260502-07:24:31-23108)
+Stress_SpeedSweep_StabilityZrp run #16: $maxSpeed=30, $repetition=6 (runID: Stress_SpeedSweep_StabilityZrp-16-20260502-07:24:31-23114)
+Stress_SpeedSweep_StabilityZrp run #14: $maxSpeed=30, $repetition=4 (runID: Stress_SpeedSweep_StabilityZrp-14-20260502-07:24:31-23113)
+Stress_SpeedSweep_StabilityZrp run #12: $maxSpeed=30, $repetition=2 (runID: Stress_SpeedSweep_StabilityZrp-12-20260502-07:24:31-23111)
+Stress_SpeedSweep_StabilityZrp run #2: $maxSpeed=10, $repetition=2 (runID: Stress_SpeedSweep_StabilityZrp-2-20260502-07:24:31-23100)
+Stress_SpeedSweep_StabilityZrp run #24: $maxSpeed=50, $repetition=4 (runID: Stress_SpeedSweep_StabilityZrp-24-20260502-07:24:31-23127)
+Stress_SpeedSweep_StabilityZrp run #0: $maxSpeed=10, $repetition=0 (runID: Stress_SpeedSweep_StabilityZrp-0-20260502-07:24:31-23095)
+Stress_SpeedSweep_StabilityZrp run #26: $maxSpeed=50, $repetition=6 (runID: Stress_SpeedSweep_StabilityZrp-26-20260502-07:24:31-23131)
+Stress_SpeedSweep_StabilityZrp run #28: $maxSpeed=50, $repetition=8 (runID: Stress_SpeedSweep_StabilityZrp-28-20260502-07:24:31-23132)
+Stress_SpeedSweep_StabilityZrp run #6: $maxSpeed=10, $repetition=6 (runID: Stress_SpeedSweep_StabilityZrp-6-20260502-07:24:31-23103)
+Stress_SpeedSweep_StabilityZrp run #8: $maxSpeed=10, $repetition=8 (runID: Stress_SpeedSweep_StabilityZrp-8-20260502-07:24:31-23107)
+Stress_SpeedSweep_StabilityZrp run #20: $maxSpeed=50, $repetition=0 (runID: Stress_SpeedSweep_StabilityZrp-20-20260502-07:24:31-23121)
+Stress_SpeedSweep_StabilityZrp run #22: $maxSpeed=50, $repetition=2 (runID: Stress_SpeedSweep_StabilityZrp-22-20260502-07:24:31-23128)
+Stress_SpeedSweep_StabilityZrp run #1: $maxSpeed=10, $repetition=1 (runID: Stress_SpeedSweep_StabilityZrp-1-20260502-07:36:36-23095)
+Stress_SpeedSweep_StabilityZrp run #3: $maxSpeed=10, $repetition=3 (runID: Stress_SpeedSweep_StabilityZrp-3-20260502-07:37:34-23100)
+Stress_SpeedSweep_StabilityZrp run #5: $maxSpeed=10, $repetition=5 (runID: Stress_SpeedSweep_StabilityZrp-5-20260502-07:37:37-23101)
+Stress_SpeedSweep_StabilityZrp run #7: $maxSpeed=10, $repetition=7 (runID: Stress_SpeedSweep_StabilityZrp-7-20260502-07:37:43-23103)
+Stress_SpeedSweep_StabilityZrp run #9: $maxSpeed=10, $repetition=9 (runID: Stress_SpeedSweep_StabilityZrp-9-20260502-07:37:45-23107)
+Stress_SpeedSweep_StabilityZrp run #11: $maxSpeed=30, $repetition=1 (runID: Stress_SpeedSweep_StabilityZrp-11-20260502-07:39:26-23108)
+Stress_SpeedSweep_StabilityZrp run #19: $maxSpeed=30, $repetition=9 (runID: Stress_SpeedSweep_StabilityZrp-19-20260502-07:39:27-23118)
+Stress_SpeedSweep_StabilityZrp run #13: $maxSpeed=30, $repetition=3 (runID: Stress_SpeedSweep_StabilityZrp-13-20260502-07:40:04-23111)
+Stress_SpeedSweep_StabilityZrp run #15: $maxSpeed=30, $repetition=5 (runID: Stress_SpeedSweep_StabilityZrp-15-20260502-07:40:13-23113)
+Stress_SpeedSweep_StabilityZrp run #17: $maxSpeed=30, $repetition=7 (runID: Stress_SpeedSweep_StabilityZrp-17-20260502-07:40:22-23114)
+Stress_SpeedSweep_StabilityZrp run #29: $maxSpeed=50, $repetition=9 (runID: Stress_SpeedSweep_StabilityZrp-29-20260502-07:41:32-23132)
+Stress_SpeedSweep_StabilityZrp run #21: $maxSpeed=50, $repetition=1 (runID: Stress_SpeedSweep_StabilityZrp-21-20260502-07:41:38-23121)
+Stress_SpeedSweep_StabilityZrp run #27: $maxSpeed=50, $repetition=7 (runID: Stress_SpeedSweep_StabilityZrp-27-20260502-07:41:49-23131)
+Stress_SpeedSweep_StabilityZrp run #25: $maxSpeed=50, $repetition=5 (runID: Stress_SpeedSweep_StabilityZrp-25-20260502-07:41:57-23127)
+Stress_SpeedSweep_StabilityZrp run #23: $maxSpeed=50, $repetition=3 (runID: Stress_SpeedSweep_StabilityZrp-23-20260502-07:41:58-23128)
 
 Run statistics: total 2, successful 2
 
@@ -798,60 +577,49 @@ Run statistics: total 2, successful 2
 
 Run statistics: total 2, successful 2
 All runs completed.
-[ok] FanetRecon / Recon_SpeedSweep_Aodv  (marked done)
+[ok] FanetStress / Stress_SpeedSweep_StabilityZrp  (marked done)
+[skip] FanetStress / Stress_NodeSweep_Zrp_k1  (marker: FanetStress/results/.done/Stress_NodeSweep_Zrp_k1.marker)
+[skip] FanetStress / Stress_SpeedSweep_Zrp_k1  (marker: FanetStress/results/.done/Stress_SpeedSweep_Zrp_k1.marker)
+[skip] FanetStress / Stress_NodeSweep_Zrp_k2  (marker: FanetStress/results/.done/Stress_NodeSweep_Zrp_k2.marker)
+[skip] FanetStress / Stress_SpeedSweep_Zrp_k2  (marker: FanetStress/results/.done/Stress_SpeedSweep_Zrp_k2.marker)
 ==========================================================
- Running: FanetRecon -> Recon_NodeSweep_Olsr
+ Running: FanetStress -> Stress_NodeSweep_Zrp_k3
 ==========================================================
-./run -u Cmdenv -c Recon_NodeSweep_Olsr -s --cmdenv-redirect-output=true -r 0,1
-./run -u Cmdenv -c Recon_NodeSweep_Olsr -s --cmdenv-redirect-output=true -r 2,3
-./run -u Cmdenv -c Recon_NodeSweep_Olsr -s --cmdenv-redirect-output=true -r 4,5
-./run -u Cmdenv -c Recon_NodeSweep_Olsr -s --cmdenv-redirect-output=true -r 6,7
-./run -u Cmdenv -c Recon_NodeSweep_Olsr -s --cmdenv-redirect-output=true -r 8,9
-./run -u Cmdenv -c Recon_NodeSweep_Olsr -s --cmdenv-redirect-output=true -r 10,11
-./run -u Cmdenv -c Recon_NodeSweep_Olsr -s --cmdenv-redirect-output=true -r 12,13
-./run -u Cmdenv -c Recon_NodeSweep_Olsr -s --cmdenv-redirect-output=true -r 14,15
-./run -u Cmdenv -c Recon_NodeSweep_Olsr -s --cmdenv-redirect-output=true -r 16,17
-./run -u Cmdenv -c Recon_NodeSweep_Olsr -s --cmdenv-redirect-output=true -r 18,19
-./run -u Cmdenv -c Recon_NodeSweep_Olsr -s --cmdenv-redirect-output=true -r 20,21
-./run -u Cmdenv -c Recon_NodeSweep_Olsr -s --cmdenv-redirect-output=true -r 22,23
-./run -u Cmdenv -c Recon_NodeSweep_Olsr -s --cmdenv-redirect-output=true -r 24,25
-./run -u Cmdenv -c Recon_NodeSweep_Olsr -s --cmdenv-redirect-output=true -r 26,27
-./run -u Cmdenv -c Recon_NodeSweep_Olsr -s --cmdenv-redirect-output=true -r 28,29
-Recon_NodeSweep_Olsr run #8: $numNodes=10, $repetition=8 (runID: Recon_NodeSweep_Olsr-8-20260425-14:49:04-30997)
-Recon_NodeSweep_Olsr run #10: $numNodes=30, $repetition=0 (runID: Recon_NodeSweep_Olsr-10-20260425-14:49:04-31006)
-Recon_NodeSweep_Olsr run #18: $numNodes=30, $repetition=8 (runID: Recon_NodeSweep_Olsr-18-20260425-14:49:04-31017)
-Recon_NodeSweep_Olsr run #26: $numNodes=50, $repetition=6 (runID: Recon_NodeSweep_Olsr-26-20260425-14:49:04-31025)
-Recon_NodeSweep_Olsr run #12: $numNodes=30, $repetition=2 (runID: Recon_NodeSweep_Olsr-12-20260425-14:49:04-31004)
-Recon_NodeSweep_Olsr run #4: $numNodes=10, $repetition=4 (runID: Recon_NodeSweep_Olsr-4-20260425-14:49:04-30995)
-Recon_NodeSweep_Olsr run #0: $numNodes=10, $repetition=0 (runID: Recon_NodeSweep_Olsr-0-20260425-14:49:04-30991)
-Recon_NodeSweep_Olsr run #16: $numNodes=30, $repetition=6 (runID: Recon_NodeSweep_Olsr-16-20260425-14:49:04-31013)
-Recon_NodeSweep_Olsr run #2: $numNodes=10, $repetition=2 (runID: Recon_NodeSweep_Olsr-2-20260425-14:49:04-30990)
-Recon_NodeSweep_Olsr run #14: $numNodes=30, $repetition=4 (runID: Recon_NodeSweep_Olsr-14-20260425-14:49:04-31008)
-Recon_NodeSweep_Olsr run #20: $numNodes=50, $repetition=0 (runID: Recon_NodeSweep_Olsr-20-20260425-14:49:04-31019)
-Recon_NodeSweep_Olsr run #6: $numNodes=10, $repetition=6 (runID: Recon_NodeSweep_Olsr-6-20260425-14:49:04-31001)
-Recon_NodeSweep_Olsr run #22: $numNodes=50, $repetition=2 (runID: Recon_NodeSweep_Olsr-22-20260425-14:49:04-31022)
-Recon_NodeSweep_Olsr run #24: $numNodes=50, $repetition=4 (runID: Recon_NodeSweep_Olsr-24-20260425-14:49:04-31023)
-Recon_NodeSweep_Olsr run #28: $numNodes=50, $repetition=8 (runID: Recon_NodeSweep_Olsr-28-20260425-14:49:04-31026)
-Recon_NodeSweep_Olsr run #5: $numNodes=10, $repetition=5 (runID: Recon_NodeSweep_Olsr-5-20260425-14:49:23-30995)
-Recon_NodeSweep_Olsr run #3: $numNodes=10, $repetition=3 (runID: Recon_NodeSweep_Olsr-3-20260425-14:49:30-30990)
-Recon_NodeSweep_Olsr run #9: $numNodes=10, $repetition=9 (runID: Recon_NodeSweep_Olsr-9-20260425-14:49:34-30997)
-Recon_NodeSweep_Olsr run #7: $numNodes=10, $repetition=7 (runID: Recon_NodeSweep_Olsr-7-20260425-14:49:40-31001)
-
-Run statistics: total 2, successful 2
-Recon_NodeSweep_Olsr run #1: $numNodes=10, $repetition=1 (runID: Recon_NodeSweep_Olsr-1-20260425-14:49:49-30991)
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-Recon_NodeSweep_Olsr run #17: $numNodes=30, $repetition=7 (runID: Recon_NodeSweep_Olsr-17-20260425-14:54:46-31013)
-Recon_NodeSweep_Olsr run #11: $numNodes=30, $repetition=1 (runID: Recon_NodeSweep_Olsr-11-20260425-14:57:09-31006)
-Recon_NodeSweep_Olsr run #15: $numNodes=30, $repetition=5 (runID: Recon_NodeSweep_Olsr-15-20260425-14:57:35-31008)
-Recon_NodeSweep_Olsr run #13: $numNodes=30, $repetition=3 (runID: Recon_NodeSweep_Olsr-13-20260425-14:59:05-31004)
-Recon_NodeSweep_Olsr run #19: $numNodes=30, $repetition=9 (runID: Recon_NodeSweep_Olsr-19-20260425-14:59:56-31017)
+./run -u Cmdenv -c Stress_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 0,1
+./run -u Cmdenv -c Stress_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 2,3
+./run -u Cmdenv -c Stress_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 4,5
+./run -u Cmdenv -c Stress_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 6,7
+./run -u Cmdenv -c Stress_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 8,9
+./run -u Cmdenv -c Stress_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 10,11
+./run -u Cmdenv -c Stress_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 12,13
+./run -u Cmdenv -c Stress_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 14,15
+./run -u Cmdenv -c Stress_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 16,17
+./run -u Cmdenv -c Stress_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 18,19
+./run -u Cmdenv -c Stress_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 20,21
+./run -u Cmdenv -c Stress_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 22,23
+./run -u Cmdenv -c Stress_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 24,25
+./run -u Cmdenv -c Stress_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 26,27
+./run -u Cmdenv -c Stress_NodeSweep_Zrp_k3 -s --cmdenv-redirect-output=true -r 28,29
+Stress_NodeSweep_Zrp_k3 run #20: $numNodes=50, $repetition=0 (runID: Stress_NodeSweep_Zrp_k3-20-20260502-07:56:30-23190)
+Stress_NodeSweep_Zrp_k3 run #18: $numNodes=30, $repetition=8 (runID: Stress_NodeSweep_Zrp_k3-18-20260502-07:56:30-23183)
+Stress_NodeSweep_Zrp_k3 run #6: $numNodes=10, $repetition=6 (runID: Stress_NodeSweep_Zrp_k3-6-20260502-07:56:30-23166)
+Stress_NodeSweep_Zrp_k3 run #14: $numNodes=30, $repetition=4 (runID: Stress_NodeSweep_Zrp_k3-14-20260502-07:56:30-23181)
+Stress_NodeSweep_Zrp_k3 run #2: $numNodes=10, $repetition=2 (runID: Stress_NodeSweep_Zrp_k3-2-20260502-07:56:30-23160)
+Stress_NodeSweep_Zrp_k3 run #16: $numNodes=30, $repetition=6 (runID: Stress_NodeSweep_Zrp_k3-16-20260502-07:56:30-23178)
+Stress_NodeSweep_Zrp_k3 run #8: $numNodes=10, $repetition=8 (runID: Stress_NodeSweep_Zrp_k3-8-20260502-07:56:30-23168)
+Stress_NodeSweep_Zrp_k3 run #10: $numNodes=30, $repetition=0 (runID: Stress_NodeSweep_Zrp_k3-10-20260502-07:56:30-23175)
+Stress_NodeSweep_Zrp_k3 run #0: $numNodes=10, $repetition=0 (runID: Stress_NodeSweep_Zrp_k3-0-20260502-07:56:30-23158)
+Stress_NodeSweep_Zrp_k3 run #22: $numNodes=50, $repetition=2 (runID: Stress_NodeSweep_Zrp_k3-22-20260502-07:56:30-23192)
+Stress_NodeSweep_Zrp_k3 run #28: $numNodes=50, $repetition=8 (runID: Stress_NodeSweep_Zrp_k3-28-20260502-07:56:30-23194)
+Stress_NodeSweep_Zrp_k3 run #24: $numNodes=50, $repetition=4 (runID: Stress_NodeSweep_Zrp_k3-24-20260502-07:56:30-23191)
+Stress_NodeSweep_Zrp_k3 run #26: $numNodes=50, $repetition=6 (runID: Stress_NodeSweep_Zrp_k3-26-20260502-07:56:30-23193)
+Stress_NodeSweep_Zrp_k3 run #12: $numNodes=30, $repetition=2 (runID: Stress_NodeSweep_Zrp_k3-12-20260502-07:56:30-23179)
+Stress_NodeSweep_Zrp_k3 run #4: $numNodes=10, $repetition=4 (runID: Stress_NodeSweep_Zrp_k3-4-20260502-07:56:30-23163)
+Stress_NodeSweep_Zrp_k3 run #1: $numNodes=10, $repetition=1 (runID: Stress_NodeSweep_Zrp_k3-1-20260502-07:57:23-23158)
+Stress_NodeSweep_Zrp_k3 run #7: $numNodes=10, $repetition=7 (runID: Stress_NodeSweep_Zrp_k3-7-20260502-07:57:24-23166)
+Stress_NodeSweep_Zrp_k3 run #9: $numNodes=10, $repetition=9 (runID: Stress_NodeSweep_Zrp_k3-9-20260502-07:57:24-23168)
+Stress_NodeSweep_Zrp_k3 run #3: $numNodes=10, $repetition=3 (runID: Stress_NodeSweep_Zrp_k3-3-20260502-07:57:24-23160)
+Stress_NodeSweep_Zrp_k3 run #5: $numNodes=10, $repetition=5 (runID: Stress_NodeSweep_Zrp_k3-5-20260502-07:57:25-23163)
 
 Run statistics: total 2, successful 2
 
@@ -862,11 +630,26 @@ Run statistics: total 2, successful 2
 Run statistics: total 2, successful 2
 
 Run statistics: total 2, successful 2
-Recon_NodeSweep_Olsr run #27: $numNodes=50, $repetition=7 (runID: Recon_NodeSweep_Olsr-27-20260425-15:23:46-31025)
-Recon_NodeSweep_Olsr run #21: $numNodes=50, $repetition=1 (runID: Recon_NodeSweep_Olsr-21-20260425-15:28:01-31019)
-Recon_NodeSweep_Olsr run #25: $numNodes=50, $repetition=5 (runID: Recon_NodeSweep_Olsr-25-20260425-15:29:05-31023)
-Recon_NodeSweep_Olsr run #29: $numNodes=50, $repetition=9 (runID: Recon_NodeSweep_Olsr-29-20260425-15:29:10-31026)
-Recon_NodeSweep_Olsr run #23: $numNodes=50, $repetition=3 (runID: Recon_NodeSweep_Olsr-23-20260425-15:29:34-31022)
+Stress_NodeSweep_Zrp_k3 run #11: $numNodes=30, $repetition=1 (runID: Stress_NodeSweep_Zrp_k3-11-20260502-08:04:31-23175)
+Stress_NodeSweep_Zrp_k3 run #19: $numNodes=30, $repetition=9 (runID: Stress_NodeSweep_Zrp_k3-19-20260502-08:04:50-23183)
+Stress_NodeSweep_Zrp_k3 run #13: $numNodes=30, $repetition=3 (runID: Stress_NodeSweep_Zrp_k3-13-20260502-08:05:08-23179)
+Stress_NodeSweep_Zrp_k3 run #15: $numNodes=30, $repetition=5 (runID: Stress_NodeSweep_Zrp_k3-15-20260502-08:05:33-23181)
+Stress_NodeSweep_Zrp_k3 run #17: $numNodes=30, $repetition=7 (runID: Stress_NodeSweep_Zrp_k3-17-20260502-08:05:41-23178)
+
+Run statistics: total 2, successful 2
+
+Run statistics: total 2, successful 2
+
+Run statistics: total 2, successful 2
+
+Run statistics: total 2, successful 2
+
+Run statistics: total 2, successful 2
+Stress_NodeSweep_Zrp_k3 run #21: $numNodes=50, $repetition=1 (runID: Stress_NodeSweep_Zrp_k3-21-20260502-08:23:47-23190)
+Stress_NodeSweep_Zrp_k3 run #29: $numNodes=50, $repetition=9 (runID: Stress_NodeSweep_Zrp_k3-29-20260502-08:24:52-23194)
+Stress_NodeSweep_Zrp_k3 run #25: $numNodes=50, $repetition=5 (runID: Stress_NodeSweep_Zrp_k3-25-20260502-08:26:18-23191)
+Stress_NodeSweep_Zrp_k3 run #27: $numNodes=50, $repetition=7 (runID: Stress_NodeSweep_Zrp_k3-27-20260502-08:26:29-23193)
+Stress_NodeSweep_Zrp_k3 run #23: $numNodes=50, $repetition=3 (runID: Stress_NodeSweep_Zrp_k3-23-20260502-08:27:05-23192)
 
 Run statistics: total 2, successful 2
 
@@ -878,92 +661,23 @@ Run statistics: total 2, successful 2
 
 Run statistics: total 2, successful 2
 All runs completed.
-[ok] FanetRecon / Recon_NodeSweep_Olsr  (marked done)
+[ok] FanetStress / Stress_NodeSweep_Zrp_k3  (marked done)
+[skip] FanetStress / Stress_SpeedSweep_Zrp_k3  (marker: FanetStress/results/.done/Stress_SpeedSweep_Zrp_k3.marker)
+[skip] FanetStress / Stress_NodeSweep_Aodv  (marker: FanetStress/results/.done/Stress_NodeSweep_Aodv.marker)
+[skip] FanetStress / Stress_SpeedSweep_Aodv  (marker: FanetStress/results/.done/Stress_SpeedSweep_Aodv.marker)
+[skip] FanetStress / Stress_NodeSweep_Olsr  (marker: FanetStress/results/.done/Stress_NodeSweep_Olsr.marker)
+[skip] FanetStress / Stress_SpeedSweep_Olsr  (marker: FanetStress/results/.done/Stress_SpeedSweep_Olsr.marker)
 ==========================================================
- Running: FanetRecon -> Recon_SpeedSweep_Olsr
-==========================================================
-./run -u Cmdenv -c Recon_SpeedSweep_Olsr -s --cmdenv-redirect-output=true -r 0,1
-./run -u Cmdenv -c Recon_SpeedSweep_Olsr -s --cmdenv-redirect-output=true -r 2,3
-./run -u Cmdenv -c Recon_SpeedSweep_Olsr -s --cmdenv-redirect-output=true -r 4,5
-./run -u Cmdenv -c Recon_SpeedSweep_Olsr -s --cmdenv-redirect-output=true -r 6,7
-./run -u Cmdenv -c Recon_SpeedSweep_Olsr -s --cmdenv-redirect-output=true -r 8,9
-./run -u Cmdenv -c Recon_SpeedSweep_Olsr -s --cmdenv-redirect-output=true -r 10,11
-./run -u Cmdenv -c Recon_SpeedSweep_Olsr -s --cmdenv-redirect-output=true -r 12,13
-./run -u Cmdenv -c Recon_SpeedSweep_Olsr -s --cmdenv-redirect-output=true -r 14,15
-./run -u Cmdenv -c Recon_SpeedSweep_Olsr -s --cmdenv-redirect-output=true -r 16,17
-./run -u Cmdenv -c Recon_SpeedSweep_Olsr -s --cmdenv-redirect-output=true -r 18,19
-./run -u Cmdenv -c Recon_SpeedSweep_Olsr -s --cmdenv-redirect-output=true -r 20,21
-./run -u Cmdenv -c Recon_SpeedSweep_Olsr -s --cmdenv-redirect-output=true -r 22,23
-./run -u Cmdenv -c Recon_SpeedSweep_Olsr -s --cmdenv-redirect-output=true -r 24,25
-./run -u Cmdenv -c Recon_SpeedSweep_Olsr -s --cmdenv-redirect-output=true -r 26,27
-./run -u Cmdenv -c Recon_SpeedSweep_Olsr -s --cmdenv-redirect-output=true -r 28,29
-Recon_SpeedSweep_Olsr run #0: $maxSpeed=10, $repetition=0 (runID: Recon_SpeedSweep_Olsr-0-20260425-16:10:41-31045)
-Recon_SpeedSweep_Olsr run #2: $maxSpeed=10, $repetition=2 (runID: Recon_SpeedSweep_Olsr-2-20260425-16:10:41-31051)
-Recon_SpeedSweep_Olsr run #14: $maxSpeed=30, $repetition=4 (runID: Recon_SpeedSweep_Olsr-14-20260425-16:10:41-31067)
-Recon_SpeedSweep_Olsr run #18: $maxSpeed=30, $repetition=8 (runID: Recon_SpeedSweep_Olsr-18-20260425-16:10:41-31075)
-Recon_SpeedSweep_Olsr run #22: $maxSpeed=50, $repetition=2 (runID: Recon_SpeedSweep_Olsr-22-20260425-16:10:41-31076)
-Recon_SpeedSweep_Olsr run #20: $maxSpeed=50, $repetition=0 (runID: Recon_SpeedSweep_Olsr-20-20260425-16:10:41-31074)
-Recon_SpeedSweep_Olsr run #24: $maxSpeed=50, $repetition=4 (runID: Recon_SpeedSweep_Olsr-24-20260425-16:10:41-31080)
-Recon_SpeedSweep_Olsr run #16: $maxSpeed=30, $repetition=6 (runID: Recon_SpeedSweep_Olsr-16-20260425-16:10:41-31073)
-Recon_SpeedSweep_Olsr run #4: $maxSpeed=10, $repetition=4 (runID: Recon_SpeedSweep_Olsr-4-20260425-16:10:41-31057)
-Recon_SpeedSweep_Olsr run #28: $maxSpeed=50, $repetition=8 (runID: Recon_SpeedSweep_Olsr-28-20260425-16:10:41-31083)
-Recon_SpeedSweep_Olsr run #12: $maxSpeed=30, $repetition=2 (runID: Recon_SpeedSweep_Olsr-12-20260425-16:10:41-31069)
-Recon_SpeedSweep_Olsr run #8: $maxSpeed=10, $repetition=8 (runID: Recon_SpeedSweep_Olsr-8-20260425-16:10:41-31063)
-Recon_SpeedSweep_Olsr run #10: $maxSpeed=30, $repetition=0 (runID: Recon_SpeedSweep_Olsr-10-20260425-16:10:41-31062)
-Recon_SpeedSweep_Olsr run #26: $maxSpeed=50, $repetition=6 (runID: Recon_SpeedSweep_Olsr-26-20260425-16:10:41-31084)
-Recon_SpeedSweep_Olsr run #6: $maxSpeed=10, $repetition=6 (runID: Recon_SpeedSweep_Olsr-6-20260425-16:10:41-31053)
-Recon_SpeedSweep_Olsr run #17: $maxSpeed=30, $repetition=7 (runID: Recon_SpeedSweep_Olsr-17-20260425-16:17:43-31073)
-Recon_SpeedSweep_Olsr run #7: $maxSpeed=10, $repetition=7 (runID: Recon_SpeedSweep_Olsr-7-20260425-16:20:10-31053)
-Recon_SpeedSweep_Olsr run #21: $maxSpeed=50, $repetition=1 (runID: Recon_SpeedSweep_Olsr-21-20260425-16:20:18-31074)
-Recon_SpeedSweep_Olsr run #11: $maxSpeed=30, $repetition=1 (runID: Recon_SpeedSweep_Olsr-11-20260425-16:20:44-31062)
-Recon_SpeedSweep_Olsr run #15: $maxSpeed=30, $repetition=5 (runID: Recon_SpeedSweep_Olsr-15-20260425-16:21:19-31067)
-Recon_SpeedSweep_Olsr run #3: $maxSpeed=10, $repetition=3 (runID: Recon_SpeedSweep_Olsr-3-20260425-16:21:23-31051)
-Recon_SpeedSweep_Olsr run #27: $maxSpeed=50, $repetition=7 (runID: Recon_SpeedSweep_Olsr-27-20260425-16:21:40-31084)
-Recon_SpeedSweep_Olsr run #5: $maxSpeed=10, $repetition=5 (runID: Recon_SpeedSweep_Olsr-5-20260425-16:21:53-31057)
-Recon_SpeedSweep_Olsr run #23: $maxSpeed=50, $repetition=3 (runID: Recon_SpeedSweep_Olsr-23-20260425-16:22:34-31076)
-Recon_SpeedSweep_Olsr run #9: $maxSpeed=10, $repetition=9 (runID: Recon_SpeedSweep_Olsr-9-20260425-16:23:09-31063)
-Recon_SpeedSweep_Olsr run #13: $maxSpeed=30, $repetition=3 (runID: Recon_SpeedSweep_Olsr-13-20260425-16:23:11-31069)
-Recon_SpeedSweep_Olsr run #29: $maxSpeed=50, $repetition=9 (runID: Recon_SpeedSweep_Olsr-29-20260425-16:23:15-31083)
-Recon_SpeedSweep_Olsr run #19: $maxSpeed=30, $repetition=9 (runID: Recon_SpeedSweep_Olsr-19-20260425-16:23:58-31075)
-Recon_SpeedSweep_Olsr run #25: $maxSpeed=50, $repetition=5 (runID: Recon_SpeedSweep_Olsr-25-20260425-16:24:24-31080)
-Recon_SpeedSweep_Olsr run #1: $maxSpeed=10, $repetition=1 (runID: Recon_SpeedSweep_Olsr-1-20260425-16:25:30-31045)
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-
-Run statistics: total 2, successful 2
-All runs completed.
-[ok] FanetRecon / Recon_SpeedSweep_Olsr  (marked done)
-==========================================================
- Generating Results & Exports for FanetRecon...
+ Generating Results & Exports for FanetSar...
 ==========================================================
 Exporting results to CSV using opp_scavetool...
-Exported 1426140 scalars, 5250600 parameters, 10800 statistics, 134280 histograms
-Exported 871980 vectors
-Sat Apr 25 17:01:44 CST 2026
+Exported 1515420 scalars, 5271060 parameters, 48360 statistics, 133920 histograms
+Exported 893940 vectors
+==========================================================
+ Generating Results & Exports for FanetStress...
+==========================================================
+Exporting results to CSV using opp_scavetool...
+Exported 1417680 scalars, 4932720 parameters, 39600 statistics, 129600 histograms
+Exported 826200 vectors
+Sat May  2 09:45:37 CST 2026
 Done. All selected sweeps either succeeded or were already marked.

@@ -11,6 +11,8 @@
 #include <set>
 #include <algorithm>
 #include <queue>
+#include <fstream>
+#include <cstdlib>
 
 #include "inet/common/IProtocolRegistrationListener.h"
 #include "inet/common/ModuleAccess.h"
@@ -30,6 +32,29 @@
 
 namespace inet {
 namespace zrp {
+
+// Diagnostic dump for ZRP-vs-GZRP-Classic parity hunt. Writes one matchable
+// line per protocol-level state change so the two protocols' logs can be
+// `diff`ed to locate the first divergent simtime. Gated on env var
+// ZRP_DIAG_FILE: unset = no logging, set = path to write. Format is the same
+// in Zrp.cc and GZRP/Gzrp.cc so identical behavior produces identical files.
+namespace {
+std::ofstream& diagStream()
+{
+    static std::ofstream s;
+    static bool checked = false;
+    if (!checked) {
+        checked = true;
+        const char* path = std::getenv("ZRP_DIAG_FILE");
+        if (path && *path) s.open(path);
+    }
+    return s;
+}
+inline bool diagEnabled() { return diagStream().is_open(); }
+} // namespace
+#define DIAG_LOG(node, body) do { if (diagEnabled()) { \
+    diagStream() << std::fixed << std::setprecision(9) << simTime().dbl() \
+                 << " " << (node)->getFullName() << " " << body << std::endl; } } while (0)
 
 Define_Module(Zrp);
 
@@ -719,6 +744,8 @@ void Zrp::handleNDPHello(const Ptr<NDP_Hello>& hello, const L3Address& sourceAdd
 
     // Update neighbour table with current time
     neighbourTable[sourceAddr] = simTime();
+    DIAG_LOG(host, "NDP_RECV from=" << sourceAddr << " seq=" << hello->getSeqNum()
+                                    << " new=" << (isNew ? 1 : 0));
 
     EV_DETAIL << "Neighbour table now has " << neighbourTable.size() << " entries" << endl;
 
@@ -745,6 +772,7 @@ void Zrp::NDP_refreshNeighbourTable()
 
     for (const auto& addr : toRemove) {
         neighbourTable.erase(addr);
+        DIAG_LOG(host, "NDP_STALE addr=" << addr);
         EV_DETAIL << "Removed stale neighbour: " << addr << endl;
     }
 
@@ -827,6 +855,7 @@ void Zrp::sendIARPUpdate()
     }
 
     auto update = createIARPUpdate();
+    DIAG_LOG(host, "IARP_SEND seq=" << update->getSeqNum() << " nbrs=" << neighbourTable.size());
     sendZrpPacket(update, Ipv4Address::ALLONES_ADDRESS, zoneRadius - 1);
 
     iarpUpdatePending = false;
@@ -862,6 +891,8 @@ void Zrp::handleIARPUpdate(const Ptr<IARP_LinkStateUpdate>& update, const L3Addr
     auto it = linkStateTable.find(originatorAddr);
     if (it != linkStateTable.end()) {
         if (!seqNumIsNewer(seqNum, it->second.seqNum)) {
+            DIAG_LOG(host, "IARP_RECV from=" << sourceAddr << " orig=" << originatorAddr
+                                             << " seq=" << seqNum << " action=stale");
             EV_DETAIL << "Ignoring stale IARP update (have seq " << it->second.seqNum << ", received " << seqNum << ")"
                       << endl;
             return;
@@ -886,6 +917,8 @@ void Zrp::handleIARPUpdate(const Ptr<IARP_LinkStateUpdate>& update, const L3Addr
     }
 
     linkStateTable[originatorAddr] = entry;
+    DIAG_LOG(host, "IARP_RECV from=" << sourceAddr << " orig=" << originatorAddr
+                                     << " seq=" << seqNum << " action=store nbrs=" << destCount);
 
     EV_DETAIL << "Updated link state table, now has " << linkStateTable.size() << " entries" << endl;
 
@@ -957,6 +990,7 @@ IRoute* Zrp::IARP_createRoute(const L3Address& dest, const L3Address& nextHop, u
         newRoute->setInterface(ifEntry);
     }
 
+    DIAG_LOG(host, "IARP_ROUTE_INSTALL dest=" << dest << " nextHop=" << nextHop << " hops=" << hops);
     EV_DETAIL << "Adding IARP route to " << dest << " via " << nextHop << " (hops: " << hops << ")" << endl;
     routingTable->addRoute(newRoute);
 
@@ -1090,6 +1124,9 @@ void Zrp::IERP_initiateRouteDiscovery(const L3Address& dest, bool isRetry)
     qid.source = getSelfIPAddress();
     qid.queryId = request->getQueryID();
     IERP_recordQuery(qid, dest);
+
+    DIAG_LOG(host, "IERP_INIT_RD dest=" << dest << " qid=" << qid.source << ":" << qid.queryId
+                                        << " retry=" << (isRetry ? 1 : 0));
 
     // Call BRP to bordercast the route request
     BRP_bordercast(request);
@@ -1516,6 +1553,7 @@ IRoute* Zrp::IERP_createRoute(const L3Address& dest, const L3Address& nextHop, u
         newRoute->setInterface(ifEntry);
     }
 
+    DIAG_LOG(host, "IERP_ROUTE_INSTALL dest=" << dest << " nextHop=" << nextHop << " hops=" << hops);
     EV_DETAIL << "Adding IERP route to " << dest << " via " << nextHop << " (" << hops << " hops)" << endl;
     routingTable->addRoute(newRoute);
 
@@ -1729,6 +1767,8 @@ void Zrp::BRP_bordercast(const Ptr<IERP_RouteData>& packet)
     }
 
     if (outNeighbours.empty()) {
+        DIAG_LOG(host, "BRP_BORDERCAST qid=" << qid.source << ":" << qid.queryId
+                                             << " dest=" << queryDest << " out=0");
         EV_INFO << "BRP: No uncovered peripheral nodes to bordercast to" << endl;
     }
     else {
@@ -1737,6 +1777,15 @@ void Zrp::BRP_bordercast(const Ptr<IERP_RouteData>& packet)
         for (const auto& n : outNeighbours)
             EV_INFO << n << " ";
         EV_INFO << endl;
+
+        {
+            std::ostringstream onbrs;
+            for (const auto& n : outNeighbours) onbrs << n << ",";
+            DIAG_LOG(host, "BRP_BORDERCAST qid=" << qid.source << ":" << qid.queryId
+                                                 << " dest=" << queryDest
+                                                 << " out=" << outNeighbours.size()
+                                                 << " neighbours=[" << onbrs.str() << "]");
+        }
 
         // Build BRP packet wrapping the IERP packet
         for (const auto& neighbour : outNeighbours) {
@@ -1794,6 +1843,10 @@ void Zrp::BRP_deliver(const Ptr<BRP_Data>& brpPacket, const L3Address& sourceAdd
     std::set<L3Address> prevBcastZone;
     bool isOutNbr = BRP_isOutNeighbour(prevBordercaster, self, brpCoverageTable[cacheId].coveredNodes, prevBcastZone);
     BRP_recordCoverage(cacheId, prevBcastZone);
+    DIAG_LOG(host, "BRP_RECV from=" << sourceAddr << " prev=" << prevBordercaster
+                                    << " qid=" << querySource << ":" << queryID
+                                    << " isOutNbr=" << (isOutNbr ? 1 : 0)
+                                    << " delivered=" << (brpCoverageTable[cacheId].delivered ? 1 : 0));
 
     if (isOutNbr && !brpCoverageTable[cacheId].delivered) {
         // Schedule delivery to IERP with jitter
